@@ -24,6 +24,8 @@ export default function TopNav({ showSignOut = false }: { showSignOut?: boolean 
       <div className="mx-auto flex h-12 items-center px-4">
         {/* Wordmark */}
         <Link href="/" className="flex items-center gap-2 pr-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.svg" alt="" width={22} height={22} className="rounded" />
           <span className="text-[15px] font-bold tracking-tight">
             TRAINING<span className="text-accent">GEEKS</span>
           </span>
