@@ -2,6 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import { existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { runMigrations } from "./migrate.js";
+import { seed } from "./seed.js";
 
 export type DB = DatabaseSync;
 
@@ -28,7 +29,9 @@ const globalForDb = globalThis as unknown as { __tgDb?: DB };
 
 export function getDb(): DB {
   if (!globalForDb.__tgDb) {
-    globalForDb.__tgDb = openDb(process.env.TG_DB_PATH || DEFAULT_DB_PATH);
+    const db = openDb(process.env.TG_DB_PATH || DEFAULT_DB_PATH);
+    seed(db); // ensure the single athlete + default thresholds exist
+    globalForDb.__tgDb = db;
   }
   return globalForDb.__tgDb;
 }
