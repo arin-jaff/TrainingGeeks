@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAction } from "@/app/actions/auth";
 
 const TABS = [
   { href: "/", label: "Home" },
@@ -15,7 +16,7 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export default function TopNav() {
+export default function TopNav({ showSignOut = false }: { showSignOut?: boolean }) {
   const pathname = usePathname() ?? "/";
 
   return (
@@ -59,6 +60,17 @@ export default function TopNav() {
           >
             AJ
           </span>
+          {showSignOut && (
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                className="text-white/60 hover:text-white"
+                title="Sign out"
+              >
+                Sign out
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </header>
