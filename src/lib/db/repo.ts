@@ -300,6 +300,28 @@ export function setActivityDate(db: DB, id: number, localDate: string): void {
   ).run(localDate, id);
 }
 
+// ---- Peaks -------------------------------------------------------------
+
+export interface PaceEffortRow {
+  window: number;
+  speed: number;
+  activity_id: number;
+  date: string;
+  modality: string;
+}
+
+/** All pace-by-distance peak efforts, joined with their activity. */
+export function listPaceEfforts(db: DB): PaceEffortRow[] {
+  return all<PaceEffortRow>(
+    db,
+    `SELECT p.window AS window, p.value AS speed, p.activity_id AS activity_id,
+            a.local_date AS date, a.modality AS modality
+     FROM peak p JOIN activity a ON a.id = p.activity_id
+     WHERE p.kind = 'pace' AND p.basis = 'distance'
+     ORDER BY p.window ASC, p.value DESC`,
+  );
+}
+
 // ---- Connector accounts ------------------------------------------------
 
 export function getConnector(
@@ -342,6 +364,35 @@ export function listEvents(db: DB): EventRow[] {
   return all<EventRow>(db, "SELECT * FROM event ORDER BY date");
 }
 
+export function insertEvent(
+  db: DB,
+  name: string,
+  date: string,
+  notes?: string,
+): void {
+  db.prepare("INSERT INTO event (name, date, notes) VALUES (?, ?, ?)").run(
+    name,
+    date,
+    notes ?? null,
+  );
+}
+
+export function deleteEvent(db: DB, id: number): void {
+  db.prepare("DELETE FROM event WHERE id = ?").run(id);
+}
+
 export function listGoals(db: DB): GoalRow[] {
   return all<GoalRow>(db, "SELECT * FROM goal ORDER BY done, created_at");
+}
+
+export function insertGoal(db: DB, text: string): void {
+  db.prepare("INSERT INTO goal (text) VALUES (?)").run(text);
+}
+
+export function setGoalDone(db: DB, id: number, done: boolean): void {
+  db.prepare("UPDATE goal SET done = ? WHERE id = ?").run(done ? 1 : 0, id);
+}
+
+export function deleteGoal(db: DB, id: number): void {
+  db.prepare("DELETE FROM goal WHERE id = ?").run(id);
 }
