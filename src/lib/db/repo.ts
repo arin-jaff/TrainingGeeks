@@ -254,6 +254,25 @@ export function listDailyLoad(
   );
 }
 
+/** Per-activity stress inputs for the fitness engine. */
+export function listActivityStress(
+  db: DB,
+): { local_date: string; modality: string; tss: number | null; s3: number | null }[] {
+  return all(db, "SELECT local_date, modality, tss, s3 FROM activity");
+}
+
+export function clearDailyLoad(db: DB): void {
+  db.prepare("DELETE FROM daily_load").run();
+}
+
+export function earliestActivityDate(db: DB): string | undefined {
+  const r = one<{ d: string }>(
+    db,
+    "SELECT MIN(local_date) AS d FROM activity",
+  );
+  return r?.d ?? undefined;
+}
+
 // ---- Planned workouts --------------------------------------------------
 
 export function listPlannedBetween(
