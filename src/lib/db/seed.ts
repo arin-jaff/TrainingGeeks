@@ -1,5 +1,6 @@
 import type { DB } from "./client.js";
 import type { FitnessCurve, ThresholdMetric } from "./types.js";
+import { upsertConnector } from "./repo.js";
 
 const EPOCH = "2000-01-01"; // valid_from for seed thresholds (applies to all history)
 
@@ -37,5 +38,17 @@ export function seed(db: DB): void {
   );
   for (const [curve, metric, value] of defaults) {
     if (!exists.get(curve, metric)) insert.run(curve, metric, value, EPOCH);
+  }
+
+  // Auto-configure the intervals.icu connector from environment, so it
+  // persists across DB resets without re-entering it in the UI.
+  const athleteId = process.env.TG_INTERVALS_ATHLETE_ID;
+  const apiKey = process.env.TG_INTERVALS_API_KEY;
+  if (athleteId && apiKey) {
+    upsertConnector(db, "intervals", {
+      athlete_id: athleteId,
+      api_key: apiKey,
+      enabled: 1,
+    });
   }
 }
