@@ -41,3 +41,43 @@ export function eachDay(start: string, end: string): string[] {
   }
   return out;
 }
+
+/** Day of week with Monday=0 ... Sunday=6. */
+export function weekdayMon0(date: string): number {
+  const [y, m, d] = date.split("-").map(Number);
+  const js = new Date(Date.UTC(y, m - 1, d)).getUTCDay(); // Sun=0
+  return (js + 6) % 7;
+}
+
+/** The Monday on or before `date`. */
+export function startOfWeekMonday(date: string): string {
+  return addDays(date, -weekdayMon0(date));
+}
+
+/** YYYY-MM (month) of a date. */
+export function monthOf(date: string): string {
+  return date.slice(0, 7);
+}
+
+/**
+ * A month grid as weeks of 7 dates (Mon..Sun), padded to cover the whole
+ * month. `month` is "YYYY-MM".
+ */
+export function monthMatrix(month: string): string[][] {
+  const first = `${month}-01`;
+  const [y, m] = month.split("-").map(Number);
+  const lastDay = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const last = `${month}-${String(lastDay).padStart(2, "0")}`;
+  const gridStart = startOfWeekMonday(first);
+  const gridEnd = addDays(startOfWeekMonday(last), 6);
+  const days = eachDay(gridStart, gridEnd);
+  const weeks: string[][] = [];
+  for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+  return weeks;
+}
+
+export function addMonths(month: string, n: number): string {
+  const [y, m] = month.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1 + n, 1));
+  return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, "0")}`;
+}

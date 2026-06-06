@@ -11,6 +11,7 @@
     "test": "node --import tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
     "@garmin/fitsdk": "^21.205.0",
     "next": "^15.5.19",
     "react": "19.0.0",

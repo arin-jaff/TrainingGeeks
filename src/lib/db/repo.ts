@@ -288,6 +288,18 @@ export function listPlannedBetween(
   );
 }
 
+export function setPlannedDate(db: DB, id: number, date: string): void {
+  db.prepare(
+    `UPDATE planned_workout SET date = ?, updated_at = datetime('now') WHERE id = ?`,
+  ).run(date, id);
+}
+
+export function setActivityDate(db: DB, id: number, localDate: string): void {
+  db.prepare(
+    `UPDATE activity SET local_date = ?, updated_at = datetime('now') WHERE id = ?`,
+  ).run(localDate, id);
+}
+
 // ---- Connector accounts ------------------------------------------------
 
 export function getConnector(
