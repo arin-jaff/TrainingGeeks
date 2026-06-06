@@ -13,7 +13,7 @@ import {
   type FitnessCurve,
   type Modality,
 } from "../db/types.js";
-import { eachDay, todayLocal } from "../util/dates.js";
+import { addDays, eachDay, todayLocal } from "../util/dates.js";
 import { computeFitnessSeries } from "./ewma.js";
 
 export type LoadCurve = FitnessCurve | "all";
@@ -25,6 +25,8 @@ const ALL_CURVES: LoadCurve[] = [...FITNESS_CURVES, "all"];
  * curves stay consistent even when activities are deleted. Per modality plus
  * the combined 'all'. Cardio contributes TSS; strength (lift+core) S³.
  */
+const PROJECT_DAYS = 60; // project fitness forward (zero future stress), like TP
+
 export function recomputeFitness(db: DB, today?: string): void {
   const earliest = earliestActivityDate(db);
   clearDailyLoad(db);
@@ -32,7 +34,9 @@ export function recomputeFitness(db: DB, today?: string): void {
 
   const tz = getAthlete(db)?.timezone ?? "America/New_York";
   const end = today ?? todayLocal(tz);
-  const lastDate = end >= earliest ? end : earliest;
+  // Extend past today so upcoming weeks show projected CTL/ATL/TSB decay.
+  const horizon = addDays(end >= earliest ? end : earliest, PROJECT_DAYS);
+  const lastDate = horizon;
 
   // Sum daily stress per curve.
   const buckets = new Map<LoadCurve, Map<string, number>>();
