@@ -34,9 +34,15 @@ export default function EventsPanel({
         <div className="text-sm text-ink-muted">
           <p className="font-medium text-ink">What are you training for?</p>
           <p className="mt-1">
-            Keep track of your upcoming events and stay focused with a
+            Keep track of all of your upcoming events and stay focused with a
             countdown.
           </p>
+          <button
+            onClick={() => setAdding(true)}
+            className="mt-3 rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
+          >
+            Add Event
+          </button>
         </div>
       )}
 

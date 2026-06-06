@@ -29,9 +29,20 @@ export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
       </div>
 
       {goals.length === 0 && !adding && (
-        <p className="text-sm text-ink-muted">
-          Stay on track by adding your training goals.
-        </p>
+        <div className="text-sm text-ink-muted">
+          <p>Stay on track by adding your training goals.</p>
+          <p className="mt-2 font-medium text-ink">Examples</p>
+          <ul className="mt-1 list-inside list-disc">
+            <li>Do two core sessions</li>
+            <li>Get 8 hours of sleep</li>
+          </ul>
+          <button
+            onClick={() => setAdding(true)}
+            className="mt-3 rounded border border-accent px-3 py-1.5 text-sm font-medium text-accent hover:bg-accent/5"
+          >
+            Add goal
+          </button>
+        </div>
       )}
 
       <ul className="space-y-1">
