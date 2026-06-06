@@ -18,6 +18,12 @@ function distanceLabel(m: number): string {
   return `${m} m`;
 }
 
+const MEDAL = ["#d4af37", "#9aa3af", "#b45309"]; // gold, silver, bronze
+function shortDate(d: string): string {
+  const [y, m, day] = d.split("-");
+  return `${Number(m)}/${Number(day)}/${y.slice(2)}`;
+}
+
 const paceSecPerMi = (speed: number) => 1609.34 / speed;
 const fmtMMSS = (sec: number) => {
   const m = Math.floor(sec / 60);
@@ -78,8 +84,13 @@ export default function PeaksExplorer({
     return ws;
   }, [efforts, modality]);
 
-  const [windowM, setWindowM] = useState<number>(windows[0] ?? 400);
-  const activeWindow = windows.includes(windowM) ? windowM : (windows[0] ?? 400);
+  // Default to a familiar race distance (like the reference) rather than the
+  // shortest window.
+  const preferred = [1609.34, 1000, 5000, 400].find((w) => windows.includes(w));
+  const [windowM, setWindowM] = useState<number>(preferred ?? windows[0] ?? 400);
+  const activeWindow = windows.includes(windowM)
+    ? windowM
+    : (preferred ?? windows[0] ?? 400);
 
   const years = useMemo(() => {
     const ys = [
@@ -186,7 +197,17 @@ export default function PeaksExplorer({
               i === 0 ? "bg-accent/5" : ""
             }`}
           >
-            <span className="w-5 text-center text-ink-muted">{i + 1}</span>
+            <span className="flex w-5 items-center justify-center">
+              {i < 3 ? (
+                <span
+                  className="inline-block h-3 w-3 rounded-full"
+                  style={{ backgroundColor: MEDAL[i] }}
+                  aria-hidden
+                />
+              ) : (
+                <span className="text-ink-muted">{i + 1}</span>
+              )}
+            </span>
             <span className="w-20 font-semibold tabular-nums text-ink">
               {formatDuration(e.window / e.speed)}
             </span>
@@ -194,7 +215,7 @@ export default function PeaksExplorer({
               {formatPace(e.speed, units, modality)}
             </span>
             <span className="text-ink-muted">{MODALITY_LABEL[e.modality as Modality]}</span>
-            <span className="ml-auto text-ink-muted">{e.date}</span>
+            <span className="ml-auto text-ink-muted">{shortDate(e.date)}</span>
             <Link
               href={`/activity/${e.activity_id}`}
               className="text-xs font-medium text-accent"

@@ -108,7 +108,16 @@ export function getCalendarData(
         tss += it.stressValue ?? 0;
       }
     }
-    const endFit = fitByDate.get(week[6]);
+    // Use the latest day in the week that has a fitness row (so the current,
+    // partially-elapsed week shows today's values instead of a blank Sunday).
+    let endFit = undefined;
+    for (let i = 6; i >= 0; i--) {
+      const f = fitByDate.get(week[i]);
+      if (f) {
+        endFit = f;
+        break;
+      }
+    }
     weekSummaries[weekStart] = {
       weekStart,
       durationS,

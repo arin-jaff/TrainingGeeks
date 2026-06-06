@@ -1,6 +1,10 @@
 /** Calendar-day helpers operating on YYYY-MM-DD strings in UTC arithmetic. */
 
 export function todayLocal(tz: string, now: Date = new Date()): string {
+  // Allow pinning "today" for deterministic screenshots / testing.
+  const override =
+    typeof process !== "undefined" ? process.env?.TG_TODAY : undefined;
+  if (override && /^\d{4}-\d{2}-\d{2}$/.test(override)) return override;
   // en-CA formats as YYYY-MM-DD; the tz shifts the calendar day correctly.
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: tz,

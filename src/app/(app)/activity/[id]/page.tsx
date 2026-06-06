@@ -51,18 +51,18 @@ export default async function ActivityPage({
 
   return (
     <div>
-      <div className="mb-4">
-        <div className="mb-1 text-xs uppercase tracking-wide text-ink-muted">
+      <div className="mb-4 border-b border-line pb-3">
+        <div className="mb-1 text-sm font-medium uppercase tracking-wide text-ink-muted">
           {longDate(a.local_date)}
         </div>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-5">
           <div className="flex items-center gap-2">
             <span
-              className="inline-block h-3 w-3 rounded-full"
+              className="inline-block h-3.5 w-3.5 rounded-full"
               style={{ backgroundColor: MODALITY_COLOR[modality] }}
               aria-hidden
             />
-            <h1 className="text-lg font-semibold text-ink">
+            <h1 className="text-xl font-semibold text-ink">
               {a.name ?? MODALITY_LABEL[modality]}
             </h1>
           </div>
