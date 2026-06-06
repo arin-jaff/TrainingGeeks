@@ -1,22 +1,28 @@
 /** Calendar-day helpers operating on YYYY-MM-DD strings in UTC arithmetic. */
 
-export function todayLocal(tz: string, now: Date = new Date()): string {
-  // Allow pinning "today" for deterministic screenshots / testing.
-  const override =
-    typeof process !== "undefined" ? process.env?.TG_TODAY : undefined;
-  if (override && /^\d{4}-\d{2}-\d{2}$/.test(override)) return override;
+/** Format an instant as its YYYY-MM-DD calendar date in a timezone. */
+function formatInTz(d: Date, tz: string): string {
   // en-CA formats as YYYY-MM-DD; the tz shifts the calendar day correctly.
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: tz,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(now);
+  }).format(d);
+}
+
+export function todayLocal(tz: string, now: Date = new Date()): string {
+  // Allow pinning "today" for deterministic screenshots / testing. This only
+  // affects what "now" is, never how a given instant is formatted.
+  const override =
+    typeof process !== "undefined" ? process.env?.TG_TODAY : undefined;
+  if (override && /^\d{4}-\d{2}-\d{2}$/.test(override)) return override;
+  return formatInTz(now, tz);
 }
 
 /** The local calendar date (YYYY-MM-DD) of an instant in a timezone. */
 export function localDateInTz(iso: string, tz: string): string {
-  return todayLocal(tz, new Date(iso));
+  return formatInTz(new Date(iso), tz);
 }
 
 export function addDays(date: string, n: number): string {
