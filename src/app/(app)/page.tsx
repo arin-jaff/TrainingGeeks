@@ -27,9 +27,9 @@ function distanceLabel(m: number): string {
 }
 
 function WorkoutRow({ item, units }: { item: CalItem; units: Units }) {
-  return (
+  const body = (
     <div
-      className={`rounded border border-line border-l-4 bg-surface-card px-3 py-2 ${BORDER[item.modality]}`}
+      className={`rounded border border-line border-l-4 bg-surface-card px-3 py-2 ${BORDER[item.modality]} ${item.kind === "activity" ? "transition-colors hover:bg-surface" : ""}`}
     >
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">{item.name}</span>
@@ -47,6 +47,11 @@ function WorkoutRow({ item, units }: { item: CalItem; units: Units }) {
         {item.kind === "planned" && <span className="italic">planned</span>}
       </div>
     </div>
+  );
+  return item.kind === "activity" ? (
+    <Link href={`/activity/${item.id}`}>{body}</Link>
+  ) : (
+    body
   );
 }
 

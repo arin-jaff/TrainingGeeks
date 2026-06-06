@@ -13,14 +13,15 @@ import type {
   ZoneRow,
 } from "./types.js";
 
-// node:sqlite returns Record<string, SQLOutputValue>; cast through unknown once.
+// node:sqlite returns null-prototype rows; spread into plain objects so they
+// are serializable across the server/client boundary and structurally typed.
 function all<T>(db: DB, sql: string, ...params: unknown[]): T[] {
-  return db.prepare(sql).all(...(params as never[])) as unknown as T[];
+  const rows = db.prepare(sql).all(...(params as never[]));
+  return rows.map((r) => ({ ...r }) as unknown as T);
 }
 function one<T>(db: DB, sql: string, ...params: unknown[]): T | undefined {
-  return db.prepare(sql).get(...(params as never[])) as unknown as
-    | T
-    | undefined;
+  const r = db.prepare(sql).get(...(params as never[]));
+  return r ? ({ ...r } as unknown as T) : undefined;
 }
 
 // ---- Athlete -----------------------------------------------------------
@@ -308,6 +309,24 @@ export interface PaceEffortRow {
   activity_id: number;
   date: string;
   modality: string;
+}
+
+export interface PeakRow {
+  id: number;
+  activity_id: number;
+  kind: string;
+  basis: string;
+  window: number;
+  value: number;
+  start_offset_s: number | null;
+}
+
+export function listActivityPeaks(db: DB, activityId: number): PeakRow[] {
+  return all<PeakRow>(
+    db,
+    "SELECT * FROM peak WHERE activity_id = ? ORDER BY kind, window",
+    activityId,
+  );
 }
 
 /** All pace-by-distance peak efforts, joined with their activity. */

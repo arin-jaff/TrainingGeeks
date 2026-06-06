@@ -27,6 +27,7 @@ const BORDER: Record<Modality, string> = {
 };
 
 function WorkoutCard({ item, units }: { item: CalItem; units: Units }) {
+  const router = useRouter();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -37,6 +38,10 @@ function WorkoutCard({ item, units }: { item: CalItem; units: Units }) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={() => {
+        if (!isDragging && item.kind === "activity")
+          router.push(`/activity/${item.id}`);
+      }}
       className={[
         "cursor-grab rounded-sm border border-line border-l-4 bg-surface-card px-2 py-1 text-[11px] leading-tight shadow-sm",
         BORDER[item.modality],
