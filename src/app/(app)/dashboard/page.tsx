@@ -1,10 +1,30 @@
-import PagePlaceholder from "@/components/PagePlaceholder";
+import { getDb } from "@/lib/db/client";
+import { getAthlete } from "@/lib/db/repo";
+import { getDashboardData } from "@/lib/queries/dashboard";
+import { todayLocal } from "@/lib/util/dates";
+import DashboardClient from "@/components/dashboard/DashboardClient";
+
+export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
+  const db = getDb();
+  const tz = getAthlete(db)?.timezone ?? "America/New_York";
+  const data = getDashboardData(db, todayLocal(tz));
+
   return (
-    <PagePlaceholder
-      title="Dashboard"
-      note="Performance Management Chart, fitness summary, and the charts library. Built in M9."
-    />
+    <div>
+      <div className="mb-4 flex items-center gap-4 border-b border-line">
+        <span className="border-b-2 border-accent pb-2 text-sm font-semibold text-accent">
+          Dashboard
+        </span>
+        <span
+          className="cursor-not-allowed pb-2 text-sm text-ink-muted"
+          title="Coming soon"
+        >
+          Workout Comparison
+        </span>
+      </div>
+      <DashboardClient data={data} />
+    </div>
   );
 }
