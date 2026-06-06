@@ -2,7 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
-import { upsertConnector } from "@/lib/db/repo";
+import {
+  getAthlete,
+  setThreshold,
+  updateAthlete,
+  upsertConnector,
+} from "@/lib/db/repo";
+import { reprocessAll } from "@/lib/import/reprocess";
+import { todayLocal } from "@/lib/util/dates";
+import type { Units } from "@/lib/db/types";
 
 export async function saveConnector(formData: FormData): Promise<void> {
   const athleteId = String(formData.get("athleteId") ?? "").trim();
@@ -14,4 +22,65 @@ export async function saveConnector(formData: FormData): Promise<void> {
     enabled: enabled ? 1 : 0,
   });
   revalidatePath("/settings");
+}
+
+export async function updateProfile(formData: FormData): Promise<void> {
+  const db = getDb();
+  const name = String(formData.get("name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
+  const units = formData.get("units") === "metric" ? "metric" : "imperial";
+  const timezone = String(formData.get("timezone") ?? "America/New_York").trim();
+  const rpe = Number(formData.get("rpe") ?? 5);
+  updateAthlete(db, {
+    name: name || "Athlete",
+    email: email || null,
+    units: units as Units,
+    timezone,
+    strength_rpe_default: Number.isFinite(rpe)
+      ? Math.max(1, Math.min(10, Math.round(rpe)))
+      : 5,
+  });
+  revalidatePath("/settings");
+  revalidatePath("/");
+}
+
+function paceToSpeed(text: string, perMeters: number): number | null {
+  const m = text.trim().match(/^(\d+):(\d{1,2})$/);
+  if (!m) return null;
+  const secs = Number(m[1]) * 60 + Number(m[2]);
+  return secs > 0 ? perMeters / secs : null;
+}
+
+export async function saveThresholds(formData: FormData): Promise<void> {
+  const db = getDb();
+  const tz = getAthlete(db)?.timezone ?? "America/New_York";
+  const today = todayLocal(tz);
+  const num = (k: string) => {
+    const v = Number(formData.get(k));
+    return Number.isFinite(v) && v > 0 ? v : null;
+  };
+
+  const ftp = num("ftp");
+  if (ftp) setThreshold(db, "bike", "ftp", ftp, today);
+
+  const runSpeed = paceToSpeed(String(formData.get("runPace") ?? ""), 1609.34);
+  if (runSpeed) setThreshold(db, "run", "threshold_pace", runSpeed, today);
+
+  const swimSpeed = paceToSpeed(String(formData.get("swimPace") ?? ""), 100);
+  if (swimSpeed) setThreshold(db, "swim", "threshold_pace", swimSpeed, today);
+
+  const thr = num("thresholdHr");
+  const max = num("maxHr");
+  const rest = num("restingHr");
+  for (const curve of ["run", "bike", "swim"] as const) {
+    if (thr) setThreshold(db, curve, "threshold_hr", thr, today);
+  }
+  if (max) setThreshold(db, "run", "max_hr", max, today);
+  if (rest) setThreshold(db, "run", "resting_hr", rest, today);
+
+  // Re-derive metrics for existing activities so the change takes effect.
+  reprocessAll(db);
+  revalidatePath("/settings");
+  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
