@@ -14,16 +14,19 @@ import {
 import type { Modality, Units } from "@/lib/db/types";
 import type { CalItem, WeekSummary } from "@/lib/queries/calendar";
 import { formatDistance, formatDuration } from "@/lib/util/format";
+import { MODALITY_COLOR } from "@/lib/util/colors";
+import SportIcon from "@/components/SportIcon";
 import { rescheduleItem } from "@/app/(app)/calendar/actions";
 
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-const BORDER: Record<Modality, string> = {
-  run: "border-l-modality-run",
-  bike: "border-l-modality-bike",
-  swim: "border-l-modality-swim",
-  lift: "border-l-modality-strength",
-  core: "border-l-modality-core",
+// Full discipline names like TrainingPeaks.
+const SPORT_NAME: Record<Modality, string> = {
+  run: "Running",
+  bike: "Cycling",
+  swim: "Swimming",
+  lift: "Strength",
+  core: "Core",
 };
 
 function WorkoutCard({ item, units }: { item: CalItem; units: Units }) {
@@ -42,27 +45,37 @@ function WorkoutCard({ item, units }: { item: CalItem; units: Units }) {
         if (!isDragging && item.kind === "activity")
           router.push(`/activity/${item.id}`);
       }}
+      style={{ borderLeftColor: MODALITY_COLOR[item.modality] }}
       className={[
-        "cursor-grab rounded-sm border border-line border-l-4 bg-surface-card px-2 py-1 text-[11px] leading-tight shadow-sm",
-        BORDER[item.modality],
-        planned ? "border-dashed opacity-80" : "",
+        "cursor-grab rounded border border-line border-l-[3px] bg-surface-card px-2 py-1.5 shadow-sm",
+        planned ? "opacity-80" : "",
         isDragging ? "opacity-40" : "",
       ].join(" ")}
     >
-      <div className="flex items-center justify-between gap-1">
-        <span className="truncate font-semibold text-ink">{item.name}</span>
-        {item.stressValue != null && (
-          <span className="shrink-0 text-ink-muted">
-            {item.stressValue} {item.stressLabel}
-          </span>
-        )}
+      <div className="flex items-center gap-1.5">
+        <SportIcon modality={item.modality} size={15} />
+        <span className="truncate text-[12px] font-semibold text-ink">
+          {SPORT_NAME[item.modality]}
+        </span>
+        <span className="ml-auto text-ink-muted/60" aria-hidden>
+          ⋮
+        </span>
       </div>
-      <div className="mt-0.5 flex gap-2 text-ink-muted">
-        {item.durationS != null && <span>{formatDuration(item.durationS)}</span>}
-        {item.distanceM != null && (
-          <span>{formatDistance(item.distanceM, units)}</span>
+      <div className="mt-1 space-y-0.5 text-[12px] leading-tight">
+        {item.durationS != null && (
+          <div className="font-semibold text-ink">
+            {formatDuration(item.durationS)}
+          </div>
         )}
-        {planned && <span className="italic">planned</span>}
+        {item.distanceM != null && (
+          <div className="text-ink">{formatDistance(item.distanceM, units)}</div>
+        )}
+        {item.stressValue != null && (
+          <div className="text-ink-muted">
+            {item.stressValue} {item.stressLabel}
+          </div>
+        )}
+        {planned && <div className="italic text-ink-muted">planned</div>}
       </div>
     </div>
   );
@@ -87,7 +100,7 @@ function DayCell({
     <div
       ref={setNodeRef}
       className={[
-        "min-h-[120px] border-b border-r border-line p-1",
+        "min-h-[150px] border-b border-r border-line p-1.5",
         inMonth ? "bg-surface-card" : "bg-surface",
         isOver ? "ring-2 ring-inset ring-accent" : "",
       ].join(" ")}
@@ -95,18 +108,18 @@ function DayCell({
       <div className="mb-1 flex justify-end">
         <span
           className={[
-            "text-[11px]",
+            "text-[12px]",
             isToday
               ? "flex h-5 w-5 items-center justify-center rounded-full bg-accent font-semibold text-white"
               : inMonth
                 ? "text-ink-muted"
-                : "text-ink-muted/50",
+                : "text-ink-muted/40",
           ].join(" ")}
         >
           {dayNum}
         </span>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         {items.map((it) => (
           <WorkoutCard key={`${it.kind}:${it.id}`} item={it} units={units} />
         ))}
@@ -115,42 +128,59 @@ function DayCell({
   );
 }
 
-function MetricChip({ label, value, color }: { label: string; value: number | null; color: string }) {
+function FFFHeader({ s }: { s: WeekSummary }) {
+  const cell = (
+    label: string,
+    value: number | null,
+    unit: string,
+    color: string,
+  ) => (
+    <div className="flex flex-col">
+      <span className="text-[11px] text-ink-muted">{label}</span>
+      <span>
+        <span className="text-[15px] font-semibold" style={{ color }}>
+          {value == null ? "—" : Math.round(value)}
+        </span>
+        <span className="ml-1 text-[10px] text-ink-muted">{unit}</span>
+      </span>
+    </div>
+  );
   return (
-    <div className="flex flex-col items-center">
-      <span className={`text-sm font-semibold ${color}`}>
-        {value == null ? "—" : Math.round(value)}
-      </span>
-      <span className="text-[9px] uppercase tracking-wide text-ink-muted">
-        {label}
-      </span>
+    <div className="flex justify-between">
+      {cell("Fitness", s.ctl, "CTL", "#2f6fed")}
+      {cell("Fatigue", s.atl, "ATL", "#e0457b")}
+      {cell("Form", s.tsb, "TSB", "#f0a03f")}
     </div>
   );
 }
 
+function metricRows(s: WeekSummary, units: Units) {
+  const km = units === "metric";
+  return [
+    ["Duration", formatDuration(s.durationS), "hms"],
+    ["Distance", (s.distanceM / (km ? 1000 : 1609.34)).toFixed(1), km ? "km" : "mi"],
+    ["TSS", String(Math.round(s.tss)), "TSS"],
+    ["El. Gain", String(Math.round(s.elevationM * (km ? 1 : 3.28084))), km ? "m" : "ft"],
+    ["Work", String(Math.round(s.workKj)), "kJ"],
+  ] as const;
+}
+
 function SummaryCell({ s, units }: { s: WeekSummary | undefined; units: Units }) {
   return (
-    <div className="min-h-[120px] border-b border-line bg-surface p-2">
+    <div className="min-h-[150px] border-b border-line bg-surface px-3 py-2">
       {s && (
         <>
-          <div className="mb-2 flex justify-around">
-            <MetricChip label="Ftg" value={s.atl} color="text-fatigue" />
-            <MetricChip label="Fit" value={s.ctl} color="text-ink" />
-            <MetricChip label="Form" value={s.tsb} color="text-form" />
-          </div>
-          <dl className="space-y-0.5 text-[11px] text-ink-muted">
-            <div className="flex justify-between">
-              <dt>Duration</dt>
-              <dd className="text-ink">{formatDuration(s.durationS)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt>Distance</dt>
-              <dd className="text-ink">{formatDistance(s.distanceM, units)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt>TSS</dt>
-              <dd className="text-ink">{Math.round(s.tss)}</dd>
-            </div>
+          <FFFHeader s={s} />
+          <dl className="mt-3 space-y-1 text-[12px]">
+            {metricRows(s, units).map(([label, value, unit]) => (
+              <div key={label} className="flex items-baseline justify-between">
+                <dt className="text-ink-muted">{label}</dt>
+                <dd className="tabular-nums text-ink">
+                  <span className="font-semibold">{value}</span>{" "}
+                  <span className="text-[10px] text-ink-muted">{unit}</span>
+                </dd>
+              </div>
+            ))}
           </dl>
         </>
       )}
@@ -192,24 +222,30 @@ export default function CalendarGrid({
     });
   }
 
+  const cols = "grid grid-cols-[repeat(7,1fr)_220px]";
+
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
       <div className="overflow-hidden rounded border border-line">
         {/* Header */}
-        <div className="grid grid-cols-[repeat(7,1fr)_180px] border-b border-line bg-surface text-[11px] font-semibold uppercase tracking-wide text-ink-muted">
+        <div
+          className={`${cols} border-b border-line bg-surface text-[11px] font-semibold uppercase tracking-wide text-ink-muted`}
+        >
           {WEEKDAYS.map((d) => (
             <div key={d} className="border-r border-line px-2 py-1.5">
               {d}
             </div>
           ))}
-          <div className="px-2 py-1.5">Summary</div>
+          <div className="flex items-center gap-1 px-2 py-1.5">
+            <span aria-hidden className="text-ink-muted/60">
+              ›
+            </span>
+            Summary
+          </div>
         </div>
         {/* Weeks */}
         {weeks.map((week) => (
-          <div
-            key={week[0]}
-            className="grid grid-cols-[repeat(7,1fr)_180px]"
-          >
+          <div key={week[0]} className={cols}>
             {week.map((date) => (
               <DayCell
                 key={date}

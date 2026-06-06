@@ -18,6 +18,8 @@ export interface CalItem {
   stressValue: number | null;
   stressLabel: string | null;
   plannedTss: number | null;
+  elevationM: number;
+  workKj: number;
 }
 
 export interface WeekSummary {
@@ -25,6 +27,8 @@ export interface WeekSummary {
   durationS: number;
   distanceM: number;
   tss: number;
+  elevationM: number;
+  workKj: number;
   ctl: number | null;
   atl: number | null;
   tsb: number | null;
@@ -43,7 +47,8 @@ function stress(
   if (modality === "lift" || modality === "core") {
     return { value: s3 == null ? null : Math.round(s3), label: "S³" };
   }
-  return { value: tss == null ? null : Math.round(tss), label: "TSS" };
+  const label = modality === "run" || modality === "swim" ? "rTSS" : "TSS";
+  return { value: tss == null ? null : Math.round(tss), label };
 }
 
 export function getCalendarData(
@@ -76,6 +81,8 @@ export function getCalendarData(
       stressValue: s.value,
       stressLabel: s.label,
       plannedTss: null,
+      elevationM: a.elevation_gain_m ?? 0,
+      workKj: a.kj ?? 0,
     });
   }
   for (const p of planned) {
@@ -91,6 +98,8 @@ export function getCalendarData(
       stressValue: p.planned_tss == null ? null : Math.round(p.planned_tss),
       stressLabel: "TSS",
       plannedTss: p.planned_tss,
+      elevationM: 0,
+      workKj: 0,
     });
   }
 
@@ -100,12 +109,16 @@ export function getCalendarData(
     let durationS = 0;
     let distanceM = 0;
     let tss = 0;
+    let elevationM = 0;
+    let workKj = 0;
     for (const d of week) {
       for (const it of itemsByDate[d] ?? []) {
         if (it.kind !== "activity") continue;
         durationS += it.durationS ?? 0;
         distanceM += it.distanceM ?? 0;
         tss += it.stressValue ?? 0;
+        elevationM += it.elevationM;
+        workKj += it.workKj;
       }
     }
     // Use the latest day in the week that has a fitness row (so the current,
@@ -123,6 +136,8 @@ export function getCalendarData(
       durationS,
       distanceM,
       tss,
+      elevationM,
+      workKj,
       ctl: endFit?.ctl ?? null,
       atl: endFit?.atl ?? null,
       tsb: endFit?.tsb ?? null,

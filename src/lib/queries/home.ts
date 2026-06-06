@@ -96,6 +96,8 @@ function itemsForDate(db: DB, date: string): CalItem[] {
           : Math.round(a.tss),
     stressLabel: a.modality === "lift" || a.modality === "core" ? "S³" : "TSS",
     plannedTss: null,
+    elevationM: a.elevation_gain_m ?? 0,
+    workKj: a.kj ?? 0,
   }));
   for (const p of planned) {
     if (p.completed_activity_id) continue;
@@ -110,6 +112,8 @@ function itemsForDate(db: DB, date: string): CalItem[] {
       stressValue: p.planned_tss == null ? null : Math.round(p.planned_tss),
       stressLabel: "TSS",
       plannedTss: p.planned_tss,
+      elevationM: 0,
+      workKj: 0,
     });
   }
   return out;
