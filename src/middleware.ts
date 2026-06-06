@@ -1,8 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, authEnabled, getSecret } from "@/lib/auth/config";
+import {
+  SESSION_COOKIE,
+  authEnabled,
+  getSecret,
+  getSyncToken,
+} from "@/lib/auth/config";
 import { verifySessionToken } from "@/lib/auth/session";
 
 export async function middleware(req: NextRequest) {
+  // The sync daemon authenticates to /api/sync with a bearer token.
+  if (req.nextUrl.pathname === "/api/sync") {
+    const token = getSyncToken();
+    if (token && req.headers.get("authorization") === `Bearer ${token}`) {
+      return NextResponse.next();
+    }
+  }
+
   if (!authEnabled()) return NextResponse.next();
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;

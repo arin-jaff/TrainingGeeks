@@ -16,6 +16,12 @@ export function authEnabled(): boolean {
   return getPassword() !== null;
 }
 
+/** Optional bearer token allowing the sync daemon to call /api/sync. */
+export function getSyncToken(): string | null {
+  const t = process.env.TG_SYNC_TOKEN;
+  return t && t.length > 0 ? t : null;
+}
+
 export function getSecret(): string {
   return (
     process.env.TG_SESSION_SECRET ||

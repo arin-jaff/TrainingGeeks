@@ -289,6 +289,49 @@ export function listPlannedBetween(
   );
 }
 
+export interface NewPlanned {
+  modality: string;
+  date: string;
+  name?: string | null;
+  description?: string | null;
+  planned_duration_s?: number | null;
+  planned_distance_m?: number | null;
+  planned_tss?: number | null;
+  source: string;
+}
+
+export function insertPlanned(db: DB, p: NewPlanned): number {
+  const info = db
+    .prepare(
+      `INSERT INTO planned_workout
+         (modality, date, name, description, planned_duration_s, planned_distance_m, planned_tss, source)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .run(
+      p.modality,
+      p.date,
+      p.name ?? null,
+      p.description ?? null,
+      p.planned_duration_s ?? null,
+      p.planned_distance_m ?? null,
+      p.planned_tss ?? null,
+      p.source,
+    );
+  return Number(info.lastInsertRowid);
+}
+
+export function deletePlannedBySource(
+  db: DB,
+  source: string,
+  startDate: string,
+  endDate: string,
+): void {
+  db.prepare(
+    `DELETE FROM planned_workout
+     WHERE source = ? AND date >= ? AND date <= ? AND completed_activity_id IS NULL`,
+  ).run(source, startDate, endDate);
+}
+
 export function setPlannedDate(db: DB, id: number, date: string): void {
   db.prepare(
     `UPDATE planned_workout SET date = ?, updated_at = datetime('now') WHERE id = ?`,

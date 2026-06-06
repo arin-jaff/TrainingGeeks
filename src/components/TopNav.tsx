@@ -60,6 +60,9 @@ export default function TopNav({ showSignOut = false }: { showSignOut?: boolean 
           >
             AJ
           </span>
+          <Link href="/settings" className="text-white/60 hover:text-white">
+            Settings
+          </Link>
           {showSignOut && (
             <form action={logoutAction}>
               <button
