@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db/client";
-import { getAthlete } from "@/lib/db/repo";
+import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
+import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
 import type { CalItem } from "@/lib/queries/calendar";
 import type { Units } from "@/lib/db/types";
 import { todayLocal } from "@/lib/util/dates";
@@ -145,6 +146,7 @@ export default async function HomePage() {
   const tz = athlete?.timezone ?? "America/New_York";
   const today = todayLocal(tz);
   const data = getHomeData(db, today);
+  const wellness = latestMetrics(db);
 
   return (
     <div>
@@ -174,6 +176,36 @@ export default async function HomePage() {
         <div className="space-y-4">
           <PerformanceMetrics curves={data.curves} />
           <PeakPerformances bests={data.peakBests} units={units} />
+          <section className="rounded border border-line bg-surface-card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-ink">Body Metrics</h2>
+              <Link href="/metrics" className="text-xs font-medium text-accent">
+                Log / View All
+              </Link>
+            </div>
+            {wellness.length === 0 ? (
+              <p className="text-sm text-ink-muted">
+                Track weight, resting HR, HRV and sleep over time.
+              </p>
+            ) : (
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+                {wellness
+                  .filter((m) => WELLNESS_BY_ID[m.type])
+                  .slice(0, 6)
+                  .map((m) => {
+                    const t = WELLNESS_BY_ID[m.type];
+                    return (
+                      <li key={m.type} className="flex justify-between">
+                        <span className="text-ink-muted">{t.label}</span>
+                        <span className="tabular-nums text-ink">
+                          {m.value.toFixed(t.decimals)} {t.unit}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+          </section>
         </div>
       </div>
     </div>

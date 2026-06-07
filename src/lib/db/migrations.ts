@@ -214,4 +214,21 @@ CREATE TABLE app_setting (
 );
 `,
   },
+  {
+    id: 3,
+    name: "metric",
+    sql: /* sql */ `
+-- Wellness / body metrics tracked over time: one value per type per date.
+CREATE TABLE metric (
+  id INTEGER PRIMARY KEY,
+  type TEXT NOT NULL,        -- weight | resting_hr | hrv | sleep_hours | mood | ...
+  date TEXT NOT NULL,        -- YYYY-MM-DD
+  value REAL NOT NULL,
+  notes TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (type, date)
+);
+CREATE INDEX idx_metric_type_date ON metric (type, date);
+`,
+  },
 ];

@@ -449,6 +449,62 @@ export function upsertConnector(
   );
 }
 
+// ---- Wellness metrics --------------------------------------------------
+
+export interface MetricRow {
+  id: number;
+  type: string;
+  date: string;
+  value: number;
+  notes: string | null;
+}
+
+export function upsertMetric(
+  db: DB,
+  type: string,
+  date: string,
+  value: number,
+  notes?: string | null,
+): void {
+  db.prepare(
+    `INSERT INTO metric (type, date, value, notes) VALUES (?, ?, ?, ?)
+     ON CONFLICT (type, date) DO UPDATE SET value = excluded.value, notes = excluded.notes`,
+  ).run(type, date, value, notes ?? null);
+}
+
+export function listMetricsByType(
+  db: DB,
+  type: string,
+  startDate: string,
+  endDate: string,
+): MetricRow[] {
+  return all<MetricRow>(
+    db,
+    "SELECT * FROM metric WHERE type = ? AND date >= ? AND date <= ? ORDER BY date",
+    type,
+    startDate,
+    endDate,
+  );
+}
+
+/** Most recent entry per metric type. */
+export function latestMetrics(db: DB): MetricRow[] {
+  return all<MetricRow>(
+    db,
+    `SELECT m.* FROM metric m
+     JOIN (SELECT type, MAX(date) d FROM metric GROUP BY type) x
+       ON x.type = m.type AND x.d = m.date`,
+  );
+}
+
+export function listRecentMetrics(db: DB, limit = 20): MetricRow[] {
+  return all<MetricRow>(
+    db,
+    "SELECT * FROM metric ORDER BY date DESC, id DESC LIMIT ?",
+    limit,
+  );
+}
+
 // ---- App settings (key/value preferences) ------------------------------
 
 export function getAllSettings(db: DB): Record<string, string> {
