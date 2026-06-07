@@ -29,6 +29,10 @@ export interface ActivityDetail {
   hasGps: boolean;
   powerPeaks: DurationPeakView[];
   pacePeaks: DistancePeakView[];
+  minHr: number | null;
+  maxHr: number | null;
+  minSpeed: number | null; // slowest moving speed (m/s)
+  maxSpeed: number | null; // fastest speed (m/s)
 }
 
 export function getActivityDetail(
@@ -60,5 +64,33 @@ export function getActivityDetail(
     .filter((p) => p.kind === "pace" && p.basis === "distance")
     .map((p) => ({ window: p.window, speed: p.value }));
 
-  return { activity, stream, hasGps, powerPeaks, pacePeaks };
+  // Min/Max from the stream (ignore nulls and non-moving zeros).
+  let minHr: number | null = null,
+    maxHr: number | null = null,
+    minSpeed: number | null = null,
+    maxSpeed: number | null = null;
+  if (stream) {
+    for (const v of stream.hr) {
+      if (v == null || v <= 0) continue;
+      minHr = minHr == null ? v : Math.min(minHr, v);
+      maxHr = maxHr == null ? v : Math.max(maxHr, v);
+    }
+    for (const v of stream.speed) {
+      if (v == null || v <= 0.3) continue; // ignore standing
+      minSpeed = minSpeed == null ? v : Math.min(minSpeed, v);
+      maxSpeed = maxSpeed == null ? v : Math.max(maxSpeed, v);
+    }
+  }
+
+  return {
+    activity,
+    stream,
+    hasGps,
+    powerPeaks,
+    pacePeaks,
+    minHr,
+    maxHr,
+    minSpeed,
+    maxSpeed,
+  };
 }

@@ -12,9 +12,10 @@ import {
 } from "@/lib/util/format";
 import type { StreamSeries } from "./StreamChart";
 
-// maplibre-gl / uPlot are browser-only; never evaluate them during SSR.
 const StreamChart = dynamic(() => import("./StreamChart"), { ssr: false });
 const RouteMap = dynamic(() => import("./RouteMap"), { ssr: false });
+
+const MEDAL = ["#d4af37", "#9aa3af", "#b45309"];
 
 function distanceLabel(m: number): string {
   if (Math.abs(m - 1609.34) < 1) return "1 mi";
@@ -24,14 +25,63 @@ function distanceLabel(m: number): string {
   return `${m} m`;
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function MetricTable({
+  rows,
+}: {
+  rows: { label: string; completed: string; unit: string }[];
+}) {
   return (
-    <div className="rounded border border-line bg-surface-card px-3 py-2">
-      <div className="text-sm font-semibold tabular-nums text-ink">{value}</div>
-      <div className="text-[11px] uppercase tracking-wide text-ink-muted">
-        {label}
-      </div>
-    </div>
+    <table className="w-full text-[13px]">
+      <thead>
+        <tr className="text-ink-muted">
+          <th className="w-1/2" />
+          <th className="px-2 py-1 text-right font-medium">Planned</th>
+          <th className="px-2 py-1 text-right font-medium">Completed</th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.label} className="border-t border-line">
+            <td className="py-1 text-ink">{r.label}</td>
+            <td className="bg-surface px-2 py-1 text-right text-ink-muted">—</td>
+            <td className="px-2 py-1 text-right font-medium tabular-nums text-ink">
+              {r.completed}
+            </td>
+            <td className="pl-1 text-[11px] text-ink-muted">{r.unit}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function MinAvgMax({
+  rows,
+}: {
+  rows: { label: string; min: string; avg: string; max: string }[];
+}) {
+  return (
+    <table className="mt-3 w-full text-[13px]">
+      <thead>
+        <tr className="text-ink-muted">
+          <th className="w-1/3" />
+          <th className="px-2 py-1 text-right font-medium">Min</th>
+          <th className="px-2 py-1 text-right font-medium">Avg</th>
+          <th className="px-2 py-1 text-right font-medium">Max</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.label} className="border-t border-line">
+            <td className="py-1 text-ink">{r.label}</td>
+            <td className="px-2 py-1 text-right tabular-nums text-ink">{r.min}</td>
+            <td className="px-2 py-1 text-right tabular-nums text-ink">{r.avg}</td>
+            <td className="px-2 py-1 text-right tabular-nums text-ink">{r.max}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -42,51 +92,64 @@ export default function AnalyzeView({
   detail: ActivityDetail;
   units: Units;
 }) {
-  const [tab, setTab] = useState<"analyze" | "summary">("analyze");
+  const [tab, setTab] = useState<"summary" | "analyze">("summary");
   const a = detail.activity;
   const modality = a.modality as Modality;
   const s = detail.stream;
+  const isStrength = modality === "lift" || modality === "core";
 
   const series: StreamSeries[] = [];
   if (s) {
     if (s.alt.some((v) => v !== null))
-      series.push({
-        label: "Elevation (m)",
-        data: s.alt,
-        color: "#9ca3af",
-        scale: "alt",
-        fill: "rgba(156,163,175,0.18)",
-      });
+      series.push({ label: "Elevation (m)", data: s.alt, color: "#9ca3af", scale: "alt", fill: "rgba(156,163,175,0.18)" });
     if (s.hr.some((v) => v !== null))
-      series.push({ label: "HR (bpm)", data: s.hr, color: "#e15554", scale: "hr" });
+      series.push({ label: "HR (bpm)", data: s.hr, color: "#e63788", scale: "hr" });
     if (s.power.some((v) => v !== null))
-      series.push({
-        label: "Power (W)",
-        data: s.power,
-        color: "#8b5cf6",
-        scale: "pwr",
-      });
+      series.push({ label: "Power (W)", data: s.power, color: "#7b2d8e", scale: "pwr" });
     if (s.speed.some((v) => v !== null))
-      series.push({
-        label: "Speed (m/s)",
-        data: s.speed,
-        color: "#2f9e6b",
-        scale: "spd",
-      });
+      series.push({ label: "Speed (m/s)", data: s.speed, color: "#45ae01", scale: "spd" });
   }
+
+  const num = (v: number | null, suffix = "") =>
+    v == null ? "—" : `${Math.round(v)}${suffix}`;
+  const metricRows = [
+    { label: "Duration", completed: formatDuration(a.duration_s), unit: "h:m:s" },
+    { label: "Distance", completed: formatDistance(a.distance_m, units).split(" ")[0], unit: units === "imperial" ? "mi" : "km" },
+    { label: "Average Pace", completed: formatPace(a.avg_speed_mps, units, modality).split(" ")[0], unit: modality === "swim" ? "/100m" : units === "imperial" ? "min/mi" : "min/km" },
+    { label: "Calories", completed: num(a.calories), unit: "kcal" },
+    { label: "Elevation Gain", completed: a.elevation_gain_m == null ? "—" : String(Math.round(a.elevation_gain_m * (units === "imperial" ? 3.28084 : 1))), unit: units === "imperial" ? "ft" : "m" },
+    { label: isStrength ? "S³" : "TSS", completed: num(isStrength ? a.s3 : a.tss), unit: isStrength ? "S³" : "rTSS" },
+    { label: "IF", completed: round(a.intensity_factor, 2), unit: "IF" },
+    { label: "Work", completed: num(a.kj), unit: "kJ" },
+  ];
+
+  const mamRows = [
+    {
+      label: "Pace",
+      min: formatPace(detail.minSpeed, units, modality).split(" ")[0],
+      avg: formatPace(a.avg_speed_mps, units, modality).split(" ")[0],
+      max: formatPace(detail.maxSpeed, units, modality).split(" ")[0],
+    },
+    {
+      label: "Heart Rate",
+      min: num(detail.minHr),
+      avg: num(a.avg_hr),
+      max: num(a.max_hr),
+    },
+  ];
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-4 border-b border-line">
-        {(["analyze", "summary"] as const).map((t) => (
+      <div className="mb-4 flex gap-2">
+        {(["summary", "analyze"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={[
-              "pb-2 text-sm capitalize",
+              "rounded px-3 py-1 text-sm font-medium capitalize",
               tab === t
-                ? "border-b-2 border-accent font-semibold text-accent"
-                : "text-ink-muted",
+                ? "bg-accent text-white"
+                : "border border-accent/50 text-accent hover:bg-accent/5",
             ].join(" ")}
           >
             {t}
@@ -94,78 +157,56 @@ export default function AnalyzeView({
         ))}
       </div>
 
-      {tab === "analyze" ? (
+      {tab === "summary" ? (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div>
+            {detail.pacePeaks.length > 0 && (
+              <section className="mb-5">
+                <h3 className="mb-2 text-center text-sm font-semibold text-ink">
+                  Peak Performances
+                </h3>
+                <ul className="space-y-1.5">
+                  {detail.pacePeaks.slice(0, 5).map((p, i) => (
+                    <li key={p.window} className="flex items-center gap-3 text-sm">
+                      <span style={{ color: MEDAL[i % 3] }} aria-hidden>●</span>
+                      <span className="w-16 font-semibold tabular-nums text-ink">
+                        {formatDuration(p.window / p.speed)}
+                      </span>
+                      <span className="text-ink-muted">{distanceLabel(p.window)}</span>
+                      <span className="ml-auto text-xs text-ink-muted">
+                        {formatPace(p.speed, units, modality)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            <MetricTable rows={metricRows} />
+            <MinAvgMax rows={mamRows} />
+          </div>
+          <div className="text-sm text-ink-muted">
+            <h3 className="mb-1 font-semibold text-ink">Description</h3>
+            <p className="mb-4">{a.notes || "No description."}</p>
+            {isStrength && (
+              <>
+                <h3 className="mb-1 font-semibold text-ink">
+                  Rating of Perceived Exertion (RPE)
+                </h3>
+                <p>{a.rpe ?? "—"} / 10</p>
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
         <div className="space-y-4">
-          {detail.hasGps && s && (
-            <RouteMap lat={s.lat} lng={s.lng} />
-          )}
+          {detail.hasGps && s && <RouteMap lat={s.lat} lng={s.lng} />}
           {series.length > 0 && s && (
             <div className="rounded border border-line bg-surface-card p-3">
               <StreamChart time={s.time} series={series} />
             </div>
           )}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {detail.powerPeaks.length > 0 && (
-              <PeakPanel
-                title="Peak Power by Duration"
-                rows={detail.powerPeaks.map((p) => ({
-                  label: formatDuration(p.window),
-                  value: `${Math.round(p.value)} W`,
-                }))}
-              />
-            )}
-            {detail.pacePeaks.length > 0 && (
-              <PeakPanel
-                title="Peak Pace by Distance"
-                rows={detail.pacePeaks.map((p) => ({
-                  label: distanceLabel(p.window),
-                  value: `${formatDuration(p.window / p.speed)} · ${formatPace(p.speed, units, modality)}`,
-                }))}
-              />
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-          <Metric label="Duration" value={formatDuration(a.duration_s)} />
-          <Metric label="Distance" value={formatDistance(a.distance_m, units)} />
-          <Metric label="Avg Pace" value={formatPace(a.avg_speed_mps, units, modality)} />
-          <Metric label="Elev Gain" value={a.elevation_gain_m != null ? `${Math.round(a.elevation_gain_m)} m` : "—"} />
-          <Metric label="Avg HR" value={a.avg_hr != null ? `${Math.round(a.avg_hr)}` : "—"} />
-          <Metric label="Max HR" value={a.max_hr != null ? `${Math.round(a.max_hr)}` : "—"} />
-          <Metric label="Avg Power" value={a.avg_power != null ? `${Math.round(a.avg_power)} W` : "—"} />
-          <Metric label="NP" value={a.np != null ? `${Math.round(a.np)} W` : "—"} />
-          <Metric label="IF" value={round(a.intensity_factor, 2)} />
-          <Metric label="VI" value={round(a.variability_index, 2)} />
-          <Metric label="EF" value={round(a.efficiency_factor, 3)} />
-          <Metric label="Decoupling" value={a.decoupling != null ? `${round(a.decoupling, 1)}%` : "—"} />
-          <Metric label="Calories" value={a.calories != null ? `${Math.round(a.calories)}` : "—"} />
-          <Metric label="Work" value={a.kj != null ? `${Math.round(a.kj)} kJ` : "—"} />
-          <Metric label="Avg Cadence" value={a.avg_cadence != null ? `${Math.round(a.avg_cadence)}` : "—"} />
         </div>
       )}
     </div>
-  );
-}
-
-function PeakPanel({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: { label: string; value: string }[];
-}) {
-  return (
-    <section className="rounded border border-line bg-surface-card p-3">
-      <h3 className="mb-2 text-sm font-semibold text-ink">{title}</h3>
-      <ul className="divide-y divide-line text-sm">
-        {rows.map((r, i) => (
-          <li key={i} className="flex justify-between py-1">
-            <span className="text-ink-muted">{r.label}</span>
-            <span className="tabular-nums text-ink">{r.value}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }

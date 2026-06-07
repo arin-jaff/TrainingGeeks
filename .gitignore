@@ -30,6 +30,11 @@ docs/
 # Generated raw assets staging (manifest is tracked; raw imports are local)
 assets/raw/
 
+# Playwright MCP captures / reference screenshots (kept local)
+.playwright-mcp/
+/tp-*.png
+/our-*.png
+
 # OS / editor
 .DS_Store
 Thumbs.db

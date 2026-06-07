@@ -22,11 +22,14 @@ function longDate(date: string): string {
 
 function Pill({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className={`rounded px-2 py-1 text-center text-white ${color}`}>
+    <div
+      className="flex items-center gap-1 rounded px-2.5 py-1 text-white"
+      style={{ backgroundColor: color }}
+    >
+      <span className="text-[11px] font-medium">{label}</span>
       <span className="text-sm font-semibold tabular-nums">
         {Math.round(value)}
       </span>
-      <span className="ml-1 text-[10px] uppercase opacity-90">{label}</span>
     </div>
   );
 }
@@ -79,9 +82,9 @@ export default async function ActivityPage({
           </div>
           {fit && (
             <div className="ml-auto flex gap-2">
-              <Pill label="Fatigue" value={fit.atl} color="bg-fatigue" />
-              <Pill label="Fitness" value={fit.ctl} color="bg-fitness" />
-              <Pill label="Form" value={fit.tsb} color="bg-form" />
+              <Pill label="Fitness" value={fit.ctl} color="#1840ec" />
+              <Pill label="Fatigue" value={fit.atl} color="#e63788" />
+              <Pill label="Form" value={fit.tsb} color="#fd6b00" />
             </div>
           )}
         </div>
