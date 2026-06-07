@@ -3,6 +3,7 @@ import { getAthlete } from "@/lib/db/repo";
 import { getDashboardData } from "@/lib/queries/dashboard";
 import { todayLocal } from "@/lib/util/dates";
 import DashboardClient from "@/components/dashboard/DashboardClient";
+import ChartsLibrary from "@/components/dashboard/ChartsLibrary";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,9 @@ export default function DashboardPage() {
         >
           Workout Comparison
         </span>
+      </div>
+      <div className="mb-3">
+        <ChartsLibrary />
       </div>
       <DashboardClient data={data} />
     </div>
