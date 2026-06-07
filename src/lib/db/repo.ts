@@ -367,6 +367,35 @@ export function setPlannedDate(db: DB, id: number, date: string): void {
   ).run(date, id);
 }
 
+export interface AppliedPlanRow {
+  source: string;
+  count: number;
+  start_date: string;
+  end_date: string;
+}
+
+/** Summarize planned workouts grouped by source (e.g. applied training plans). */
+export function listAppliedPlans(db: DB): AppliedPlanRow[] {
+  return all<AppliedPlanRow>(
+    db,
+    `SELECT source,
+            COUNT(*)        AS count,
+            MIN(date)       AS start_date,
+            MAX(date)       AS end_date
+       FROM planned_workout
+      WHERE source LIKE 'plan:%'
+      GROUP BY source`,
+  );
+}
+
+/** Remove every planned workout for a source (uncompleted ones only). */
+export function deleteAllPlannedBySource(db: DB, source: string): void {
+  db.prepare(
+    `DELETE FROM planned_workout
+     WHERE source = ? AND completed_activity_id IS NULL`,
+  ).run(source);
+}
+
 export function setActivityDate(db: DB, id: number, localDate: string): void {
   db.prepare(
     `UPDATE activity SET local_date = ?, updated_at = datetime('now') WHERE id = ?`,

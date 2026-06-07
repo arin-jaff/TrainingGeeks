@@ -70,7 +70,7 @@ export default async function CalendarPage({
         <RailItem label="Workout Library">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5h11v15H4zM15 5h5v15h-5" /><path d="M7 9h5M7 13h5" /></svg>
         </RailItem>
-        <RailItem label="Training Plans">
+        <RailItem label="Training Plans" href="/atp">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
         </RailItem>
         <RailItem label="Routes Library">
