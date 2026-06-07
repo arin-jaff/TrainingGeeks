@@ -9,6 +9,11 @@ import { addEquipment, addMileage, removeEquipment, toggleEquipment } from "@/ap
 
 const input = "rounded border border-line px-3 py-2 text-sm outline-none focus:border-accent";
 
+const TYPE_IMG: Record<string, string> = {
+  bike: "/sport-bike.png",
+  shoes: "/sport-run.png",
+};
+
 function MileageAdd({ id, units }: { id: number; units: Units }) {
   const router = useRouter();
   const [v, setV] = useState("");
@@ -84,7 +89,14 @@ export default function EquipmentManager({
         <ul className="divide-y divide-line">
           {equipment.map((e) => (
             <li key={e.id} className={`flex items-center gap-3 py-2 text-sm ${e.active ? "" : "opacity-50"}`}>
-              <span className="w-16 text-xs uppercase tracking-wide text-ink-muted">{e.type}</span>
+              <span className="flex h-9 w-12 shrink-0 items-center justify-center rounded border border-line bg-surface">
+                {TYPE_IMG[e.type] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={TYPE_IMG[e.type]} alt="" className="h-8 w-10 object-contain" />
+                ) : (
+                  <span className="text-[10px] uppercase tracking-wide text-ink-muted">{e.type}</span>
+                )}
+              </span>
               <div className="min-w-0">
                 <div className="font-medium text-ink">{e.name}</div>
                 {e.brand && <div className="text-xs text-ink-muted">{e.brand}</div>}

@@ -18,7 +18,7 @@ function distanceLabel(m: number): string {
   return `${m} m`;
 }
 
-const MEDAL = ["#d4af37", "#9aa3af", "#b45309"]; // gold, silver, bronze
+const MEDAL_SRC = ["/medal-gold.png", "/medal-silver.png", "/medal-bronze.png"];
 function shortDate(d: string): string {
   const [y, m, day] = d.split("-");
   return `${Number(m)}/${Number(day)}/${y.slice(2)}`;
@@ -197,12 +197,15 @@ export default function PeaksExplorer({
               i === 0 ? "bg-accent/5" : ""
             }`}
           >
-            <span className="flex w-5 items-center justify-center">
+            <span className="flex w-6 items-center justify-center">
               {i < 3 ? (
-                <span
-                  className="inline-block h-3 w-3 rounded-full"
-                  style={{ backgroundColor: MEDAL[i] }}
-                  aria-hidden
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={MEDAL_SRC[i]}
+                  alt={`#${i + 1}`}
+                  width={22}
+                  height={22}
+                  className="h-5 w-5 object-contain"
                 />
               ) : (
                 <span className="text-ink-muted">{i + 1}</span>

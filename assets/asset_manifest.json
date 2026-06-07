@@ -8,17 +8,87 @@
       "license": "self-authored (original SVG, owned by arin-jaff)",
       "prompt": "Hand-authored SVG mark: rounded navy (#0f1b33) square with an ascending blue (#2f6fed) line and a white endpoint dot, evoking a rising fitness (CTL) curve. No third-party assets used.",
       "added": "2026-06-06",
-      "notes": "Used in the top navigation wordmark."
+      "notes": "Superseded as the nav mark by public/logo.png. Kept as a vector fallback."
     },
     {
-      "file": "src/app/icon.svg",
-      "type": "favicon",
+      "file": "public/logo.png",
+      "type": "logo",
       "origin": "generated",
       "source_url": null,
-      "license": "self-authored (original SVG, owned by arin-jaff)",
-      "prompt": "Favicon variant of the TrainingGeeks mark (rising line in a rounded navy square). Served by Next.js as the app icon.",
-      "added": "2026-06-06",
-      "notes": "Next.js app icon (favicon)."
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "TrainingGeeks brushed wordmark mark, background removed (rembg u2net).",
+      "added": "2026-06-07",
+      "notes": "Top navigation wordmark icon (transparent)."
+    },
+    {
+      "file": "src/app/icon.png",
+      "type": "favicon",
+      "origin": "derived",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Favicon: logo.png composited centered on a navy (#0f1b33) rounded tile at 512x512 (PIL).",
+      "added": "2026-06-07",
+      "notes": "Next.js app icon. Replaced the earlier src/app/icon.svg."
+    },
+    {
+      "file": "src/app/apple-icon.png",
+      "type": "apple-touch-icon",
+      "origin": "derived",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Apple touch icon: logo.png on a navy rounded tile at 180x180 (PIL).",
+      "added": "2026-06-07",
+      "notes": "Next.js apple-icon."
+    },
+    {
+      "file": "assets/processed/app-icon-1024.png",
+      "type": "app-icon-master",
+      "origin": "derived",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "macOS app-icon master: logo.png on a navy rounded tile at 1024x1024 (PIL).",
+      "added": "2026-06-07",
+      "notes": "Source for the Tauri macOS .icns size set."
+    },
+    {
+      "file": "public/login-hero.jpg",
+      "type": "photo",
+      "origin": "user-supplied",
+      "source_url": null,
+      "license": "owned/licensed by arin-jaff",
+      "prompt": "Two single scullers racing on a lake. Original 6240x4160; resized to 1920x1280, q82 progressive JPEG (PIL).",
+      "added": "2026-06-07",
+      "notes": "Login page hero background. public/login-hero-sm.jpg is the 960-wide variant."
+    },
+    {
+      "file": "public/avatar.png",
+      "type": "photo",
+      "origin": "user-supplied",
+      "source_url": null,
+      "license": "owned/licensed by arin-jaff",
+      "prompt": "Profile portrait, background removed (rembg u2net).",
+      "added": "2026-06-07",
+      "notes": "Default profile avatar (top nav + settings profile)."
+    },
+    {
+      "file": "public/medal-gold.png",
+      "type": "illustration",
+      "origin": "generated",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Gold race medal with ribbon and '1', background removed (rembg u2net).",
+      "added": "2026-06-07",
+      "notes": "1st-place marker in Peak Performances podium. Also medal-silver.png (2), medal-bronze.png (3)."
+    },
+    {
+      "file": "public/sport-bike.png",
+      "type": "illustration",
+      "origin": "generated",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Road bike, background removed (rembg u2net).",
+      "added": "2026-06-07",
+      "notes": "Equipment thumbnail for bikes. sport-run.png (running shoe) used for shoes."
     }
   ]
 }

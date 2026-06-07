@@ -152,7 +152,21 @@ export default function SettingsModal({
             {section === "profile" && (
               <form action={updateProfile} className="max-w-2xl">
                 <h2 className="border-b border-line pb-1 text-lg text-ink">Profile</h2>
-                <p className="mb-4 mt-3 text-sm font-bold text-ink">
+                <div className="mt-4 flex items-center gap-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/avatar.png"
+                    alt=""
+                    className="h-16 w-16 rounded-full border border-line object-cover"
+                  />
+                  <div>
+                    <div className="text-sm font-medium text-ink">{athlete?.name ?? "Athlete"}</div>
+                    <button type="button" className="mt-1 text-xs font-medium text-accent">
+                      Change photo
+                    </button>
+                  </div>
+                </div>
+                <p className="mb-4 mt-4 text-sm font-bold text-ink">
                   Personal Information
                 </p>
                 <div className="space-y-3">
