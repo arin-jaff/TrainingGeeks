@@ -4,9 +4,10 @@ import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
 import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
 import type { CalItem } from "@/lib/queries/calendar";
-import type { Units } from "@/lib/db/types";
+import type { Modality, Units } from "@/lib/db/types";
 import { todayLocal } from "@/lib/util/dates";
-import { formatDistance, formatDuration, formatPace } from "@/lib/util/format";
+import { formatDistance, formatDuration, formatPace, MODALITY_LABEL } from "@/lib/util/format";
+import SportImage from "@/components/SportImage";
 import PerformanceMetrics from "@/components/home/PerformanceMetrics";
 import EventsPanel from "@/components/home/EventsPanel";
 import GoalsPanel from "@/components/home/GoalsPanel";
@@ -96,7 +97,7 @@ function DayColumn({
   );
 }
 
-const MEDAL = ["text-form", "text-ink-muted", "text-modality-core"]; // gold, silver, bronze-ish
+const MEDAL_SRC = ["/medal-gold.png", "/medal-silver.png", "/medal-bronze.png"];
 
 function PeakPerformances({
   bests,
@@ -121,9 +122,12 @@ function PeakPerformances({
         <ul className="space-y-1.5">
           {bests.map((b, i) => (
             <li key={b.window} className="flex items-center gap-3 text-sm">
-              <span className={`text-base ${MEDAL[i % 3]}`} aria-hidden>
-                ●
-              </span>
+              {i < 3 ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={MEDAL_SRC[i]} alt={`#${i + 1}`} className="h-5 w-5 object-contain" />
+              ) : (
+                <span className="w-5 text-center text-xs text-ink-muted">{i + 1}</span>
+              )}
               <span className="w-16 font-medium tabular-nums text-ink">
                 {formatDuration(b.window / b.speed)}
               </span>
@@ -151,12 +155,30 @@ export default async function HomePage() {
   return (
     <div>
       <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-nav text-sm font-semibold text-white">
-          AJ
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/avatar.png"
+          alt=""
+          className="h-9 w-9 rounded-full border border-line object-cover"
+        />
         <h1 className="text-lg font-semibold text-ink">
           {athlete?.name ?? "Athlete"}
         </h1>
+      </div>
+
+      {/* Your Sports */}
+      <div className="mb-4 rounded border border-line bg-surface-card p-4">
+        <h2 className="mb-3 text-sm font-semibold text-ink">Your Sports</h2>
+        <div className="flex flex-wrap gap-x-8 gap-y-4">
+          {(["run", "bike", "swim", "lift", "core"] as Modality[]).map((m) => (
+            <div key={m} className="flex w-16 flex-col items-center gap-1.5">
+              <SportImage modality={m} size={52} />
+              <span className="text-xs font-medium text-ink-muted">
+                {MODALITY_LABEL[m]}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

@@ -25,7 +25,7 @@ import {
   STATUS_PASTDUE,
   STATUS_PASTDUE_BG,
 } from "@/lib/util/colors";
-import SportIcon from "@/components/SportIcon";
+import SportImage from "@/components/SportImage";
 import { rescheduleItem } from "@/app/(app)/calendar/actions";
 import { getWorkoutForEdit, type WorkoutEditData } from "@/app/actions/workout";
 import AddMenuModal from "./AddMenuModal";
@@ -93,7 +93,7 @@ function WorkoutCard({
       {bannerColor && <div style={{ backgroundColor: bannerColor, height: 4 }} />}
       <div className="px-2 py-1.5">
         <div className="flex items-center gap-1.5">
-          <SportIcon modality={item.modality} size={15} />
+          <SportImage modality={item.modality} size={18} className="rounded-sm" />
           <span className="truncate text-[12px] font-semibold text-ink">
             {item.name || SPORT_NAME[item.modality]}
           </span>

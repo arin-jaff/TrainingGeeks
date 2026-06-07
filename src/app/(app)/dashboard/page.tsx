@@ -38,6 +38,9 @@ export default function DashboardPage() {
         <Link href="/metrics" className="pb-2 text-sm text-ink-muted hover:text-ink">
           Metrics
         </Link>
+        <Link href="/peaks" className="pb-2 text-sm text-ink-muted hover:text-ink">
+          Peak Performances
+        </Link>
         <Link
           href="/workout-comparison"
           className="pb-2 text-sm text-ink-muted hover:text-ink"

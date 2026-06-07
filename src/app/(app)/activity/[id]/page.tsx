@@ -6,6 +6,7 @@ import type { Modality, Units } from "@/lib/db/types";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
 import { MODALITY_COLOR } from "@/lib/util/colors";
 import AnalyzeView from "@/components/activity/AnalyzeView";
+import SportImage from "@/components/SportImage";
 
 export const dynamic = "force-dynamic";
 
@@ -59,15 +60,18 @@ export default async function ActivityPage({
           {longDate(a.local_date)}
         </div>
         <div className="flex flex-wrap items-center gap-5">
-          <div className="flex items-center gap-2">
-            <span
-              className="inline-block h-3.5 w-3.5 rounded-full"
-              style={{ backgroundColor: MODALITY_COLOR[modality] }}
-              aria-hidden
-            />
-            <h1 className="text-xl font-semibold text-ink">
-              {a.name ?? MODALITY_LABEL[modality]}
-            </h1>
+          <div className="flex items-center gap-3">
+            <SportImage modality={modality} size={44} />
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block h-3.5 w-3.5 rounded-full"
+                style={{ backgroundColor: MODALITY_COLOR[modality] }}
+                aria-hidden
+              />
+              <h1 className="text-xl font-semibold text-ink">
+                {a.name ?? MODALITY_LABEL[modality]}
+              </h1>
+            </div>
           </div>
           <div className="flex gap-4 text-sm text-ink">
             <span className="font-semibold">{formatDuration(a.duration_s)}</span>
