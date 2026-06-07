@@ -1,9 +1,14 @@
 import { redirect } from "next/navigation";
 import { loginAction } from "@/app/actions/auth";
 import { authEnabled } from "@/lib/auth/config";
+import SportImage from "@/components/SportImage";
+import { MODALITY_LABEL } from "@/lib/util/format";
+import type { Modality } from "@/lib/db/types";
 
 // Auth state comes from runtime env, not build time.
 export const dynamic = "force-dynamic";
+
+const SPORTS: Modality[] = ["run", "bike", "swim", "lift", "core"];
 
 export default async function LoginPage({
   searchParams,
@@ -28,10 +33,13 @@ export default async function LoginPage({
       <div className="relative z-10 flex w-full flex-col items-center justify-center px-4 lg:w-[440px] lg:flex-none">
         <div className="w-full max-w-sm">
           <div className="mb-6 text-center">
-            <span className="text-xl font-bold tracking-tight text-white">
-              TRAINING<span className="text-accent">GEEKS</span>
-            </span>
-            <p className="mt-1 text-xs text-white/50">Sign in to your training log</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-wordmark.png"
+              alt="TrainingGeeks"
+              className="mx-auto h-24 w-auto"
+            />
+            <p className="mt-1 text-xs text-white/50">Your self-hosted training log</p>
           </div>
           <div className="rounded border border-white/10 bg-surface-card p-6 shadow-lg">
             <form action={loginAction} className="space-y-3">
@@ -54,6 +62,38 @@ export default async function LoginPage({
                 Sign in
               </button>
             </form>
+          </div>
+
+          {/* Supported disciplines */}
+          <div className="mt-7">
+            <p className="text-center text-[11px] uppercase tracking-wide text-white/40">
+              Track every discipline
+            </p>
+            <div className="mt-2.5 flex justify-center gap-2">
+              {SPORTS.map((m) => (
+                <div
+                  key={m}
+                  title={MODALITY_LABEL[m]}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 shadow-sm"
+                >
+                  <SportImage modality={m} size={22} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* intervals.icu sync */}
+          <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-white/50">
+            <span>Syncs with</span>
+            <a
+              href="https://intervals.icu"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center rounded bg-white px-2 py-1 shadow-sm hover:opacity-90"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/intervals-wordmark.png" alt="intervals.icu" className="h-3.5 w-auto" />
+            </a>
           </div>
         </div>
       </div>

@@ -111,6 +111,26 @@
       "notes": "GitHub mark on status-screen links."
     },
     {
+      "file": "public/logo-wordmark.png",
+      "type": "logo",
+      "origin": "generated",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Brushed TrainingGeeks mark + 'Training Geeks' wordmark; navy background keyed to transparent via PIL.",
+      "added": "2026-06-07",
+      "notes": "Login screen wordmark."
+    },
+    {
+      "file": "public/sport-core.png",
+      "type": "illustration",
+      "origin": "generated",
+      "source_url": null,
+      "license": "self-authored (owned by arin-jaff)",
+      "prompt": "Stopwatch graphic; white background keyed to transparent via PIL.",
+      "added": "2026-06-07",
+      "notes": "Core modality icon (distinct from the Strength barbell)."
+    },
+    {
       "file": "public/intervals-wordmark.png",
       "type": "logo",
       "origin": "third-party",
