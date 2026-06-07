@@ -3,24 +3,34 @@
 import { useState } from "react";
 import type { CurveMetrics } from "@/lib/queries/home";
 import Sparkline from "@/components/Sparkline";
+import { FATIGUE_COLOR, FITNESS_COLOR, FORM_COLOR } from "@/lib/util/colors";
 
+// TP home: Fatigue & Form are outlined, only Fitness is filled blue.
 function Box({
   label,
   value,
-  bg,
+  color,
+  filled,
 }: {
   label: string;
   value: number;
-  bg: string;
+  color: string;
+  filled?: boolean;
 }) {
+  const style = filled
+    ? { backgroundColor: color, color: "#fff", borderColor: color }
+    : { color, borderColor: color, backgroundColor: "#fff" };
   return (
-    <div className={`flex-1 rounded ${bg} px-3 py-2 text-center text-white`}>
-      <div className="text-2xl font-semibold tabular-nums">
+    <div
+      className="flex flex-1 flex-col items-center rounded border-2 px-2 py-1.5"
+      style={style}
+    >
+      <span className={`tabular-nums ${filled ? "text-3xl" : "text-2xl"} font-semibold`}>
         {Math.round(value)}
-      </div>
-      <div className="text-[10px] font-medium uppercase tracking-wide opacity-90">
+      </span>
+      <span className="text-[10px] font-medium uppercase tracking-wide">
         {label}
-      </div>
+      </span>
     </div>
   );
 }
@@ -34,26 +44,19 @@ function RampTile({
   delta: number;
   spark: number[];
 }) {
-  const positive = delta >= 0;
   return (
     <div className="rounded border border-line p-2">
-      <div className="flex items-baseline justify-between">
-        <span
-          className={`text-sm font-semibold tabular-nums ${
-            positive ? "text-modality-run" : "text-fatigue"
-          }`}
-        >
-          {positive ? "+" : ""}
-          {delta}
-        </span>
+      <div className="text-lg font-medium tabular-nums" style={{ color: FITNESS_COLOR }}>
+        {delta >= 0 ? "+" : ""}
+        {delta}
       </div>
       <Sparkline
         data={spark.length ? spark : [0, 0]}
         width={120}
         height={28}
-        className={positive ? "text-modality-run" : "text-fatigue"}
+        className="text-[#7d8aa3]"
       />
-      <div className="text-[10px] text-ink-muted">{label}</div>
+      <div className="text-[11px] text-ink-muted">{label}</div>
     </div>
   );
 }
@@ -69,11 +72,8 @@ export default function PerformanceMetrics({
 
   return (
     <section className="rounded border border-line bg-surface-card p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-ink">Performance Metrics</h2>
-      </div>
+      <h2 className="mb-3 text-sm font-semibold text-ink">Performance Metrics</h2>
 
-      {/* Modality toggle */}
       <div className="mb-3 flex flex-wrap gap-1">
         {curves.map((cv) => (
           <button
@@ -81,9 +81,7 @@ export default function PerformanceMetrics({
             onClick={() => setKey(cv.key)}
             className={[
               "rounded px-2 py-0.5 text-xs font-medium",
-              cv.key === key
-                ? "bg-accent text-white"
-                : "text-ink-muted hover:bg-surface",
+              cv.key === key ? "bg-accent text-white" : "text-ink-muted hover:bg-surface",
             ].join(" ")}
           >
             {cv.label}
@@ -91,18 +89,16 @@ export default function PerformanceMetrics({
         ))}
       </div>
 
-      {/* Fatigue / Fitness / Form */}
-      <div className="mb-4 flex gap-2">
-        <Box label="Fatigue" value={c.atl} bg="bg-fatigue" />
-        <Box label="Fitness" value={c.ctl} bg="bg-fitness" />
-        <Box label="Form" value={c.tsb} bg="bg-form" />
+      <div className="mb-4 flex items-stretch gap-2">
+        <Box label="Fatigue" value={c.atl} color={FATIGUE_COLOR} />
+        <Box label="Fitness" value={c.ctl} color={FITNESS_COLOR} filled />
+        <Box label="Form" value={c.tsb} color={FORM_COLOR} />
       </div>
 
-      {/* Fitness ramp rates */}
       <h3 className="mb-2 text-xs font-semibold text-ink">Fitness Ramp Rates</h3>
       <div className="grid grid-cols-2 gap-2">
         <RampTile label="Last 7 days" delta={c.ramp7} spark={c.spark.slice(-7)} />
-        <RampTile label="Last 30 days" delta={c.ramp30} spark={c.spark.slice(-30)} />
+        <RampTile label="Last 28 days" delta={c.ramp30} spark={c.spark.slice(-28)} />
         <RampTile label="Last 90 days" delta={c.ramp90} spark={c.spark} />
         <RampTile label="Last 365 days" delta={c.ramp365} spark={c.spark} />
       </div>
