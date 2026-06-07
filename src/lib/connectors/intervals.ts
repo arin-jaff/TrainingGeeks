@@ -109,7 +109,7 @@ export interface SyncResult {
  */
 export async function syncIntervals(
   db: DB,
-  opts: { lookbackDays?: number; planAheadDays?: number } = {},
+  opts: { lookbackDays?: number; planAheadDays?: number; since?: string } = {},
 ): Promise<SyncResult> {
   const acct = getConnector(db, "intervals");
   const result: SyncResult = {
@@ -125,8 +125,11 @@ export async function syncIntervals(
   }
 
   const today = todayLocal("UTC");
+  // An explicit `since` (historical backfill) overrides the incremental cursor.
   const oldest =
-    acct.last_sync_cursor ?? addDays(today, -(opts.lookbackDays ?? 30));
+    opts.since ??
+    acct.last_sync_cursor ??
+    addDays(today, -(opts.lookbackDays ?? 30));
 
   // Completed activities.
   let activities: IntervalsActivity[] = [];

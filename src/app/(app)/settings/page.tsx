@@ -9,6 +9,7 @@ import { hrZones, paceZones, powerZones, type Zone } from "@/lib/zones";
 import { formatPace } from "@/lib/util/format";
 import type { Units } from "@/lib/db/types";
 import SyncButton from "@/components/settings/SyncButton";
+import HistorySync from "@/components/settings/HistorySync";
 
 export const dynamic = "force-dynamic";
 
@@ -223,6 +224,9 @@ export default function SettingsPage() {
             {d.connector?.last_sync_cursor && <> · last sync through {d.connector.last_sync_cursor}</>}
           </div>
           <SyncButton />
+        </div>
+        <div className="mt-4 border-t border-line pt-4">
+          <HistorySync />
         </div>
       </section>
     </div>
