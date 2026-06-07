@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
 import {
   getAthlete,
+  replaceZones,
   setThreshold,
   updateAthlete,
   upsertConnector,
@@ -79,6 +80,61 @@ export async function saveThresholds(formData: FormData): Promise<void> {
   if (rest) setThreshold(db, "run", "resting_hr", rest, today);
 
   // Re-derive metrics for existing activities so the change takes effect.
+  reprocessAll(db);
+  revalidatePath("/settings");
+  revalidatePath("/");
+  revalidatePath("/dashboard");
+}
+
+interface ZoneBlock {
+  metric: "power" | "hr" | "pace";
+  curve: string;
+  thresholds: Record<string, number | string | "">;
+  zones: { name: string; low: number | string | ""; high: number | string | "" }[];
+}
+
+/** Persist zones + benchmarks edited in the Zones settings, then reprocess. */
+export async function saveZones(payload: string): Promise<void> {
+  const db = getDb();
+  const today = todayLocal(getAthlete(db)?.timezone ?? "America/New_York");
+  const setT = (
+    curve: Parameters<typeof setThreshold>[1],
+    metric: Parameters<typeof setThreshold>[2],
+    v: unknown,
+  ) => {
+    const n = Number(v);
+    if (Number.isFinite(n) && n > 0) setThreshold(db, curve, metric, n, today);
+  };
+
+  let blocks: ZoneBlock[] = [];
+  try {
+    blocks = JSON.parse(payload) as ZoneBlock[];
+  } catch {
+    return;
+  }
+
+  for (const b of blocks) {
+    const th = b.thresholds ?? {};
+    if (b.metric === "power") setT("bike", "ftp", th.ftp);
+    if (b.metric === "hr") {
+      for (const c of ["run", "bike", "swim"] as const)
+        setT(c, "threshold_hr", th.thr);
+      setT("run", "max_hr", th.max);
+      setT("run", "resting_hr", th.rest);
+    }
+    replaceZones(
+      db,
+      b.curve,
+      b.metric,
+      (b.zones ?? []).map((z) => ({
+        name: String(z.name),
+        low: Number(z.low) || 0,
+        high: Number(z.high) || 0,
+      })),
+      today,
+    );
+  }
+
   reprocessAll(db);
   revalidatePath("/settings");
   revalidatePath("/");

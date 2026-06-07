@@ -82,6 +82,35 @@ export function listThresholds(db: DB): ThresholdRow[] {
 
 // ---- Zones -------------------------------------------------------------
 
+export function listZonesFor(
+  db: DB,
+  curve: string,
+  metric: string,
+): ZoneRow[] {
+  return all<ZoneRow>(
+    db,
+    "SELECT * FROM zone WHERE curve = ? AND metric = ? ORDER BY zone_index",
+    curve,
+    metric,
+  );
+}
+
+export function replaceZones(
+  db: DB,
+  curve: string,
+  metric: string,
+  zones: { name: string; low: number; high: number }[],
+  validFrom: string,
+): void {
+  db.prepare("DELETE FROM zone WHERE curve = ? AND metric = ?").run(curve, metric);
+  const ins = db.prepare(
+    "INSERT INTO zone (curve, metric, zone_index, name, low, high, valid_from) VALUES (?, ?, ?, ?, ?, ?, ?)",
+  );
+  zones.forEach((z, i) =>
+    ins.run(curve, metric, i, z.name, z.low, z.high, validFrom),
+  );
+}
+
 export function listZones(db: DB, curve?: FitnessCurve): ZoneRow[] {
   if (curve) {
     return all<ZoneRow>(

@@ -21,6 +21,9 @@ export default async function SettingsPage({
         maxHr: d.maxHr,
         restingHr: d.restingHr,
         connector: d.connector,
+        hrZones: d.hrZones,
+        powerZones: d.powerZones,
+        paceZones: d.paceZones,
       }}
     />
   );

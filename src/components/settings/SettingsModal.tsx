@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { AthleteRow, ConnectorAccountRow } from "@/lib/db/types";
-import { updateProfile, saveConnector } from "@/app/actions/settings";
+import { updateProfile, saveConnector, saveZones } from "@/app/actions/settings";
+import type { ZoneRow } from "@/lib/zones/methods";
+import type { ZoneSnapshot } from "./ZoneEditor";
 import {
   HR_METHODS,
   HR_TYPES,
@@ -25,6 +27,9 @@ interface SettingsData {
   maxHr: number | null;
   restingHr: number | null;
   connector: ConnectorAccountRow | undefined;
+  hrZones: ZoneRow[];
+  powerZones: ZoneRow[];
+  paceZones: ZoneRow[];
 }
 
 type Section = string;
@@ -99,6 +104,17 @@ export default function SettingsModal({
 }) {
   const router = useRouter();
   const [section, setSection] = useState<Section>(initialSection);
+  const [, startTransition] = useTransition();
+  const snaps = useRef<Record<string, ZoneSnapshot>>({});
+  const onSnapshot = (s: ZoneSnapshot) => {
+    snaps.current[s.metric] = s;
+  };
+  const persistZones = (then?: () => void) =>
+    startTransition(async () => {
+      await saveZones(JSON.stringify(Object.values(snaps.current)));
+      router.refresh();
+      then?.();
+    });
 
   const NavItem = ({ id, label: l, indent }: { id: Section; label: string; indent?: boolean }) => (
     <button
@@ -198,15 +214,19 @@ export default function SettingsModal({
               <div className="max-w-3xl">
                 <ZoneEditor
                   metric="pace"
+                  curve="run"
+                  onSnapshot={onSnapshot}
                   title="Speed / Pace"
                   defaultLabel="Default Speed/Pace"
                   thresholds={[{ key: "pace", label: "Threshold", value: "", unit: "min/mi" }]}
                   types={PACE_TYPES}
                   methodsByType={PACE_METHODS}
-                  initialZones={DEFAULT_PACE_ZONES}
+                  initialZones={settings.paceZones.length ? settings.paceZones : DEFAULT_PACE_ZONES}
                 />
                 <ZoneEditor
                   metric="hr"
+                  curve="run"
+                  onSnapshot={onSnapshot}
                   title="Heart Rate"
                   defaultLabel="Default Heart Rate"
                   thresholds={[
@@ -216,17 +236,19 @@ export default function SettingsModal({
                   ]}
                   types={HR_TYPES}
                   methodsByType={HR_METHODS}
-                  initialZones={DEFAULT_HR_ZONES}
+                  initialZones={settings.hrZones.length ? settings.hrZones : DEFAULT_HR_ZONES}
                   showAddActivity
                 />
                 <ZoneEditor
                   metric="power"
+                  curve="bike"
+                  onSnapshot={onSnapshot}
                   title="Power"
                   defaultLabel="Default Power"
                   thresholds={[{ key: "ftp", label: "Threshold Power", value: settings.ftp ?? "", unit: "W" }]}
                   types={POWER_TYPES}
                   methodsByType={POWER_METHODS}
-                  initialZones={DEFAULT_POWER_ZONES}
+                  initialZones={settings.powerZones.length ? settings.powerZones : DEFAULT_POWER_ZONES}
                 />
               </div>
             )}
@@ -404,11 +426,11 @@ export default function SettingsModal({
           <button onClick={() => router.push("/")} className="text-sm font-medium text-accent">
             Cancel
           </button>
-          <button onClick={() => router.refresh()} className="text-sm font-medium text-accent">
+          <button onClick={() => persistZones()} className="text-sm font-medium text-accent">
             Save
           </button>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => persistZones(() => router.push("/"))}
             className="rounded bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
           >
             Save &amp; Close

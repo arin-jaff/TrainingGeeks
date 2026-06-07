@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ZoneMethod, ZoneRow } from "@/lib/zones/methods";
 import { ADD_ACTIVITY_OPTIONS } from "@/lib/zones/methods";
 import { calculateZones, hasMethodData, type ZoneMetric } from "@/lib/zones/engine";
@@ -16,8 +16,16 @@ const inputCls =
   "rounded border border-line px-2 py-1.5 text-sm outline-none focus:border-accent";
 const link = "text-sm font-medium text-accent hover:underline";
 
+export interface ZoneSnapshot {
+  metric: ZoneMetric;
+  curve: string;
+  thresholds: Record<string, number | "">;
+  zones: ZoneRow[];
+}
+
 export default function ZoneEditor({
   metric,
+  curve,
   title,
   defaultLabel,
   thresholds: initialThresholds,
@@ -25,8 +33,10 @@ export default function ZoneEditor({
   methodsByType,
   initialZones,
   showAddActivity = false,
+  onSnapshot,
 }: {
   metric: ZoneMetric;
+  curve: string;
   title: string;
   defaultLabel: string;
   thresholds: ThresholdField[];
@@ -34,6 +44,7 @@ export default function ZoneEditor({
   methodsByType: Record<string, ZoneMethod[]>;
   initialZones: ZoneRow[];
   showAddActivity?: boolean;
+  onSnapshot?: (s: ZoneSnapshot) => void;
 }) {
   const [thresholds, setThresholds] = useState(initialThresholds);
   const [type, setType] = useState(types[0]);
@@ -66,6 +77,16 @@ export default function ZoneEditor({
     const z = calculateZones(metric, method, anchorValue());
     if (z) setZones(z);
   }
+
+  // Report current state up so the modal footer can persist all blocks.
+  useEffect(() => {
+    onSnapshot?.({
+      metric,
+      curve,
+      thresholds: Object.fromEntries(thresholds.map((t) => [t.key, t.value])),
+      zones,
+    });
+  }, [thresholds, zones, metric, curve, onSnapshot]);
 
   return (
     <section className="mb-8">

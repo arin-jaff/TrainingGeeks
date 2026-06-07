@@ -3,8 +3,10 @@ import {
   getAthlete,
   getConnector,
   getEffectiveThreshold,
+  listZonesFor,
 } from "../db/repo.js";
 import type { AthleteRow, ConnectorAccountRow } from "../db/types.js";
+import type { ZoneRow as MethodZoneRow } from "../zones/methods.js";
 import { todayLocal } from "../util/dates.js";
 
 export interface SettingsData {
@@ -16,6 +18,21 @@ export interface SettingsData {
   maxHr: number | null;
   restingHr: number | null;
   connector: ConnectorAccountRow | undefined;
+  hrZones: MethodZoneRow[];
+  powerZones: MethodZoneRow[];
+  paceZones: MethodZoneRow[];
+}
+
+function savedZones(
+  db: DB,
+  curve: string,
+  metric: string,
+): MethodZoneRow[] {
+  return listZonesFor(db, curve, metric).map((z) => ({
+    name: z.name,
+    low: z.low,
+    high: z.high,
+  }));
 }
 
 export function getSettingsData(db: DB): SettingsData {
@@ -34,5 +51,8 @@ export function getSettingsData(db: DB): SettingsData {
     maxHr: t("run", "max_hr"),
     restingHr: t("run", "resting_hr"),
     connector: getConnector(db, "intervals"),
+    hrZones: savedZones(db, "run", "hr"),
+    powerZones: savedZones(db, "bike", "power"),
+    paceZones: savedZones(db, "run", "pace"),
   };
 }
