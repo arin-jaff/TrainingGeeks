@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ZoneMethod, ZoneRow } from "@/lib/zones/methods";
 import { ADD_ACTIVITY_OPTIONS } from "@/lib/zones/methods";
+import { calculateZones, hasMethodData, type ZoneMetric } from "@/lib/zones/engine";
 
 interface ThresholdField {
   key: string;
@@ -16,6 +17,7 @@ const inputCls =
 const link = "text-sm font-medium text-accent hover:underline";
 
 export default function ZoneEditor({
+  metric,
   title,
   defaultLabel,
   thresholds: initialThresholds,
@@ -24,6 +26,7 @@ export default function ZoneEditor({
   initialZones,
   showAddActivity = false,
 }: {
+  metric: ZoneMetric;
   title: string;
   defaultLabel: string;
   thresholds: ThresholdField[];
@@ -48,6 +51,21 @@ export default function ZoneEditor({
     setZones((z) => [...z, { name: `Zone ${z.length + 1}`, low: "", high: "" }]);
 
   const methods = methodsByType[type] ?? [];
+
+  function anchorValue(): number {
+    if (metric === "power")
+      return Number(thresholds.find((t) => t.key === "ftp")?.value) || 0;
+    if (metric === "hr") {
+      const key = type === "Maximum Heart Rate" ? "max" : "thr";
+      return Number(thresholds.find((t) => t.key === key)?.value) || 0;
+    }
+    return 0;
+  }
+  const canCalc = hasMethodData(metric, method) && anchorValue() > 0;
+  function calculate() {
+    const z = calculateZones(metric, method, anchorValue());
+    if (z) setZones(z);
+  }
 
   return (
     <section className="mb-8">
@@ -113,9 +131,14 @@ export default function ZoneEditor({
           </select>
           <button
             type="button"
-            disabled={!method}
-            title={method ? "Calculate zones" : "Choose a method first"}
-            className="rounded bg-line px-3 py-1.5 text-sm font-medium text-ink-muted disabled:opacity-60"
+            onClick={calculate}
+            disabled={!canCalc}
+            title={canCalc ? "Calculate zones" : "Choose a method and set the threshold first"}
+            className={
+              canCalc
+                ? "rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
+                : "rounded bg-line px-3 py-1.5 text-sm font-medium text-ink-muted opacity-60"
+            }
           >
             Calculate
           </button>

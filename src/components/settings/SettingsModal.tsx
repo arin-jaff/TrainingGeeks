@@ -197,6 +197,7 @@ export default function SettingsModal({
             {section === "zones" && (
               <div className="max-w-3xl">
                 <ZoneEditor
+                  metric="pace"
                   title="Speed / Pace"
                   defaultLabel="Default Speed/Pace"
                   thresholds={[{ key: "pace", label: "Threshold", value: "", unit: "min/mi" }]}
@@ -205,6 +206,7 @@ export default function SettingsModal({
                   initialZones={DEFAULT_PACE_ZONES}
                 />
                 <ZoneEditor
+                  metric="hr"
                   title="Heart Rate"
                   defaultLabel="Default Heart Rate"
                   thresholds={[
@@ -218,6 +220,7 @@ export default function SettingsModal({
                   showAddActivity
                 />
                 <ZoneEditor
+                  metric="power"
                   title="Power"
                   defaultLabel="Default Power"
                   thresholds={[{ key: "ftp", label: "Threshold Power", value: settings.ftp ?? "", unit: "W" }]}

@@ -11,11 +11,16 @@ export interface ZoneMethod {
   zones: number;
 }
 
-const m = (label: string, zones: number): ZoneMethod => ({
-  id: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
-  label: `${label} (${zones})`,
-  zones,
-});
+// id must match the data keys generated from the xlsx (slug of full label incl.
+// zone count), so the engine can look up the chosen method.
+const m = (label: string, zones: number): ZoneMethod => {
+  const full = `${label} (${zones})`;
+  return {
+    id: full.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+    label: full,
+    zones,
+  };
+};
 
 // ---- Power ----
 export const POWER_TYPES = ["Threshold Power"] as const;
