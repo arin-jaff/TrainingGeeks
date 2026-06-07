@@ -30,5 +30,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // Protect everything except the login page, Next internals, and static files.
-  matcher: ["/((?!login|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|ico)$).*)"],
+  matcher: ["/((?!login|calendar.ics|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|ico)$).*)"],
 };

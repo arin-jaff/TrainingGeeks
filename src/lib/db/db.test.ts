@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { openDb } from "./client.js";
 import { seed } from "./seed.js";
+import { MIGRATIONS } from "./migrations.js";
 import {
   getAthlete,
   getEffectiveThreshold,
@@ -50,8 +51,8 @@ test("migrations are idempotent", () => {
   const before = db.prepare("SELECT count(*) c FROM _migrations").get() as {
     c: number;
   };
-  // Re-open against same memory db isn't possible; just assert one row per migration.
-  assert.equal(before.c, 1);
+  // One row per defined migration, applied exactly once.
+  assert.equal(before.c, MIGRATIONS.length);
 });
 
 test("seed inserts athlete and default thresholds idempotently", () => {

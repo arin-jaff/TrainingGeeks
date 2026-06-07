@@ -21,6 +21,7 @@ import ZoneEditor from "./ZoneEditor";
 import SyncButton from "./SyncButton";
 import HistorySync from "./HistorySync";
 import PrefsForm from "./PrefsForm";
+import ExportData from "./ExportData";
 
 interface SettingsData {
   ftp: number | null;
@@ -351,20 +352,7 @@ export default function SettingsModal({
               />
             )}
 
-            {section === "export" && (
-              <div className="max-w-2xl">
-                <SectionTitle>Export Data</SectionTitle>
-                <p className="mb-3 text-sm text-ink-muted">
-                  Download your activities. Original FIT files are stored locally under <code>data/fit</code>.
-                </p>
-                <div className="flex flex-wrap items-end gap-3">
-                  <label className="text-sm text-ink">From<input type="date" className={`${sel} mt-1 block`} /></label>
-                  <label className="text-sm text-ink">To<input type="date" className={`${sel} mt-1 block`} /></label>
-                  <label className="text-sm text-ink">Format<select className={`${sel} mt-1 block`}><option>FIT</option><option>CSV</option><option>TCX</option><option>GPX</option></select></label>
-                  <button className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover">Export</button>
-                </div>
-              </div>
-            )}
+            {section === "export" && <ExportData />}
 
             {section === "nutrition" && (
               <div className="max-w-md">
