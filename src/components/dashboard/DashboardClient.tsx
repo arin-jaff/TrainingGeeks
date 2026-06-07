@@ -53,19 +53,41 @@ function Pills<T extends string | number>({
   );
 }
 
+function fmtMD(date: string): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return `${m}/${d}/${y}`;
+}
+
+function ChartTitle({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-2 text-center">
+      <h2 className="text-sm font-semibold text-ink">{title}</h2>
+      {subtitle && <p className="text-xs text-ink-muted">{subtitle}</p>}
+    </div>
+  );
+}
+
 export default function DashboardClient({ data }: { data: DashboardData }) {
   const [curve, setCurve] = useState<LoadCurve>("all");
   const [days, setDays] = useState(90);
   const points = (data.pmc[curve] ?? []).slice(-days);
+  const curveLabel = CURVES.find((c) => c.key === curve)?.label ?? "All";
+  const range =
+    points.length > 1
+      ? `${fmtMD(points[0].date)} – ${fmtMD(points[points.length - 1].date)}`
+      : undefined;
 
   return (
     <div className="space-y-4">
       <section className="rounded border border-line bg-surface-card p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-ink">
-            Performance Management
-          </h2>
-          <div className="flex items-center gap-3">
+        <div className="relative mb-2 flex items-center">
+          <div className="mx-auto">
+            <ChartTitle
+              title={`Performance Management — ${curveLabel === "All" ? "All Workout Types" : curveLabel}`}
+              subtitle={range}
+            />
+          </div>
+          <div className="absolute right-0 flex items-center gap-3">
             <Pills
               options={CURVES}
               value={curve}
@@ -83,12 +105,10 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="rounded border border-line bg-surface-card p-4">
-          <h2 className="mb-2 text-sm font-semibold text-ink">
-            Fitness Summary
-          </h2>
-          <p className="mb-1 text-xs text-ink-muted">
-            Completed duration · last 28 days
-          </p>
+          <ChartTitle
+            title="Fitness Summary: Completed Duration"
+            subtitle="Last 28 days"
+          />
           {data.summary.length ? (
             <FitnessSummaryPie slices={data.summary} />
           ) : (
@@ -99,10 +119,7 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
         </section>
 
         <section className="rounded border border-line bg-surface-card p-4">
-          <h2 className="mb-2 text-sm font-semibold text-ink">
-            Duration by Week
-          </h2>
-          <p className="mb-1 text-xs text-ink-muted">Last 12 weeks · hours</p>
+          <ChartTitle title="Duration by Week" subtitle="Last 12 weeks · hours" />
           <DurationByWeekChart weeks={data.durationByWeek} />
         </section>
       </div>

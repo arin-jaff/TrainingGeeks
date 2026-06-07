@@ -8,10 +8,10 @@ export const MODALITY_COLOR: Record<Modality, string> = {
   core: "#d97706",
 };
 
-// Performance Management Chart series colors.
+// Performance Management Chart series colors (match TrainingPeaks PMC).
 export const PMC_COLOR = {
   stress: "#cbd5e1", // daily TSS bars
-  ctl: "#2f6fed", // Fitness
-  atl: "#e15554", // Fatigue
-  tsb: "#f0a03f", // Form
+  ctl: "#2f6fed", // Fitness (blue)
+  atl: "#e0457b", // Fatigue (magenta/pink, like TP)
+  tsb: "#f0a03f", // Form (orange)
 };

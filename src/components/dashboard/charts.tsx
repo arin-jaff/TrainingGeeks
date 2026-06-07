@@ -21,9 +21,21 @@ export function PmcChart({ points }: { points: PmcPoint[] }) {
       axisLabel: { fontSize: 10, color: "#6b7280" },
     },
     yAxis: [
-      { type: "value", axisLabel: { fontSize: 10, color: "#6b7280" } },
       {
         type: "value",
+        name: "TSS/d",
+        nameLocation: "middle",
+        nameGap: 32,
+        nameTextStyle: { color: PMC_COLOR.atl, fontSize: 11 },
+        axisLabel: { fontSize: 10, color: "#6b7280" },
+      },
+      {
+        type: "value",
+        name: "Form (TSB)",
+        nameLocation: "middle",
+        nameGap: 36,
+        nameRotate: -90,
+        nameTextStyle: { color: PMC_COLOR.tsb, fontSize: 11 },
         splitLine: { show: false },
         axisLabel: { fontSize: 10, color: "#6b7280" },
       },
