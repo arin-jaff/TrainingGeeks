@@ -367,6 +367,49 @@ export function setPlannedDate(db: DB, id: number, date: string): void {
   ).run(date, id);
 }
 
+export function getPlanned(db: DB, id: number): PlannedWorkoutRow | undefined {
+  return one<PlannedWorkoutRow>(db, "SELECT * FROM planned_workout WHERE id = ?", id);
+}
+
+export function updatePlanned(
+  db: DB,
+  id: number,
+  fields: Partial<
+    Pick<
+      PlannedWorkoutRow,
+      | "modality"
+      | "date"
+      | "name"
+      | "description"
+      | "planned_duration_s"
+      | "planned_distance_m"
+      | "planned_tss"
+    >
+  >,
+): void {
+  const keys = Object.keys(fields);
+  if (keys.length === 0) return;
+  const set = keys.map((k) => `${k} = ?`).join(", ");
+  const values = keys.map((k) => (fields as Record<string, unknown>)[k]);
+  db.prepare(
+    `UPDATE planned_workout SET ${set}, updated_at = datetime('now') WHERE id = ?`,
+  ).run(...(values as never[]), id);
+}
+
+export function setPlannedCompleted(
+  db: DB,
+  plannedId: number,
+  activityId: number | null,
+): void {
+  db.prepare(
+    `UPDATE planned_workout SET completed_activity_id = ?, updated_at = datetime('now') WHERE id = ?`,
+  ).run(activityId, plannedId);
+}
+
+export function deletePlanned(db: DB, id: number): void {
+  db.prepare("DELETE FROM planned_workout WHERE id = ?").run(id);
+}
+
 export interface AppliedPlanRow {
   source: string;
   count: number;
