@@ -61,14 +61,32 @@ function Field({ label: l, children }: { label: string; children: React.ReactNod
   );
 }
 
-function Placeholder({ title, note }: { title: string; note: string }) {
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <h2 className="border-b border-line pb-1 text-lg text-ink">{title}</h2>
-      <p className="mt-3 text-sm text-ink-muted">{note}</p>
-    </div>
+    <h2 className="mb-4 border-b border-line pb-1 text-lg text-ink">{children}</h2>
   );
 }
+
+function Toggle({
+  label,
+  defaultChecked,
+}: {
+  label: string;
+  defaultChecked?: boolean;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-3 border-b border-line py-2 text-sm text-ink">
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        className="h-4 w-4 accent-accent"
+      />
+    </label>
+  );
+}
+
+const sel = input;
 
 export default function SettingsModal({
   athlete,
@@ -241,17 +259,140 @@ export default function SettingsModal({
               </div>
             )}
 
-            {section === "subscription" && <Placeholder title="Subscription & Payments" note="Premium plan management. Not applicable to a self-hosted install." />}
-            {section === "settings" && <Placeholder title="Settings" note="General preferences (date format, week start, default views)." />}
-            {section === "coaches" && <Placeholder title="Coaches" note="Connect a coach to share your calendar. Coach view is a future feature." />}
-            {section === "calendar" && <Placeholder title="Calendar" note="Calendar display options (week start day, completed/planned visibility)." />}
-            {section === "email" && <Placeholder title="Email Options" note="Email summary and reminder preferences." />}
-            {section === "notifications" && <Placeholder title="Notifications" note="Push and in-app notification preferences." />}
-            {section === "export" && <Placeholder title="Export Data" note="Download your activities and metrics. FIT files are stored locally under data/fit." />}
-            {section === "nutrition" && <Placeholder title="Nutrition" note="Daily nutrition targets and logging." />}
-            {section === "equipment" && <Placeholder title="Equipment" note="Bikes, shoes and gear with mileage tracking." />}
-            {section === "layout" && <Placeholder title="Layout" note="Default dashboard and calendar layout preferences." />}
-            {section === "weather" && <Placeholder title="Weather" note="Show weather on the calendar (requires a weather provider)." />}
+            {section === "subscription" && (
+              <div className="max-w-2xl">
+                <SectionTitle>Subscription &amp; Payments</SectionTitle>
+                <div className="rounded border border-line p-4">
+                  <p className="text-sm font-semibold text-ink">TrainingGeeks · Self-hosted</p>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    Premium plan — all features unlocked. No billing on a
+                    self-hosted install.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {section === "settings" && (
+              <div className="max-w-2xl">
+                <SectionTitle>Settings</SectionTitle>
+                <div className="space-y-3">
+                  <Field label="Units"><select className={sel} defaultValue="imperial"><option value="imperial">English (mi, ft, lb)</option><option value="metric">Metric (km, m, kg)</option></select></Field>
+                  <Field label="Date Format"><select className={sel}><option>MM/DD/YYYY</option><option>DD/MM/YYYY</option><option>YYYY-MM-DD</option></select></Field>
+                  <Field label="First Day of Week"><select className={sel}><option>Monday</option><option>Sunday</option></select></Field>
+                  <Field label="Time Format"><select className={sel}><option>12-hour</option><option>24-hour</option></select></Field>
+                  <Field label="Default View"><select className={sel}><option>Calendar</option><option>Home</option><option>Dashboard</option></select></Field>
+                </div>
+                <div className="mt-3 max-w-md">
+                  <Toggle label="Automatically recalculate zones on threshold change" defaultChecked />
+                </div>
+              </div>
+            )}
+
+            {section === "coaches" && (
+              <div className="max-w-2xl">
+                <SectionTitle>Coaches</SectionTitle>
+                <p className="text-sm text-ink-muted">You have no coaches connected.</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <input placeholder="Coach email" className={`${sel} max-w-xs`} />
+                  <button className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover">Add Coach</button>
+                </div>
+              </div>
+            )}
+
+            {section === "calendar" && (
+              <div className="max-w-md">
+                <SectionTitle>Calendar</SectionTitle>
+                <Field label="First Day of Week"><select className={sel}><option>Monday</option><option>Sunday</option></select></Field>
+                <div className="mt-3">
+                  <Toggle label="Show completed workouts" defaultChecked />
+                  <Toggle label="Show planned workouts" defaultChecked />
+                  <Toggle label="Show weekly summary column" defaultChecked />
+                  <Toggle label="Show weather" />
+                </div>
+              </div>
+            )}
+
+            {section === "email" && (
+              <div className="max-w-md">
+                <SectionTitle>Email Options</SectionTitle>
+                <Toggle label="Weekly training summary" defaultChecked />
+                <Toggle label="Workout reminders" />
+                <Toggle label="Goal & event countdowns" defaultChecked />
+                <Toggle label="Product news & tips" />
+              </div>
+            )}
+
+            {section === "notifications" && (
+              <div className="max-w-md">
+                <SectionTitle>Notifications</SectionTitle>
+                <Toggle label="Comments on my workouts" defaultChecked />
+                <Toggle label="Coach messages" defaultChecked />
+                <Toggle label="New followers" />
+                <Toggle label="Goal & event reminders" defaultChecked />
+                <Toggle label="Sync completed" />
+              </div>
+            )}
+
+            {section === "export" && (
+              <div className="max-w-2xl">
+                <SectionTitle>Export Data</SectionTitle>
+                <p className="mb-3 text-sm text-ink-muted">
+                  Download your activities. Original FIT files are stored locally under <code>data/fit</code>.
+                </p>
+                <div className="flex flex-wrap items-end gap-3">
+                  <label className="text-sm text-ink">From<input type="date" className={`${sel} mt-1 block`} /></label>
+                  <label className="text-sm text-ink">To<input type="date" className={`${sel} mt-1 block`} /></label>
+                  <label className="text-sm text-ink">Format<select className={`${sel} mt-1 block`}><option>FIT</option><option>CSV</option><option>TCX</option><option>GPX</option></select></label>
+                  <button className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover">Export</button>
+                </div>
+              </div>
+            )}
+
+            {section === "nutrition" && (
+              <div className="max-w-md">
+                <SectionTitle>Nutrition</SectionTitle>
+                <p className="mb-3 text-sm font-bold text-ink">Daily Targets</p>
+                <div className="space-y-3">
+                  <Field label="Calories"><input className={`${sel} w-32`} placeholder="kcal" /></Field>
+                  <Field label="Carbohydrates"><input className={`${sel} w-32`} placeholder="g" /></Field>
+                  <Field label="Protein"><input className={`${sel} w-32`} placeholder="g" /></Field>
+                  <Field label="Fat"><input className={`${sel} w-32`} placeholder="g" /></Field>
+                </div>
+              </div>
+            )}
+
+            {section === "equipment" && (
+              <div className="max-w-2xl">
+                <SectionTitle>Equipment</SectionTitle>
+                <p className="text-sm text-ink-muted">No equipment added yet.</p>
+                <p className="mb-2 mt-4 text-sm font-bold text-ink">Add Equipment</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <select className={`${sel} w-36`}><option>Bike</option><option>Shoes</option><option>Other</option></select>
+                  <input placeholder="Name" className={`${sel} max-w-xs`} />
+                  <button className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover">Add</button>
+                </div>
+              </div>
+            )}
+
+            {section === "layout" && (
+              <div className="max-w-md">
+                <SectionTitle>Layout</SectionTitle>
+                <Field label="Home Layout"><select className={sel}><option>Default</option><option>Compact</option></select></Field>
+                <Field label="Dashboard Layout"><select className={sel}><option>Default</option><option>Coach</option></select></Field>
+                <Field label="Calendar Density"><select className={sel}><option>Comfortable</option><option>Compact</option></select></Field>
+              </div>
+            )}
+
+            {section === "weather" && (
+              <div className="max-w-md">
+                <SectionTitle>Weather</SectionTitle>
+                <Field label="Provider"><select className={sel}><option>None</option><option>OpenWeather</option></select></Field>
+                <Field label="Units"><select className={sel}><option>Fahrenheit</option><option>Celsius</option></select></Field>
+                <div className="mt-3">
+                  <Toggle label="Show weather on calendar" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
