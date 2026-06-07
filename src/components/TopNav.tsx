@@ -43,7 +43,7 @@ export default function TopNav({ showSignOut = false }: { showSignOut?: boolean 
                 className={[
                   "rounded px-3 py-1.5 text-[13px] font-medium transition-colors",
                   active
-                    ? "bg-white/10 text-white"
+                    ? "bg-nav-active text-white"
                     : "text-white/70 hover:text-white",
                 ].join(" ")}
               >

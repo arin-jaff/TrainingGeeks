@@ -1,17 +1,32 @@
 import type { Modality } from "../db/types.js";
 
+// Per-modality accent colors, measured from TrainingPeaks.
 export const MODALITY_COLOR: Record<Modality, string> = {
-  run: "#2f9e6b",
+  run: "#45ae01",
   bike: "#2f6fed",
   swim: "#16a0c8",
-  lift: "#8b5cf6",
-  core: "#d97706",
+  lift: "#7b2d8e",
+  core: "#a42ddb",
 };
 
-// Performance Management Chart series colors (match TrainingPeaks PMC).
+// Fitness / Fatigue / Form text colors (TP calendar summary + PMC).
+export const FITNESS_COLOR = "#1840ec"; // Fitness / CTL (blue)
+export const FATIGUE_COLOR = "#e63788"; // Fatigue / ATL (magenta)
+export const FORM_COLOR = "#fd6b00"; // Form / TSB (orange)
+
+// Discipline duration bars in the weekly summary (TP exact).
+export const DISCIPLINE_BAR: Record<string, string> = {
+  run: "#45ae01",
+  bike: "#2f6fed",
+  swim: "#16a0c8",
+  strength: "#3b0a52",
+  other: "#a42ddb",
+};
+
+// Performance Management Chart series colors.
 export const PMC_COLOR = {
   stress: "#cbd5e1", // daily TSS bars
-  ctl: "#2f6fed", // Fitness (blue)
-  atl: "#e0457b", // Fatigue (magenta/pink, like TP)
-  tsb: "#f0a03f", // Form (orange)
+  ctl: FITNESS_COLOR, // Fitness (blue)
+  atl: FATIGUE_COLOR, // Fatigue (magenta)
+  tsb: FORM_COLOR, // Form (orange)
 };

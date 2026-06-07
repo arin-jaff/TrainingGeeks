@@ -29,9 +29,16 @@ export interface WeekSummary {
   tss: number;
   elevationM: number;
   workKj: number;
+  disc: Record<string, number>; // per-discipline duration seconds: run/bike/swim/strength/other
   ctl: number | null;
   atl: number | null;
   tsb: number | null;
+}
+
+function discKey(modality: Modality): string {
+  if (modality === "lift") return "strength";
+  if (modality === "core") return "other";
+  return modality; // run | bike | swim
 }
 
 export interface CalendarData {
@@ -111,6 +118,7 @@ export function getCalendarData(
     let tss = 0;
     let elevationM = 0;
     let workKj = 0;
+    const disc: Record<string, number> = {};
     for (const d of week) {
       for (const it of itemsByDate[d] ?? []) {
         if (it.kind !== "activity") continue;
@@ -119,6 +127,8 @@ export function getCalendarData(
         tss += it.stressValue ?? 0;
         elevationM += it.elevationM;
         workKj += it.workKj;
+        const k = discKey(it.modality);
+        disc[k] = (disc[k] ?? 0) + (it.durationS ?? 0);
       }
     }
     // Use the latest day in the week that has a fitness row (so the current,
@@ -138,6 +148,7 @@ export function getCalendarData(
       tss,
       elevationM,
       workKj,
+      disc,
       ctl: endFit?.ctl ?? null,
       atl: endFit?.atl ?? null,
       tsb: endFit?.tsb ?? null,
