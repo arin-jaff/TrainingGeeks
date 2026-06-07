@@ -25,6 +25,7 @@ export default async function SettingsPage({
         powerZones: d.powerZones,
         paceZones: d.paceZones,
         prefs: d.prefs,
+        equipment: d.equipment,
       }}
     />
   );

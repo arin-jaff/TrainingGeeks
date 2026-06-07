@@ -4,7 +4,9 @@ import {
   getAthlete,
   getConnector,
   getEffectiveThreshold,
+  listEquipment,
   listZonesFor,
+  type EquipmentRow,
 } from "../db/repo.js";
 import type { AthleteRow, ConnectorAccountRow } from "../db/types.js";
 import type { ZoneRow as MethodZoneRow } from "../zones/methods.js";
@@ -23,6 +25,7 @@ export interface SettingsData {
   powerZones: MethodZoneRow[];
   paceZones: MethodZoneRow[];
   prefs: Record<string, string>;
+  equipment: EquipmentRow[];
 }
 
 function savedZones(
@@ -57,5 +60,6 @@ export function getSettingsData(db: DB): SettingsData {
     powerZones: savedZones(db, "bike", "power"),
     paceZones: savedZones(db, "run", "pace"),
     prefs: getAllSettings(db),
+    equipment: listEquipment(db),
   };
 }

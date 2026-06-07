@@ -22,6 +22,8 @@ import SyncButton from "./SyncButton";
 import HistorySync from "./HistorySync";
 import PrefsForm from "./PrefsForm";
 import ExportData from "./ExportData";
+import EquipmentManager from "./EquipmentManager";
+import type { EquipmentRow } from "@/lib/db/repo";
 
 interface SettingsData {
   ftp: number | null;
@@ -33,6 +35,7 @@ interface SettingsData {
   powerZones: ZoneRow[];
   paceZones: ZoneRow[];
   prefs: Record<string, string>;
+  equipment: EquipmentRow[];
 }
 
 type Section = string;
@@ -368,16 +371,10 @@ export default function SettingsModal({
             )}
 
             {section === "equipment" && (
-              <div className="max-w-2xl">
-                <SectionTitle>Equipment</SectionTitle>
-                <p className="text-sm text-ink-muted">No equipment added yet.</p>
-                <p className="mb-2 mt-4 text-sm font-bold text-ink">Add Equipment</p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <select className={`${sel} w-36`}><option>Bike</option><option>Shoes</option><option>Other</option></select>
-                  <input placeholder="Name" className={`${sel} max-w-xs`} />
-                  <button className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover">Add</button>
-                </div>
-              </div>
+              <EquipmentManager
+                equipment={settings.equipment}
+                units={athlete?.units ?? "imperial"}
+              />
             )}
 
             {section === "layout" && (
