@@ -89,6 +89,36 @@
       "prompt": "Road bike, background removed (rembg u2net).",
       "added": "2026-06-07",
       "notes": "Equipment thumbnail for bikes. sport-run.png (running shoe) used for shoes."
+    },
+    {
+      "file": "public/frown-1.png",
+      "type": "photo",
+      "origin": "user-supplied",
+      "source_url": null,
+      "license": "owned/licensed by arin-jaff",
+      "prompt": "Frowning-face photo, background removed (rembg u2net).",
+      "added": "2026-06-07",
+      "notes": "Status screens (error / coming-soon / 404). Also frown-2.png, frown-3.png."
+    },
+    {
+      "file": "public/github.png",
+      "type": "logo",
+      "origin": "third-party",
+      "source_url": "https://github.com/logos",
+      "license": "GitHub logo — used nominatively to link to the project repo.",
+      "prompt": null,
+      "added": "2026-06-07",
+      "notes": "GitHub mark on status-screen links."
+    },
+    {
+      "file": "public/intervals-wordmark.png",
+      "type": "logo",
+      "origin": "third-party",
+      "source_url": "https://intervals.icu",
+      "license": "intervals.icu logo — used nominatively to credit/link the sync source.",
+      "prompt": "White background keyed to transparent via PIL.",
+      "added": "2026-06-07",
+      "notes": "intervals.icu branding in settings sync sections. Also intervals-mark.png."
     }
   ]
 }

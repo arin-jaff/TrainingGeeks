@@ -27,12 +27,12 @@ export default function DashboardPage() {
         <Link href="/metrics" className="pb-2 text-sm text-ink-muted hover:text-ink">
           Metrics
         </Link>
-        <span
-          className="cursor-not-allowed pb-2 text-sm text-ink-muted"
-          title="Coming soon"
+        <Link
+          href="/workout-comparison"
+          className="pb-2 text-sm text-ink-muted hover:text-ink"
         >
           Workout Comparison
-        </span>
+        </Link>
       </div>
       <div className="mb-3">
         <ChartsLibrary />
