@@ -3,7 +3,10 @@ import {
   getActivityStream,
   listActivitiesBetween,
   listDailyLoad,
+  listMetricsByType,
+  listPeakCurve,
   listZonesFor,
+  metricTypeCounts,
 } from "../db/repo.js";
 import {
   FITNESS_CURVES,
@@ -11,6 +14,7 @@ import {
   modalityToCurve,
   type Modality,
 } from "../db/types.js";
+import { WELLNESS_BY_ID } from "../metrics/wellness.js";
 import type { LoadCurve } from "../fitness/recompute.js";
 import { addDays, startOfWeekMonday } from "../util/dates.js";
 
@@ -45,13 +49,42 @@ export interface ZoneTime {
   seconds: number[];
 }
 
+// Per-week totals (last 12 weeks) backing the various "by week" charts.
+export interface WeeklyTotals {
+  weekStart: string;
+  distanceM: number;
+  elevationM: number;
+  kj: number;
+  calories: number;
+  cardioS: number; // run+bike+swim duration
+  longestDistanceM: number;
+  longestDurationS: number;
+}
+
+export interface PeakCurves {
+  power: { window: number; value: number }[]; // best W by duration
+  hr: { window: number; value: number }[]; // best bpm by duration
+  pace: { window: number; value: number }[]; // best speed (m/s) by duration
+  paceByDistance: { window: number; value: number }[]; // best speed by distance
+}
+
+export interface MetricSeries {
+  type: string;
+  label: string;
+  unit: string;
+  points: { date: string; value: number }[];
+}
+
 export interface DashboardData {
   pmc: Record<LoadCurve, PmcPoint[]>; // last 365 days per curve
   summary: SummarySlice[]; // completed duration by modality, last 28 days
   durationByWeek: WeekBar[]; // last 12 weeks
+  weekly: WeeklyTotals[]; // last 12 weeks of aggregates
   totals: Totals; // last 28 days
   hrZoneTime: ZoneTime | null; // time in HR zones, last 120 days
   powerZoneTime: ZoneTime | null;
+  peaks: PeakCurves; // mean-maximal curves across all activities
+  metricSeries: MetricSeries | null; // most-tracked wellness metric, last 180d
 }
 
 function zoneTime(
@@ -133,12 +166,76 @@ export function getDashboardData(db: DB, today: string): DashboardData {
     durationByWeek.push({ weekStart: wk, perModality: weekMap.get(wk) ?? {} });
   }
 
+  // Per-week aggregates (distance, elevation, kJ, calories, cardio hours,
+  // longest workout) for the "by week" charts — one pass over the same acts.
+  const wkAgg = new Map<string, WeeklyTotals>();
+  const emptyWeek = (weekStart: string): WeeklyTotals => ({
+    weekStart,
+    distanceM: 0,
+    elevationM: 0,
+    kj: 0,
+    calories: 0,
+    cardioS: 0,
+    longestDistanceM: 0,
+    longestDurationS: 0,
+  });
+  for (const a of weekActs) {
+    const wk = startOfWeekMonday(a.local_date);
+    const b = wkAgg.get(wk) ?? emptyWeek(wk);
+    b.distanceM += a.distance_m ?? 0;
+    b.elevationM += a.elevation_gain_m ?? 0;
+    b.kj += a.kj ?? 0;
+    b.calories += a.calories ?? 0;
+    if (isCardio(a.modality as Modality)) b.cardioS += a.duration_s ?? 0;
+    b.longestDistanceM = Math.max(b.longestDistanceM, a.distance_m ?? 0);
+    b.longestDurationS = Math.max(b.longestDurationS, a.duration_s ?? 0);
+    wkAgg.set(wk, b);
+  }
+  const weekly: WeeklyTotals[] = [];
+  for (let i = 0; i < 12; i++) {
+    const wk = addDays(weekStart0, i * 7);
+    weekly.push(wkAgg.get(wk) ?? emptyWeek(wk));
+  }
+
   // Time in zones over the last 120 days (loads streams for those activities).
   const recent = listActivitiesBetween(db, addDays(today, -120), today);
   const hrZoneTime = zoneTime(db, recent, "hr", "run");
   const powerZoneTime = zoneTime(db, recent, "power", "bike");
 
-  return { pmc, summary, durationByWeek, totals, hrZoneTime, powerZoneTime };
+  // Mean-maximal peak curves (best value per window across all activities).
+  const peaks: PeakCurves = {
+    power: listPeakCurve(db, "power", "duration"),
+    hr: listPeakCurve(db, "hr", "duration"),
+    pace: listPeakCurve(db, "pace", "duration"),
+    paceByDistance: listPeakCurve(db, "pace", "distance"),
+  };
+
+  // Most-tracked wellness metric over the last 180 days.
+  let metricSeries: MetricSeries | null = null;
+  const topMetric = metricTypeCounts(db).find((m) => WELLNESS_BY_ID[m.type]);
+  if (topMetric) {
+    const t = WELLNESS_BY_ID[topMetric.type];
+    const rows = listMetricsByType(db, topMetric.type, addDays(today, -180), today);
+    if (rows.length)
+      metricSeries = {
+        type: t.id,
+        label: t.label,
+        unit: t.unit,
+        points: rows.map((r) => ({ date: r.date, value: r.value })),
+      };
+  }
+
+  return {
+    pmc,
+    summary,
+    durationByWeek,
+    weekly,
+    totals,
+    hrZoneTime,
+    powerZoneTime,
+    peaks,
+    metricSeries,
+  };
 }
 
 export { modalityToCurve };

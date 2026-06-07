@@ -5,10 +5,16 @@ import type { DashboardData } from "@/lib/queries/dashboard";
 import type { LoadCurve } from "@/lib/fitness/recompute";
 import {
   DurationByWeekChart,
+  FitnessHistoryChart,
   FitnessSummaryPie,
+  MetricLineChart,
+  PeakCurveChart,
   PmcChart,
   StatTiles,
+  WeeklyBarChart,
+  weeklyTitle,
   ZoneTimeChart,
+  type WeeklyMetric,
 } from "./charts";
 import type { Units } from "@/lib/db/types";
 import { FATIGUE_COLOR } from "@/lib/util/colors";
@@ -38,6 +44,17 @@ const CHART_TITLES: Record<string, string> = Object.fromEntries(
   Object.entries(IMPLEMENTED).map(([name, id]) => [id, name]),
 );
 const SPAN2 = new Set(["pmc"]);
+
+// Chart id → per-week aggregate metric.
+const WEEKLY_BY_ID: Record<string, WeeklyMetric> = {
+  "distance-by-week": "distance",
+  "elevation-by-week": "elevation",
+  "kilojoules-by-week": "kj",
+  "calories-by-week": "calories",
+  "cardio-hours": "cardio",
+  "longest-distance": "longestDistance",
+  "longest-duration": "longestDuration",
+};
 
 function Pills<T extends string | number>({
   options,
@@ -106,6 +123,33 @@ function Card({
       </button>
       {children}
     </section>
+  );
+}
+
+function PeakCard({
+  title,
+  points,
+  kind,
+  units,
+  byDistance,
+  empty,
+}: {
+  title: string;
+  points: { window: number; value: number }[];
+  kind: "power" | "hr" | "pace";
+  units: Units;
+  byDistance?: boolean;
+  empty: string;
+}) {
+  return (
+    <>
+      <ChartTitle title={title} subtitle={byDistance ? "Best by distance" : "Best by duration"} />
+      {points.length ? (
+        <PeakCurveChart points={points} kind={kind} units={units} byDistance={byDistance} />
+      ) : (
+        <EmptyState title="No data yet" description={empty} />
+      )}
+    </>
   );
 }
 
@@ -198,8 +242,44 @@ export default function DashboardClient({
             )}
           </>
         );
-      default:
+      case "fitness-history":
+        return (
+          <>
+            <ChartTitle title="Fitness History" subtitle="CTL · last 90 days" />
+            <FitnessHistoryChart points={(data.pmc.all ?? []).slice(-90)} />
+          </>
+        );
+      case "metrics":
+        return (
+          <>
+            <ChartTitle title={data.metricSeries ? data.metricSeries.label : "Metrics"} subtitle="Last 180 days" />
+            {data.metricSeries ? (
+              <MetricLineChart series={data.metricSeries} />
+            ) : (
+              <EmptyState title="No metrics logged" description="Log weight, HRV, sleep and more from the calendar or Metrics page." />
+            )}
+          </>
+        );
+      case "peak-power":
+        return <PeakCard title="Peak Power" points={data.peaks.power} kind="power" units={units} empty="No power data yet." />;
+      case "peak-hr":
+        return <PeakCard title="Peak Heart Rate" points={data.peaks.hr} kind="hr" units={units} empty="No heart-rate data yet." />;
+      case "peak-pace":
+        return <PeakCard title="Peak Pace" points={data.peaks.pace} kind="pace" units={units} empty="No pace data yet." />;
+      case "peak-pace-distance":
+        return <PeakCard title="Peak Pace by Distance" points={data.peaks.paceByDistance} kind="pace" units={units} byDistance empty="No pace data yet." />;
+      default: {
+        const weekly = WEEKLY_BY_ID[id];
+        if (weekly) {
+          return (
+            <>
+              <ChartTitle title={weeklyTitle(weekly, units)} subtitle="Last 12 weeks" />
+              <WeeklyBarChart weeks={data.weekly} metric={weekly} units={units} />
+            </>
+          );
+        }
         return null;
+      }
     }
   }
 

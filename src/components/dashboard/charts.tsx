@@ -3,13 +3,15 @@
 import type { EChartsOption } from "echarts";
 import EChart from "@/components/charts/EChart";
 import type {
+  MetricSeries,
   PmcPoint,
   SummarySlice,
   Totals,
   WeekBar,
+  WeeklyTotals,
   ZoneTime,
 } from "@/lib/queries/dashboard";
-import { MODALITY_COLOR, PMC_COLOR } from "@/lib/util/colors";
+import { FITNESS_COLOR, MODALITY_COLOR, PMC_COLOR } from "@/lib/util/colors";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
 import type { Modality, Units } from "@/lib/db/types";
 
@@ -201,6 +203,172 @@ export function DurationByWeekChart({ weeks }: { weeks: WeekBar[] }) {
       ),
       itemStyle: { color: MODALITY_COLOR[m] },
     })),
+  };
+  return <EChart option={option} height={280} />;
+}
+
+// ---- Per-week aggregate bars (distance, elevation, kJ, calories, …) -----
+
+const M_PER_MI = 1609.34;
+
+export type WeeklyMetric =
+  | "distance"
+  | "elevation"
+  | "kj"
+  | "calories"
+  | "cardio"
+  | "longestDistance"
+  | "longestDuration";
+
+const WEEKLY_CFG: Record<
+  WeeklyMetric,
+  { label: (u: Units) => string; unit: (u: Units) => string; color: string; dp: number; val: (w: WeeklyTotals, u: Units) => number }
+> = {
+  distance: { label: () => "Distance by Week", unit: (u) => (u === "imperial" ? "mi" : "km"), color: MODALITY_COLOR.bike, dp: 1, val: (w, u) => w.distanceM / (u === "imperial" ? M_PER_MI : 1000) },
+  elevation: { label: () => "Elevation Gain by Week", unit: (u) => (u === "imperial" ? "ft" : "m"), color: "#7b2d8e", dp: 0, val: (w, u) => w.elevationM * (u === "imperial" ? 3.28084 : 1) },
+  kj: { label: () => "Kilojoules by Week", unit: () => "kJ", color: "#fd6b00", dp: 0, val: (w) => w.kj },
+  calories: { label: () => "Calories by Week", unit: () => "kcal", color: "#e63788", dp: 0, val: (w) => w.calories },
+  cardio: { label: () => "Cardio Hours by Week", unit: () => "h", color: MODALITY_COLOR.run, dp: 1, val: (w) => w.cardioS / 3600 },
+  longestDistance: { label: () => "Longest Workout by Week", unit: (u) => (u === "imperial" ? "mi" : "km"), color: MODALITY_COLOR.swim, dp: 1, val: (w, u) => w.longestDistanceM / (u === "imperial" ? M_PER_MI : 1000) },
+  longestDuration: { label: () => "Longest Workout by Week", unit: () => "h", color: MODALITY_COLOR.lift, dp: 1, val: (w) => w.longestDurationS / 3600 },
+};
+
+export function weeklyTitle(metric: WeeklyMetric, units: Units): string {
+  return `${WEEKLY_CFG[metric].label(units)} · ${WEEKLY_CFG[metric].unit(units)}`;
+}
+
+export function WeeklyBarChart({
+  weeks,
+  metric,
+  units,
+}: {
+  weeks: WeeklyTotals[];
+  metric: WeeklyMetric;
+  units: Units;
+}) {
+  const cfg = WEEKLY_CFG[metric];
+  const option: EChartsOption = {
+    grid: { left: 44, right: 16, top: 16, bottom: 28 },
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    xAxis: { type: "category", data: weeks.map((w) => md(w.weekStart)), axisLabel: { fontSize: 10, color: "#6b7280" } },
+    yAxis: { type: "value", name: cfg.unit(units), axisLabel: { fontSize: 10, color: "#6b7280" } },
+    series: [
+      {
+        type: "bar",
+        data: weeks.map((w) => Number(cfg.val(w, units).toFixed(cfg.dp))),
+        itemStyle: { color: cfg.color },
+        barMaxWidth: 28,
+      },
+    ],
+  };
+  return <EChart option={option} height={280} />;
+}
+
+// ---- Mean-maximal peak curves (power / HR / pace) -----------------------
+
+function durLabel(sec: number): string {
+  if (sec < 60) return `${Math.round(sec)}s`;
+  if (sec < 3600) return `${Math.round(sec / 60)}m`;
+  return `${(sec / 3600).toFixed(sec % 3600 ? 1 : 0)}h`;
+}
+function distLabel(m: number): string {
+  if (m < 1000) return `${Math.round(m)}m`;
+  return `${(m / 1000).toFixed(m % 1000 ? 1 : 0)}k`;
+}
+const paceSec = (speed: number, units: Units, swim = false) =>
+  (swim ? 100 : units === "imperial" ? M_PER_MI : 1000) / speed;
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+
+export function PeakCurveChart({
+  points,
+  kind,
+  units,
+  byDistance = false,
+}: {
+  points: { window: number; value: number }[];
+  kind: "power" | "hr" | "pace";
+  units: Units;
+  byDistance?: boolean;
+}) {
+  const x = points.map((p) => (byDistance ? distLabel(p.window) : durLabel(p.window)));
+  const isPace = kind === "pace";
+  const yData = points.map((p) => (isPace ? Math.round(paceSec(p.value, units)) : Math.round(p.value)));
+  const color = kind === "power" ? "#fd6b00" : kind === "hr" ? "#e63788" : MODALITY_COLOR.run;
+  const unit = kind === "power" ? "W" : kind === "hr" ? "bpm" : units === "imperial" ? "/mi" : "/km";
+  const option: EChartsOption = {
+    grid: { left: 52, right: 16, top: 16, bottom: 28 },
+    tooltip: {
+      trigger: "axis",
+      formatter: (p: unknown) => {
+        const arr = p as { axisValue: string; data: number }[];
+        const v = arr[0].data;
+        return `${arr[0].axisValue}: ${isPace ? `${mmss(v)} ${unit}` : `${v} ${unit}`}`;
+      },
+    },
+    xAxis: { type: "category", data: x, axisLabel: { fontSize: 10, color: "#6b7280" } },
+    yAxis: {
+      type: "value",
+      inverse: isPace, // faster pace on top
+      scale: true,
+      axisLabel: { fontSize: 10, color: "#6b7280", formatter: (v: number) => (isPace ? mmss(v) : String(v)) },
+    },
+    series: [
+      {
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: yData,
+        lineStyle: { color, width: 2 },
+        itemStyle: { color },
+        areaStyle: { color, opacity: 0.08 },
+      },
+    ],
+  };
+  return <EChart option={option} height={280} />;
+}
+
+// ---- Wellness metric line ----------------------------------------------
+
+export function MetricLineChart({ series }: { series: MetricSeries }) {
+  const option: EChartsOption = {
+    grid: { left: 44, right: 16, top: 16, bottom: 28 },
+    tooltip: { trigger: "axis" },
+    xAxis: { type: "category", data: series.points.map((p) => md(p.date)), axisLabel: { fontSize: 10, color: "#6b7280" } },
+    yAxis: { type: "value", name: series.unit, scale: true, axisLabel: { fontSize: 10, color: "#6b7280" } },
+    series: [
+      {
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: series.points.map((p) => p.value),
+        lineStyle: { color: "#16a0c8", width: 2 },
+        itemStyle: { color: "#16a0c8" },
+        areaStyle: { color: "#16a0c8", opacity: 0.08 },
+      },
+    ],
+  };
+  return <EChart option={option} height={280} />;
+}
+
+// ---- Fitness history (CTL over time) -----------------------------------
+
+export function FitnessHistoryChart({ points }: { points: PmcPoint[] }) {
+  const option: EChartsOption = {
+    grid: { left: 40, right: 16, top: 16, bottom: 28 },
+    tooltip: { trigger: "axis" },
+    xAxis: { type: "category", data: points.map((p) => md(p.date)), axisLabel: { fontSize: 10, color: "#6b7280" } },
+    yAxis: { type: "value", name: "CTL", axisLabel: { fontSize: 10, color: "#6b7280" } },
+    series: [
+      {
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: points.map((p) => Math.round(p.ctl)),
+        lineStyle: { color: FITNESS_COLOR, width: 2 },
+        itemStyle: { color: FITNESS_COLOR },
+        areaStyle: { color: FITNESS_COLOR, opacity: 0.1 },
+      },
+    ],
   };
   return <EChart option={option} height={280} />;
 }

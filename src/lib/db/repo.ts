@@ -485,6 +485,39 @@ export function listPaceEfforts(db: DB): PaceEffortRow[] {
   );
 }
 
+export interface PeakCurvePoint {
+  window: number; // seconds (duration) or meters (distance)
+  value: number; // watts | bpm | speed m/s — best across all activities
+}
+
+/**
+ * Mean-maximal curve: the best value at each window across all activities.
+ * kind ∈ power|pace|hr, basis ∈ duration|distance. Higher value is better for
+ * all three (pace value is speed).
+ */
+export function listPeakCurve(
+  db: DB,
+  kind: string,
+  basis: string,
+): PeakCurvePoint[] {
+  return all<PeakCurvePoint>(
+    db,
+    `SELECT window, MAX(value) AS value
+       FROM peak WHERE kind = ? AND basis = ?
+      GROUP BY window ORDER BY window ASC`,
+    kind,
+    basis,
+  );
+}
+
+/** Metric types present, ordered by how many points each has (most first). */
+export function metricTypeCounts(db: DB): { type: string; n: number }[] {
+  return all<{ type: string; n: number }>(
+    db,
+    "SELECT type, COUNT(*) AS n FROM metric GROUP BY type ORDER BY n DESC",
+  );
+}
+
 // ---- Connector accounts ------------------------------------------------
 
 export function getConnector(
