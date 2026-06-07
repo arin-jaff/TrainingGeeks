@@ -38,9 +38,10 @@ function parseDuration(s: string): number | null {
 
 function fmtDuration(sec: number | null): string {
   if (sec == null || !Number.isFinite(sec)) return "";
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = Math.round(sec % 60);
+  const t = Math.round(sec); // round first to avoid m:60 / s:60 carry
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
 }
@@ -64,9 +65,9 @@ function paceToSpeed(s: string, modality: Modality, units: Units): number | null
 function speedToPace(speed: number | null, modality: Modality, units: Units): string {
   if (!speed || speed <= 0) return "";
   const unit = modality === "swim" ? 100 : unitDist(units);
-  const perSec = unit / speed;
-  const m = Math.floor(perSec / 60);
-  const s = Math.round(perSec % 60);
+  const total = Math.round(unit / speed); // round first to avoid m:60 carry
+  const m = Math.floor(total / 60);
+  const s = total % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 

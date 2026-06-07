@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db/client";
-import { getAthlete } from "@/lib/db/repo";
+import { getAthlete, listEquipment, listInjuries } from "@/lib/db/repo";
 import { getCalendarData } from "@/lib/queries/calendar";
 import { addMonths, monthMatrix, todayLocal } from "@/lib/util/dates";
 import type { Units } from "@/lib/db/types";
@@ -62,6 +62,8 @@ export default async function CalendarPage({
     weeks,
     today,
   );
+  const equipment = listEquipment(db);
+  const openInjuries = listInjuries(db).filter((i) => i.end_date == null);
 
   return (
     <div className="flex gap-3">
@@ -127,6 +129,8 @@ export default async function CalendarPage({
           itemsByDate={itemsByDate}
           weekSummaries={weekSummaries}
           injuredDates={injuredDates}
+          openInjuries={openInjuries}
+          equipment={equipment}
           month={month}
           today={today}
           units={units}

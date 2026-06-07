@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   DndContext,
@@ -12,6 +12,7 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import type { Modality, Units } from "@/lib/db/types";
+import type { EquipmentRow, InjuryRow } from "@/lib/db/repo";
 import type { CalItem, WeekSummary } from "@/lib/queries/calendar";
 import { formatDistance, formatDuration } from "@/lib/util/format";
 import {
@@ -19,9 +20,16 @@ import {
   FATIGUE_COLOR,
   FITNESS_COLOR,
   FORM_COLOR,
+  STATUS_COMPLETE,
+  STATUS_COMPLETE_BG,
+  STATUS_PASTDUE,
+  STATUS_PASTDUE_BG,
 } from "@/lib/util/colors";
 import SportIcon from "@/components/SportIcon";
 import { rescheduleItem } from "@/app/(app)/calendar/actions";
+import { getWorkoutForEdit, type WorkoutEditData } from "@/app/actions/workout";
+import AddMenuModal from "./AddMenuModal";
+import WorkoutModal from "./WorkoutModal";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
@@ -35,53 +43,84 @@ const SPORT_NAME: Record<Modality, string> = {
 
 const CARD_SHADOW = "0 2px 4px rgba(26,32,46,0.3)";
 
-function WorkoutCard({ item, units }: { item: CalItem; units: Units }) {
-  const router = useRouter();
+type CardStatus = "complete" | "pastdue" | "planned";
+
+function statusOf(item: CalItem, date: string, today: string): CardStatus {
+  if (item.kind === "activity") return "complete";
+  return date < today ? "pastdue" : "planned";
+}
+
+function WorkoutCard({
+  item,
+  date,
+  today,
+  units,
+  onEdit,
+}: {
+  item: CalItem;
+  date: string;
+  today: string;
+  units: Units;
+  onEdit: (kind: "activity" | "planned", id: number) => void;
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
   });
   const planned = item.kind === "planned";
+  const status = statusOf(item, date, today);
+  const bannerColor =
+    status === "complete" ? STATUS_COMPLETE : status === "pastdue" ? STATUS_PASTDUE : null;
+  const bodyBg =
+    status === "complete" ? STATUS_COMPLETE_BG : status === "pastdue" ? STATUS_PASTDUE_BG : undefined;
+
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
       onClick={() => {
-        if (!isDragging && item.kind === "activity")
-          router.push(`/activity/${item.id}`);
+        if (!isDragging) onEdit(item.kind, item.id);
       }}
-      style={{ boxShadow: CARD_SHADOW }}
+      style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[
-        "cursor-grab rounded-[4px] bg-surface-card px-2 py-1.5",
-        planned ? "opacity-80 ring-1 ring-dashed ring-line" : "",
+        "cursor-grab overflow-hidden rounded-[4px]",
+        bannerColor ? "" : "bg-surface-card",
+        planned && status === "planned" ? "opacity-90 ring-1 ring-dashed ring-line" : "",
         isDragging ? "opacity-40" : "",
       ].join(" ")}
     >
-      <div className="flex items-center gap-1.5">
-        <SportIcon modality={item.modality} size={15} />
-        <span className="truncate text-[12px] font-semibold text-ink">
-          {SPORT_NAME[item.modality]}
-        </span>
-        <span className="ml-auto text-ink-muted/50" aria-hidden>
-          ⋮
-        </span>
-      </div>
-      <div className="mt-1 space-y-0.5 text-[12px] leading-tight">
-        {item.durationS != null && (
-          <div className="font-semibold text-ink">
-            {formatDuration(item.durationS)}
-          </div>
-        )}
-        {item.distanceM != null && (
-          <div className="text-ink">{formatDistance(item.distanceM, units)}</div>
-        )}
-        {item.stressValue != null && (
-          <div className="font-semibold text-ink">
-            {item.stressValue} {item.stressLabel}
-          </div>
-        )}
-        {planned && <div className="italic text-ink-muted">planned</div>}
+      {bannerColor && <div style={{ backgroundColor: bannerColor, height: 4 }} />}
+      <div className="px-2 py-1.5">
+        <div className="flex items-center gap-1.5">
+          <SportIcon modality={item.modality} size={15} />
+          <span className="truncate text-[12px] font-semibold text-ink">
+            {item.name || SPORT_NAME[item.modality]}
+          </span>
+          <span className="ml-auto text-ink-muted/50" aria-hidden>
+            ⋮
+          </span>
+        </div>
+        <div className="mt-1 space-y-0.5 text-[12px] leading-tight">
+          {item.durationS != null && (
+            <div className="font-semibold text-ink">
+              {formatDuration(item.durationS)}
+            </div>
+          )}
+          {item.distanceM != null && (
+            <div className="text-ink">{formatDistance(item.distanceM, units)}</div>
+          )}
+          {item.stressValue != null && (
+            <div className="font-semibold text-ink">
+              {item.stressValue} {item.stressLabel}
+            </div>
+          )}
+          {planned && (
+            <div className={status === "pastdue" ? "italic text-fatigue" : "italic text-ink-muted"}>
+              {status === "pastdue" ? "past due" : "planned"}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -92,15 +131,21 @@ function DayCell({
   items,
   inMonth,
   isToday,
+  today,
   injured,
   units,
+  onAdd,
+  onEdit,
 }: {
   date: string;
   items: CalItem[];
   inMonth: boolean;
   isToday: boolean;
+  today: string;
   injured: boolean;
   units: Units;
+  onAdd: (date: string) => void;
+  onEdit: (kind: "activity" | "planned", id: number) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: date });
   const dayNum = Number(date.slice(8, 10));
@@ -117,7 +162,7 @@ function DayCell({
     <div
       ref={setNodeRef}
       className={[
-        "min-h-[150px] border-b border-r border-line",
+        "group relative flex min-h-[150px] flex-col border-b border-r border-line",
         injured ? "bg-fatigue/5" : inMonth ? "bg-surface-card" : "bg-surface",
         isOver ? "ring-2 ring-inset ring-accent" : "",
       ].join(" ")}
@@ -151,9 +196,25 @@ function DayCell({
       )}
       <div className="space-y-1.5 px-1.5 pb-1.5 pt-1">
         {items.map((it) => (
-          <WorkoutCard key={`${it.kind}:${it.id}`} item={it} units={units} />
+          <WorkoutCard
+            key={`${it.kind}:${it.id}`}
+            item={it}
+            date={date}
+            today={today}
+            units={units}
+            onEdit={onEdit}
+          />
         ))}
       </div>
+      {/* Hover "+" to add a workout/metric/injury on this date. */}
+      <button
+        type="button"
+        onClick={() => onAdd(date)}
+        aria-label={`Add to ${date}`}
+        className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-line text-ink-muted opacity-0 transition-opacity hover:border-accent hover:text-accent group-hover:opacity-100"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
     </div>
   );
 }
@@ -246,6 +307,8 @@ export default function CalendarGrid({
   itemsByDate,
   weekSummaries,
   injuredDates,
+  openInjuries,
+  equipment,
   month,
   today,
   units,
@@ -254,6 +317,8 @@ export default function CalendarGrid({
   itemsByDate: Record<string, CalItem[]>;
   weekSummaries: Record<string, WeekSummary>;
   injuredDates: string[];
+  openInjuries: InjuryRow[];
+  equipment: EquipmentRow[];
   month: string;
   today: string;
   units: Units;
@@ -261,6 +326,8 @@ export default function CalendarGrid({
   const router = useRouter();
   const injured = new Set(injuredDates);
   const [, startTransition] = useTransition();
+  const [addDate, setAddDate] = useState<string | null>(null);
+  const [editData, setEditData] = useState<WorkoutEditData | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
   );
@@ -275,6 +342,13 @@ export default function CalendarGrid({
     startTransition(async () => {
       await rescheduleItem(data.kind, data.id, targetDate);
       router.refresh();
+    });
+  }
+
+  function openEdit(kind: "activity" | "planned", id: number) {
+    startTransition(async () => {
+      const data = await getWorkoutForEdit(kind, id);
+      if (data) setEditData(data);
     });
   }
 
@@ -307,14 +381,39 @@ export default function CalendarGrid({
                 items={itemsByDate[date] ?? []}
                 inMonth={date.slice(0, 7) === month}
                 isToday={date === today}
+                today={today}
                 injured={injured.has(date)}
                 units={units}
+                onAdd={setAddDate}
+                onEdit={openEdit}
               />
             ))}
             <SummaryCell s={weekSummaries[week[0]]} units={units} />
           </div>
         ))}
       </div>
+
+      {addDate && (
+        <AddMenuModal
+          date={addDate}
+          units={units}
+          today={today}
+          equipment={equipment}
+          openInjuries={openInjuries}
+          onClose={() => setAddDate(null)}
+        />
+      )}
+      {editData && (
+        <WorkoutModal
+          date={editData.date}
+          modality={editData.modality as Modality}
+          units={units}
+          today={today}
+          equipment={equipment}
+          initial={editData}
+          onClose={() => setEditData(null)}
+        />
+      )}
     </DndContext>
   );
 }

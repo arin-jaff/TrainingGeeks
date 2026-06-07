@@ -23,6 +23,13 @@ export const DISCIPLINE_BAR: Record<string, string> = {
   other: "#a42ddb",
 };
 
+// Calendar workout status banners (TP compliance colors).
+// Completed → green; planned & past-due → red; planned & upcoming → grey.
+export const STATUS_COMPLETE = "#8bc53f"; // green banner (completed)
+export const STATUS_COMPLETE_BG = "#f3f9ec"; // faint green card body
+export const STATUS_PASTDUE = "#e2574c"; // red banner (past-due planned)
+export const STATUS_PASTDUE_BG = "#fdecea"; // faint red card body
+
 // Performance Management Chart series colors.
 export const PMC_COLOR = {
   stress: "#cbd5e1", // daily TSS bars
