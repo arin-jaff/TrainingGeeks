@@ -3,6 +3,7 @@ import { getAthlete } from "@/lib/db/repo";
 import { getProgressionData } from "@/lib/queries/progression";
 import type { Units } from "@/lib/db/types";
 import ProgressionView from "@/components/progression/ProgressionView";
+import EmptyState from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,10 @@ export default function ProgressionPage() {
         <section className="rounded border border-line bg-surface-card p-4">
           <h2 className="mb-3 text-sm font-semibold text-ink">Personal Bests</h2>
           {bests.length === 0 ? (
-            <p className="text-sm text-ink-muted">Import activities to see your bests.</p>
+            <EmptyState
+              title="No personal bests yet"
+              description="Import activities to start tracking your bests."
+            />
           ) : (
             <ul className="divide-y divide-line text-sm">
               {bests.map((b) => (

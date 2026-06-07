@@ -12,6 +12,7 @@ import {
 } from "./charts";
 import type { Units } from "@/lib/db/types";
 import { FATIGUE_COLOR } from "@/lib/util/colors";
+import EmptyState from "@/components/EmptyState";
 
 const CURVES: { key: LoadCurve; label: string }[] = [
   { key: "all", label: "All" },
@@ -127,9 +128,10 @@ export default function DashboardClient({
           {data.summary.length ? (
             <FitnessSummaryPie slices={data.summary} />
           ) : (
-            <p className="py-10 text-center text-sm text-ink-muted">
-              No activities in the last 28 days.
-            </p>
+            <EmptyState
+              title="No activities yet"
+              description="Nothing logged in the last 28 days."
+            />
           )}
         </section>
 
