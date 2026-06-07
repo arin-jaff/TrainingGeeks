@@ -92,12 +92,14 @@ function DayCell({
   items,
   inMonth,
   isToday,
+  injured,
   units,
 }: {
   date: string;
   items: CalItem[];
   inMonth: boolean;
   isToday: boolean;
+  injured: boolean;
   units: Units;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: date });
@@ -116,19 +118,35 @@ function DayCell({
       ref={setNodeRef}
       className={[
         "min-h-[150px] border-b border-r border-line",
-        inMonth ? "bg-surface-card" : "bg-surface",
+        injured ? "bg-fatigue/5" : inMonth ? "bg-surface-card" : "bg-surface",
         isOver ? "ring-2 ring-inset ring-accent" : "",
       ].join(" ")}
     >
       {isToday ? (
-        <div className="mb-1 bg-[#2f6fed] px-1.5 py-0.5 text-[11px] font-medium text-white">
-          Today {dayNum}
+        <div className="mb-1 flex items-center justify-between bg-[#2f6fed] px-1.5 py-0.5 text-[11px] font-medium text-white">
+          <span>Today {dayNum}</span>
+          {injured && (
+            <span
+              className="h-2 w-2 rounded-full bg-white/90"
+              title="Injured"
+              aria-label="Injured"
+            />
+          )}
         </div>
       ) : (
-        <div
-          className={`px-1.5 pt-1 text-[11px] ${inMonth ? "text-ink" : "text-ink-muted/40"}`}
-        >
-          {label}
+        <div className="flex items-center justify-between px-1.5 pt-1">
+          <span
+            className={`text-[11px] ${inMonth ? "text-ink" : "text-ink-muted/40"}`}
+          >
+            {label}
+          </span>
+          {injured && (
+            <span
+              className="h-2 w-2 rounded-full bg-fatigue"
+              title="Injured"
+              aria-label="Injured"
+            />
+          )}
         </div>
       )}
       <div className="space-y-1.5 px-1.5 pb-1.5 pt-1">
@@ -227,6 +245,7 @@ export default function CalendarGrid({
   weeks,
   itemsByDate,
   weekSummaries,
+  injuredDates,
   month,
   today,
   units,
@@ -234,11 +253,13 @@ export default function CalendarGrid({
   weeks: string[][];
   itemsByDate: Record<string, CalItem[]>;
   weekSummaries: Record<string, WeekSummary>;
+  injuredDates: string[];
   month: string;
   today: string;
   units: Units;
 }) {
   const router = useRouter();
+  const injured = new Set(injuredDates);
   const [, startTransition] = useTransition();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -286,6 +307,7 @@ export default function CalendarGrid({
                 items={itemsByDate[date] ?? []}
                 inMonth={date.slice(0, 7) === month}
                 isToday={date === today}
+                injured={injured.has(date)}
                 units={units}
               />
             ))}

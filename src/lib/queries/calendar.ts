@@ -2,10 +2,12 @@ import type { DB } from "../db/client.js";
 import {
   listActivitiesBetween,
   listDailyLoad,
+  listInjuriesOverlapping,
   listPlannedBetween,
 } from "../db/repo.js";
 import type { Modality } from "../db/types.js";
 import { MODALITY_LABEL } from "../util/format.js";
+import { eachDay } from "../util/dates.js";
 
 export interface CalItem {
   id: number;
@@ -44,6 +46,7 @@ function discKey(modality: Modality): string {
 export interface CalendarData {
   itemsByDate: Record<string, CalItem[]>;
   weekSummaries: Record<string, WeekSummary>;
+  injuredDates: string[];
 }
 
 function stress(
@@ -61,9 +64,19 @@ function stress(
 export function getCalendarData(
   db: DB,
   weeks: string[][],
+  today: string,
 ): CalendarData {
   const gridStart = weeks[0][0];
   const gridEnd = weeks[weeks.length - 1][6];
+
+  // Dates within the grid that fall inside any injury period.
+  const injured = new Set<string>();
+  for (const inj of listInjuriesOverlapping(db, gridStart, gridEnd)) {
+    const from = inj.start_date > gridStart ? inj.start_date : gridStart;
+    const openEnd = inj.end_date ?? today;
+    const to = openEnd < gridEnd ? openEnd : gridEnd;
+    for (const d of eachDay(from, to)) injured.add(d);
+  }
 
   const activities = listActivitiesBetween(db, gridStart, gridEnd);
   const planned = listPlannedBetween(db, gridStart, gridEnd);
@@ -155,5 +168,5 @@ export function getCalendarData(
     };
   }
 
-  return { itemsByDate, weekSummaries };
+  return { itemsByDate, weekSummaries, injuredDates: [...injured] };
 }

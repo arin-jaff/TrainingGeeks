@@ -57,7 +57,11 @@ export default async function CalendarPage({
     : today.slice(0, 7);
 
   const weeks = monthMatrix(month);
-  const { itemsByDate, weekSummaries } = getCalendarData(db, weeks);
+  const { itemsByDate, weekSummaries, injuredDates } = getCalendarData(
+    db,
+    weeks,
+    today,
+  );
 
   return (
     <div className="flex gap-3">
@@ -122,6 +126,7 @@ export default async function CalendarPage({
           weeks={weeks}
           itemsByDate={itemsByDate}
           weekSummaries={weekSummaries}
+          injuredDates={injuredDates}
           month={month}
           today={today}
           units={units}

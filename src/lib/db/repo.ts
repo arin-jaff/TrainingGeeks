@@ -505,6 +505,107 @@ export function listRecentMetrics(db: DB, limit = 20): MetricRow[] {
   );
 }
 
+// ---- Injuries ----------------------------------------------------------
+
+export interface InjuryRow {
+  id: number;
+  title: string;
+  body_part: string | null;
+  start_date: string;
+  end_date: string | null;
+  notes: string | null;
+}
+
+export function insertInjury(
+  db: DB,
+  p: { title: string; body_part?: string | null; start_date: string; notes?: string | null },
+): number {
+  const info = db
+    .prepare(
+      "INSERT INTO injury (title, body_part, start_date, notes) VALUES (?, ?, ?, ?)",
+    )
+    .run(p.title, p.body_part ?? null, p.start_date, p.notes ?? null);
+  return Number(info.lastInsertRowid);
+}
+
+export function listInjuries(db: DB): InjuryRow[] {
+  return all<InjuryRow>(
+    db,
+    "SELECT * FROM injury ORDER BY (end_date IS NOT NULL), start_date DESC",
+  );
+}
+
+export function setInjuryEnd(db: DB, id: number, endDate: string | null): void {
+  db.prepare("UPDATE injury SET end_date = ? WHERE id = ?").run(endDate, id);
+}
+
+export function deleteInjury(db: DB, id: number): void {
+  db.prepare("DELETE FROM injury WHERE id = ?").run(id);
+}
+
+/** Injuries whose [start, end||open] period overlaps [start,end]. */
+export function listInjuriesOverlapping(
+  db: DB,
+  startDate: string,
+  endDate: string,
+): InjuryRow[] {
+  return all<InjuryRow>(
+    db,
+    `SELECT * FROM injury
+     WHERE start_date <= ? AND (end_date IS NULL OR end_date >= ?)`,
+    endDate,
+    startDate,
+  );
+}
+
+// ---- Equipment ---------------------------------------------------------
+
+export interface EquipmentRow {
+  id: number;
+  type: string;
+  name: string;
+  brand: string | null;
+  distance_m: number;
+  active: number;
+}
+
+export function insertEquipment(
+  db: DB,
+  p: { type: string; name: string; brand?: string | null; distance_m?: number },
+): number {
+  const info = db
+    .prepare(
+      "INSERT INTO equipment (type, name, brand, distance_m) VALUES (?, ?, ?, ?)",
+    )
+    .run(p.type, p.name, p.brand ?? null, p.distance_m ?? 0);
+  return Number(info.lastInsertRowid);
+}
+
+export function listEquipment(db: DB): EquipmentRow[] {
+  return all<EquipmentRow>(
+    db,
+    "SELECT * FROM equipment ORDER BY active DESC, type, name",
+  );
+}
+
+export function addEquipmentDistance(db: DB, id: number, meters: number): void {
+  db.prepare("UPDATE equipment SET distance_m = distance_m + ? WHERE id = ?").run(
+    meters,
+    id,
+  );
+}
+
+export function setEquipmentActive(db: DB, id: number, active: boolean): void {
+  db.prepare("UPDATE equipment SET active = ? WHERE id = ?").run(
+    active ? 1 : 0,
+    id,
+  );
+}
+
+export function deleteEquipment(db: DB, id: number): void {
+  db.prepare("DELETE FROM equipment WHERE id = ?").run(id);
+}
+
 // ---- App settings (key/value preferences) ------------------------------
 
 export function getAllSettings(db: DB): Record<string, string> {

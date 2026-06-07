@@ -231,4 +231,30 @@ CREATE TABLE metric (
 CREATE INDEX idx_metric_type_date ON metric (type, date);
 `,
   },
+  {
+    id: 4,
+    name: "injury_equipment",
+    sql: /* sql */ `
+CREATE TABLE injury (
+  id INTEGER PRIMARY KEY,
+  title TEXT NOT NULL,
+  body_part TEXT,
+  start_date TEXT NOT NULL,   -- YYYY-MM-DD
+  end_date TEXT,              -- NULL = ongoing
+  notes TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_injury_dates ON injury (start_date, end_date);
+
+CREATE TABLE equipment (
+  id INTEGER PRIMARY KEY,
+  type TEXT NOT NULL,         -- bike | shoes | other
+  name TEXT NOT NULL,
+  brand TEXT,
+  distance_m REAL NOT NULL DEFAULT 0,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`,
+  },
 ];

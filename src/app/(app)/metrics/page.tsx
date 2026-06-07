@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db/client";
-import { getAthlete } from "@/lib/db/repo";
+import { getAthlete, listInjuries } from "@/lib/db/repo";
 import { getMetricsData } from "@/lib/queries/metrics";
+import InjuryPanel from "@/components/metrics/InjuryPanel";
 import { WELLNESS_BY_ID, WELLNESS_TYPES } from "@/lib/metrics/wellness";
 import { todayLocal } from "@/lib/util/dates";
 import { addMetric } from "@/app/actions/metrics";
@@ -24,6 +25,7 @@ export default async function MetricsPage({
   const selected = WELLNESS_BY_ID[type ?? ""] ? type! : "weight";
   const data = getMetricsData(db, selected, today);
   const sel = WELLNESS_BY_ID[selected];
+  const injuries = listInjuries(db);
 
   return (
     <div>
@@ -98,6 +100,10 @@ export default async function MetricsPage({
             ))}
           </ul>
         </section>
+      </div>
+
+      <div className="mt-6">
+        <InjuryPanel injuries={injuries} today={today} />
       </div>
     </div>
   );
