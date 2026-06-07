@@ -20,6 +20,7 @@ export interface CardioMetrics {
   variabilityIndex: number | null;
   efficiencyFactor: number | null;
   decoupling: number | null; // percent
+  work: number | null; // kJ, integrated from the power stream
 }
 
 function round(v: number | null, dp: number): number | null {
@@ -71,6 +72,7 @@ export function computeCardioMetrics(
     variabilityIndex: null,
     efficiencyFactor: null,
     decoupling: null,
+    work: null,
   };
   if (!isCardio(activity.modality)) return empty;
 
@@ -145,5 +147,9 @@ export function computeCardioMetrics(
     variabilityIndex: round(vi, 3),
     efficiencyFactor: round(ef, 4),
     decoupling: round(decouple, 1),
+    // Work = integral of power over time; 1 Hz samples => Σ watts / 1000 kJ.
+    work: hasPower
+      ? Math.round(power1hz.reduce((a, b) => a + b, 0) / 1000)
+      : null,
   };
 }

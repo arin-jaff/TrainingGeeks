@@ -199,7 +199,7 @@ export default function SettingsModal({
                     <input name="rpe" type="number" min={1} max={10} defaultValue={athlete?.strength_rpe_default ?? 5} className={`${input} w-24`} />
                   </Field>
                   <Field label="Date of Birth">
-                    <input defaultValue={athlete?.dob ?? ""} placeholder="YYYY-MM-DD" className={`${input} w-40`} />
+                    <input name="dob" defaultValue={athlete?.dob ?? ""} placeholder="YYYY-MM-DD" className={`${input} w-40`} />
                   </Field>
                 </div>
                 <div className="mt-5">

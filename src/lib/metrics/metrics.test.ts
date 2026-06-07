@@ -111,6 +111,8 @@ test("one hour at FTP yields TSS 100 and IF 1.0 (power)", () => {
   assert.equal(m.intensityFactor, 1);
   assert.equal(m.variabilityIndex, 1);
   assert.ok(Math.abs(m.tss! - 100) < 0.5, `tss ${m.tss}`);
+  // Work = 250 W × 3600 s / 1000 = 900 kJ
+  assert.equal(m.work, 900);
 });
 
 test("half hour at threshold pace yields ~50 TSS (pace)", () => {

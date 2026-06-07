@@ -148,7 +148,7 @@ function persist(
     avg_cadence: n.summary.avgCadence,
     max_cadence: n.summary.maxCadence,
     calories: n.summary.calories,
-    kj: n.summary.kj,
+    kj: n.summary.kj ?? cardio.work,
     tss: cardio.tss,
     s3,
     intensity_factor: cardio.intensityFactor,

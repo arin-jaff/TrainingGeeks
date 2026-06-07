@@ -100,6 +100,7 @@ export function reprocessAll(db: DB): number {
       variability_index: cardio.variabilityIndex,
       efficiency_factor: cardio.efficiencyFactor,
       decoupling: cardio.decoupling,
+      kj: row.kj ?? cardio.work,
     });
     count++;
   }

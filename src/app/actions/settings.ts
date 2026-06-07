@@ -32,6 +32,7 @@ export async function updateProfile(formData: FormData): Promise<void> {
   const units = formData.get("units") === "metric" ? "metric" : "imperial";
   const timezone = String(formData.get("timezone") ?? "America/New_York").trim();
   const rpe = Number(formData.get("rpe") ?? 5);
+  const dob = String(formData.get("dob") ?? "").trim();
   updateAthlete(db, {
     name: name || "Athlete",
     email: email || null,
@@ -40,6 +41,7 @@ export async function updateProfile(formData: FormData): Promise<void> {
     strength_rpe_default: Number.isFinite(rpe)
       ? Math.max(1, Math.min(10, Math.round(rpe)))
       : 5,
+    ...(/^\d{4}-\d{2}-\d{2}$/.test(dob) ? { dob } : {}),
   });
   revalidatePath("/settings");
   revalidatePath("/");
