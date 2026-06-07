@@ -1,0 +1,463 @@
+plan_id,plan_name,source,distance,level,total_weeks,week,day_of_week,day_num,workout_type,sport,duration_or_distance,intensity,workout_description,notes
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Monday,1,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Tuesday,2,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Wednesday,3,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Thursday,4,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Friday,5,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Saturday,6,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,1,Sunday,7,Walk,Walk,30 min,Easy,Easy walk 30 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Monday,8,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Tuesday,9,Easy Run,Run,1.75 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Wednesday,10,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Thursday,11,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Friday,12,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Saturday,13,Easy Run,Run,1.75 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,2,Sunday,14,Walk,Walk,35 min,Easy,Easy walk 35 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Monday,15,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Tuesday,16,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Wednesday,17,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Thursday,18,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Friday,19,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Saturday,20,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,3,Sunday,21,Walk,Walk,40 min,Easy,Easy walk 40 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Monday,22,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Tuesday,23,Easy Run,Run,2.25 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Wednesday,24,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Thursday,25,Easy Run,Run,1.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Friday,26,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Saturday,27,Easy Run,Run,2.25 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,4,Sunday,28,Walk,Walk,45 min,Easy,Easy walk 45 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Monday,29,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Tuesday,30,Easy Run,Run,2.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Wednesday,31,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Thursday,32,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Friday,33,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Saturday,34,Easy Run,Run,2.5 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,5,Sunday,35,Walk,Walk,50 min,Easy,Easy walk 50 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Monday,36,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Tuesday,37,Easy Run,Run,2.75 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Wednesday,38,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Thursday,39,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Friday,40,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Saturday,41,Easy Run,Run,2.75 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,6,Sunday,42,Walk,Walk,55 min,Easy,Easy walk 55 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Monday,43,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Tuesday,44,Easy Run,Run,3 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Wednesday,45,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Thursday,46,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Friday,47,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Saturday,48,Easy Run,Run,3 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,7,Sunday,49,Walk,Walk,60 min,Easy,Easy walk 60 min,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Monday,50,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Tuesday,51,Easy Run,Run,3 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Wednesday,52,Rest,Rest,,,Rest or run/walk,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Thursday,53,Easy Run,Run,2 mi,Easy,Run easy conversational pace,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Friday,54,Rest,Rest,,,Rest,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Saturday,55,Rest,Rest,,,Rest - taper before race,
+5K_NOV_01,Hal Higdon 5K Novice,Hal Higdon,5K,Novice,8,8,Sunday,56,Race,Run,5K (3.1 mi),Race,5K Race,Goal race
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Monday,1,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Tuesday,2,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Wednesday,3,Intervals,Run,5x400m,Hard,WU 1-2 mi easy + dynamic drills; MS 5x400m at ~mile race pace with 400m jog recovery; CD short jog,Warm up/cool down not counted in distance
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Thursday,4,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Friday,5,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Saturday,6,Easy Run,Run,3 mi,Easy,Easy run at comfortable pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,1,Sunday,7,Long Run,Run,5 mi,Easy,Long run at comfortable conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Monday,8,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Tuesday,9,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Wednesday,10,Tempo Run,Run,30 min,Moderate-Hard,"WU 5-10 min easy; MS 10-15 min near 10K race pace; CD 5-10 min easy","Continuous run with easy start, buildup to near 10K pace, ease back"
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Thursday,11,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Friday,12,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Saturday,13,Fast Run,Run,3 mi,Moderate-Hard,Faster than easy pace - comfortably hard; do not converse easily,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,2,Sunday,14,Long Run,Run,5 mi,Easy,Long run conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Monday,15,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Tuesday,16,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Wednesday,17,Intervals,Run,6x400m,Hard,WU 1-2 mi easy; MS 6x400m at ~mile race pace with 400m jog recovery; CD short jog,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Thursday,18,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Friday,19,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Saturday,20,Easy Run,Run,4 mi,Easy,Easy run at comfortable pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,3,Sunday,21,Long Run,Run,6 mi,Easy,Long run at comfortable conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Monday,22,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Tuesday,23,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Wednesday,24,Tempo Run,Run,35 min,Moderate-Hard,"WU 5-10 min easy; MS 15-20 min near 10K race pace; CD 5-10 min easy",
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Thursday,25,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Friday,26,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Saturday,27,Rest,Rest,,,Rest - taper for test race,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,4,Sunday,28,Test Race,Run,5K (3.1 mi),Race,5K Test Race - use result to predict goal pace for final race,Mid-plan fitness check
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Monday,29,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Tuesday,30,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Wednesday,31,Intervals,Run,7x400m,Hard,WU 1-2 mi easy; MS 7x400m at ~mile race pace with 400m jog recovery; CD short jog,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Thursday,32,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Friday,33,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Saturday,34,Fast Run,Run,4 mi,Moderate-Hard,Faster than easy pace - comfortably hard,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,5,Sunday,35,Long Run,Run,6 mi,Easy,Long run conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Monday,36,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Tuesday,37,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Wednesday,38,Tempo Run,Run,40 min,Moderate-Hard,"WU 5-10 min easy; MS 20 min near 10K race pace; CD 5-10 min easy",
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Thursday,39,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Friday,40,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Saturday,41,Easy Run,Run,5 mi,Easy,Easy run at comfortable pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,6,Sunday,42,Long Run,Run,7 mi,Easy,Long run at comfortable conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Monday,43,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Tuesday,44,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Wednesday,45,Intervals,Run,8x400m,Hard,WU 1-2 mi easy; MS 8x400m at ~mile race pace with 400m jog recovery; CD short jog,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Thursday,46,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Friday,47,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Saturday,48,Fast Run,Run,5 mi,Moderate-Hard,Faster than easy pace - comfortably hard,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,7,Sunday,49,Long Run,Run,7 mi,Easy,Long run conversational pace,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Monday,50,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Tuesday,51,Easy Run,Run,3 mi,Easy,Easy conversational run,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Wednesday,52,Tempo Run,Run,30 min,Moderate,Short easy tempo - taper week,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Thursday,53,Easy Run,Run,2 mi,Easy,Short easy run - taper,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Friday,54,Rest,Rest,,,Rest,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Saturday,55,Rest,Rest,,,Rest - final taper,
+5K_INT_01,Hal Higdon 5K Intermediate,Hal Higdon,5K,Intermediate,8,8,Sunday,56,Race,Run,5K (3.1 mi),Race,5K Goal Race,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Monday,1,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Tuesday,2,Easy Run,Run,2.5 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Wednesday,3,Cross-Training,Cross,30 min,Easy,Aerobic cross-training (swim/bike/walk) - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Thursday,4,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Friday,5,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Saturday,6,Cross-Training,Cross,40 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,1,Sunday,7,Long Run,Run,3 mi,Easy,Slow long run - conversational pace - walk breaks OK,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Monday,8,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Tuesday,9,Easy Run,Run,2.5 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Wednesday,10,Cross-Training,Cross,30 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Thursday,11,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Friday,12,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Saturday,13,Cross-Training,Cross,40 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,2,Sunday,14,Long Run,Run,3.5 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Monday,15,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Tuesday,16,Easy Run,Run,2.5 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Wednesday,17,Cross-Training,Cross,35 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Thursday,18,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Friday,19,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Saturday,20,Cross-Training,Cross,50 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,3,Sunday,21,Long Run,Run,4 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Monday,22,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Tuesday,23,Easy Run,Run,3 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Wednesday,24,Cross-Training,Cross,35 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Thursday,25,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Friday,26,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Saturday,27,Cross-Training,Cross,50 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,4,Sunday,28,Long Run,Run,4 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Monday,29,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Tuesday,30,Easy Run,Run,3 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Wednesday,31,Cross-Training,Cross,40 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Thursday,32,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Friday,33,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Saturday,34,Cross-Training,Cross,60 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,5,Sunday,35,Long Run,Run,4.5 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Monday,36,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Tuesday,37,Easy Run,Run,3 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Wednesday,38,Cross-Training,Cross,40 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Thursday,39,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Friday,40,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Saturday,41,Cross-Training,Cross,60 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,6,Sunday,42,Long Run,Run,5 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Monday,43,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Tuesday,44,Easy Run,Run,3 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Wednesday,45,Cross-Training,Cross,45 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Thursday,46,Easy Run,Run,2 mi,Easy,Easy conversational run,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Friday,47,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Saturday,48,Cross-Training,Cross,60 min,Easy,Aerobic cross-training - easy effort,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,7,Sunday,49,Long Run,Run,5.5 mi,Easy,Slow long run - conversational pace,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Monday,50,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Tuesday,51,Easy Run,Run,3 mi,Easy,Easy conversational run - taper,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Wednesday,52,Cross-Training,Cross,30 min,Easy,Light cross-training - taper,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Thursday,53,Easy Run,Run,2 mi,Easy,Easy run - taper,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Friday,54,Rest,Rest,,,Rest - final rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Saturday,55,Rest,Rest,,,Rest,
+10K_NOV_01,Hal Higdon 10K Novice,Hal Higdon,10K,Novice,8,8,Sunday,56,Race,Run,10K (6.2 mi),Race,10K Race,Goal race
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Monday,1,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Tuesday,2,Easy Run,Run,3 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Wednesday,3,Easy Run or Cross,Multi,2 mi or 30 min cross,Easy,2 mi easy run OR 30 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Thursday,4,Easy Run,Run,3 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Friday,5,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Saturday,6,Cross-Training,Cross,30 min,Easy,Aerobic cross-training - swim/bike/walk,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,1,Sunday,7,Long Run,Run,4 mi,Easy,Easy long run - conversational pace,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Monday,8,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Tuesday,9,Easy Run,Run,3 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Wednesday,10,Easy Run or Cross,Multi,2 mi or 30 min cross,Easy,2 mi easy run OR 30 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Thursday,11,Easy Run,Run,3 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Friday,12,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Saturday,13,Cross-Training,Cross,30 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,2,Sunday,14,Long Run,Run,4 mi,Easy,Easy long run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Monday,15,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Tuesday,16,Easy Run,Run,3.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Wednesday,17,Easy Run or Cross,Multi,2 mi or 40 min cross,Easy,2 mi easy run OR 40 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Thursday,18,Easy Run,Run,3.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Friday,19,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Saturday,20,Cross-Training,Cross,40 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,3,Sunday,21,Long Run,Run,5 mi,Easy,Easy long run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Monday,22,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Tuesday,23,Easy Run,Run,3.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Wednesday,24,Easy Run or Cross,Multi,2 mi or 40 min cross,Easy,2 mi easy run OR 40 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Thursday,25,Easy Run,Run,3.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Friday,26,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Saturday,27,Cross-Training,Cross,40 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,4,Sunday,28,Long Run,Run,5 mi,Easy,Easy long run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Monday,29,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Tuesday,30,Easy Run,Run,4 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Wednesday,31,Easy Run or Cross,Multi,2 mi or 40 min cross,Easy,2 mi easy run OR 40 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Thursday,32,Easy Run,Run,4 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Friday,33,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Saturday,34,Cross-Training,Cross,40 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,5,Sunday,35,Long Run,Run,6 mi,Easy,Easy long run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Monday,36,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Tuesday,37,Easy Run,Run,4 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Wednesday,38,Easy Run or Cross,Multi,2 mi or 40 min cross,Easy,2 mi easy run OR 40 min cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Thursday,39,Easy Run,Run,4 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Friday,40,Rest or Easy Run,Multi,0 or easy,Easy,Rest or easy shakeout run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Saturday,41,Rest,Rest,,,Rest - race eve,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,6,Sunday,42,Race,Run,5K (3.1 mi),Race,Tune-up 5K Race,Optional tune-up race
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Monday,43,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Tuesday,44,Easy Run,Run,4.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Wednesday,45,Easy Run or Cross,Multi,3 mi or 50 min cross,Easy,3 mi easy run OR 50 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Thursday,46,Easy Run,Run,4.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Friday,47,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Saturday,48,Cross-Training,Cross,50 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,7,Sunday,49,Long Run,Run,7 mi,Easy,Easy long run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Monday,50,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Tuesday,51,Easy Run,Run,4.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Wednesday,52,Easy Run or Cross,Multi,3 mi or 50 min cross,Easy,3 mi easy run OR 50 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Thursday,53,Easy Run,Run,4.5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Friday,54,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Saturday,55,Cross-Training,Cross,50 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,8,Sunday,56,Long Run,Run,8 mi,Easy,Easy long run - biggest mileage building week,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Monday,57,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Tuesday,58,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Wednesday,59,Easy Run or Cross,Multi,3 mi or 50 min cross,Easy,3 mi easy run OR 50 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Thursday,60,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Friday,61,Rest or Easy Run,Multi,0 or easy,Easy,Rest or easy shakeout,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Saturday,62,Rest,Rest,,,Rest - race eve,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,9,Sunday,63,Race,Run,10K (6.2 mi),Race,Tune-up 10K Race,Optional tune-up race
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Monday,64,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Tuesday,65,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Wednesday,66,Easy Run or Cross,Multi,3 mi or 60 min cross,Easy,3 mi easy run OR 60 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Thursday,67,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Friday,68,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Saturday,69,Cross-Training,Cross,60 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,10,Sunday,70,Long Run,Run,9 mi,Easy,Longest long run before taper - easy conversational,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Monday,71,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Tuesday,72,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Wednesday,73,Easy Run or Cross,Multi,3 mi or 60 min cross,Easy,3 mi easy run OR 60 min aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Thursday,74,Easy Run,Run,5 mi,Easy,Easy conversational run,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Friday,75,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Saturday,76,Cross-Training,Cross,60 min,Easy,Aerobic cross-training,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,11,Sunday,77,Long Run,Run,10 mi,Easy,Peak long run - conversational pace,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Monday,78,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Tuesday,79,Easy Run,Run,4 mi,Easy,Taper run - easy,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Wednesday,80,Easy Run or Cross,Multi,3 mi or 30 min cross,Easy,3 mi easy run OR 30 min cross - taper,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Thursday,81,Easy Run,Run,2 mi,Easy,Short easy run - taper,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Friday,82,Rest,Rest,,,Rest,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Saturday,83,Rest,Rest,,,Rest - race day eve,
+HM_NOV1_01,Hal Higdon Half Marathon Novice 1,Hal Higdon,Half Marathon,Novice,12,12,Sunday,84,Race,Run,13.1 mi,Race,Half Marathon Race,Goal race
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Monday,1,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Tuesday,2,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Wednesday,3,Easy Run,Run,3 mi,Easy,Easy conversational run - sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Thursday,4,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Friday,5,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Saturday,6,Long Run,Run,6 mi,Easy,Long run - 30-90 sec/mi slower than goal marathon pace - walk breaks OK,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,1,Sunday,7,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - swim/bike/walk - easy effort,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Monday,8,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Tuesday,9,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Wednesday,10,Easy Run,Run,3 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Thursday,11,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Friday,12,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Saturday,13,Long Run,Run,7 mi,Easy,Long run - conversational pace - stepback week next,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,2,Sunday,14,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Monday,15,Rest,Rest,,,Rest,STEPBACK WEEK - reduced mileage for recovery
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Tuesday,16,Easy Run,Run,3 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Wednesday,17,Easy Run,Run,4 mi,Easy,Easy sorta-long midweek run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Thursday,18,Easy Run,Run,3 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Friday,19,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Saturday,20,Long Run,Run,5 mi,Easy,Stepback long run - shorter to allow recovery,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,3,Sunday,21,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Monday,22,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Tuesday,23,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Wednesday,24,Easy Run,Run,4 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Thursday,25,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Friday,26,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Saturday,27,Long Run,Run,9 mi,Easy,Long run - conversational pace,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,4,Sunday,28,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Monday,29,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Tuesday,30,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Wednesday,31,Easy Run,Run,5 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Thursday,32,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Friday,33,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Saturday,34,Long Run,Run,10 mi,Easy,Long run - conversational pace,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,5,Sunday,35,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Monday,36,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Tuesday,37,Easy Run,Run,3 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Wednesday,38,Easy Run,Run,5 mi,Easy,Easy sorta-long midweek run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Thursday,39,Easy Run,Run,3 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Friday,40,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Saturday,41,Long Run,Run,7 mi,Easy,Stepback long run - recovery week,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,6,Sunday,42,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Monday,43,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Tuesday,44,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Wednesday,45,Easy Run,Run,6 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Thursday,46,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Friday,47,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Saturday,48,Long Run,Run,12 mi,Easy,Long run - conversational pace,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,7,Sunday,49,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Monday,50,Rest,Rest,,,Rest,RACE WEEK - half marathon as tune-up (race replaces long run)
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Tuesday,51,Easy Run,Run,3 mi,Easy,Easy conversational run,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Wednesday,52,Easy Run,Run,6 mi,Easy,Easy sorta-long midweek run,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Thursday,53,Easy Run,Run,3 mi,Easy,Easy conversational run,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Friday,54,Rest,Rest,,,Rest - pre-race rest,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Saturday,55,Rest,Rest,,,Rest - half marathon eve,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,8,Sunday,56,Race,Run,13.1 mi,Race,Optional Half Marathon tune-up race,Replaces long run - not required
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Monday,57,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Tuesday,58,Easy Run,Run,3 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Wednesday,59,Easy Run,Run,7 mi,Easy,Easy sorta-long midweek run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Thursday,60,Easy Run,Run,4 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Friday,61,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Saturday,62,Long Run,Run,10 mi,Easy,Stepback long run - recovery after half marathon,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,9,Sunday,63,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Monday,64,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Tuesday,65,Easy Run,Run,3 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Wednesday,66,Easy Run,Run,7 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Thursday,67,Easy Run,Run,4 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Friday,68,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Saturday,69,Long Run,Run,15 mi,Easy,Long run - conversational pace - 30-90 sec/mi slower than goal marathon,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,10,Sunday,70,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Monday,71,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Tuesday,72,Easy Run,Run,4 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Wednesday,73,Easy Run,Run,8 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Thursday,74,Easy Run,Run,4 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Friday,75,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Saturday,76,Long Run,Run,16 mi,Easy,Long run - conversational pace,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,11,Sunday,77,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Monday,78,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Tuesday,79,Easy Run,Run,4 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Wednesday,80,Easy Run,Run,8 mi,Easy,Easy sorta-long midweek run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Thursday,81,Easy Run,Run,5 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Friday,82,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Saturday,83,Long Run,Run,12 mi,Easy,Stepback long run - recovery week,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,12,Sunday,84,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Monday,85,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Tuesday,86,Easy Run,Run,4 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Wednesday,87,Easy Run,Run,9 mi,Easy,Easy sorta-long midweek run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Thursday,88,Easy Run,Run,5 mi,Easy,Easy conversational run,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Friday,89,Rest,Rest,,,Rest,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Saturday,90,Long Run,Run,18 mi,Easy,Long run - conversational pace - approach race day hydration/fueling strategy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,13,Sunday,91,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy,
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Monday,92,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Tuesday,93,Easy Run,Run,5 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Wednesday,94,Easy Run,Run,9 mi,Easy,Easy sorta-long midweek run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Thursday,95,Easy Run,Run,5 mi,Easy,Easy conversational run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Friday,96,Rest,Rest,,,Rest,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Saturday,97,Long Run,Run,14 mi,Easy,Stepback long run,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,14,Sunday,98,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training,STEPBACK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Monday,99,Rest,Rest,,,Rest,PEAK LONG RUN WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Tuesday,100,Easy Run,Run,5 mi,Easy,Easy conversational run,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Wednesday,101,Easy Run,Run,10 mi,Easy,Easy sorta-long midweek run,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Thursday,102,Easy Run,Run,5 mi,Easy,Easy conversational run,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Friday,103,Rest,Rest,,,Rest,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Saturday,104,Long Run,Run,20 mi,Easy,PEAK LONG RUN - max long run of plan - conversational pace - walk breaks OK,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,15,Sunday,105,Cross-Training,Cross,30-60 min,Easy,Aerobic cross-training - easy - recovery focus,PEAK WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Monday,106,Rest,Rest,,,Rest,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Tuesday,107,Easy Run,Run,5 mi,Easy,Easy conversational run - taper,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Wednesday,108,Easy Run,Run,8 mi,Easy,Easy run - reduced mileage,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Thursday,109,Easy Run,Run,4 mi,Easy,Easy run - taper,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Friday,110,Rest,Rest,,,Rest,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Saturday,111,Long Run,Run,12 mi,Easy,Taper long run - mileage drops significantly,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,16,Sunday,112,Cross-Training,Cross,30-60 min,Easy,Light aerobic cross-training,TAPER WEEK 1
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Monday,113,Rest,Rest,,,Rest,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Tuesday,114,Easy Run,Run,4 mi,Easy,Easy short run - taper,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Wednesday,115,Easy Run,Run,6 mi,Easy,Easy run - taper,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Thursday,116,Easy Run,Run,3 mi,Easy,Easy short run - taper,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Friday,117,Rest,Rest,,,Rest,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Saturday,118,Long Run,Run,8 mi,Easy,Short taper run - feel out legs,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,17,Sunday,119,Cross-Training,Cross,20-30 min,Easy,Very light cross-training - optional,TAPER WEEK 2
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Monday,120,Rest,Rest,,,Rest,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Tuesday,121,Easy Run,Run,3 mi,Easy,Very easy short run - shake out legs,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Wednesday,122,Easy Run,Run,4 mi,Easy,Very easy short run,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Thursday,123,Easy Run,Run,2 mi,Easy,Very easy short shakeout run,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Friday,124,Rest,Rest,,,Rest - packet pickup day,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Saturday,125,Rest,Rest,,,Rest - race day eve - stay off feet,RACE WEEK
+MAR_NOV1_01,Hal Higdon Marathon Novice 1,Hal Higdon,Marathon,Novice,18,18,Sunday,126,Race,Run,26.2 mi,Race,MARATHON RACE DAY,Goal race - trust your training
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Monday,1,Rest,Rest,,,Day off - rest and meal prep,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Tuesday,2,Swim Test,Swim,30 min,Test,"WU: 5-10 min easy swim; MS: Swim 15 min max distance (breaks OK); CD: 5 min easy swim",Establishes baseline swim test pace (TP)
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Wednesday,3,Easy Bike,Bike,45 min,Easy,Ride easy/conversational in easy gear high cadence,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Thursday,4,Run Test,Run,45 min,Test,"WU: 10 min easy walk/jog; MS: Run/walk 30 min max distance; CD: 5 min easy walk",Establishes baseline run test pace (TP)
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Friday,5,Easy Swim,Swim,20 min,Easy,Swim easy taking breaks as needed,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Saturday,6,Bike Test,Bike,45 min,Test,"WU: 10 min easy ride; MS: Ride 30 min max distance; CD: 5 min easy ride",Establishes baseline bike test pace (TP)
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,1,Sunday,7,Easy Run,Run,30 min,Easy,Run/walk easy conversational pace - breaks OK,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Monday,8,Rest,Rest,,,Day off,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Tuesday,9,Build Swim,Swim,25 min,Moderate,"WU: 5 min easy; MS: 4x3 min at TP with 1 min RI; CD: 5 min easy",TP = Test Pace from Week 1
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Wednesday,10,Easy Bike,Bike,45 min,Easy,Ride easy/conversational in easy gear high cadence,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Thursday,11,Build Run,Run,40 min,Moderate,"WU: 10 min easy walk/jog; MS: 4x4 min at TP with 2 min RI; CD: 8 min easy walk/jog",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Friday,12,Easy Swim,Swim,20 min,Easy,Swim easy taking breaks as needed,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Saturday,13,Build Bike,Bike,60 min,Moderate,"WU: 12 min easy; MS: 4x8 min at TP with 2 min RI; CD: 10 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,2,Sunday,14,Easy Run,Run,30 min,Easy,Run/walk easy conversational pace,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Monday,15,Rest,Rest,,,Day off,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Tuesday,16,Build Swim,Swim,30 min,Moderate,"WU: 5 min easy; MS: 4x4 min at TP with 1 min RI; CD: 5 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Wednesday,17,Easy Bike,Bike,45 min,Easy,Ride easy/conversational in easy gear high cadence,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Thursday,18,Build Run,Run,45 min,Moderate,"WU: 10 min easy; MS: 4x5 min at TP with 2 min RI; CD: 8 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Friday,19,Easy Swim,Swim,20 min,Easy,Swim easy taking breaks as needed,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Saturday,20,Build Bike + Brick,Bike+Run,60 min,Moderate,"WU: 12 min easy bike; MS: 4x9 min at TP with 2 min RI; then run 5 min building to TP; CD: 10 min easy",Brick workout - bike then immediate run
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,3,Sunday,21,Easy Run,Run,30 min,Easy,Run/walk easy conversational pace,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Monday,22,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Tuesday,23,Easy Swim,Swim,20 min,Easy,Swim easy taking breaks as needed,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Wednesday,24,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Thursday,25,Easy Bike,Bike,45 min,Easy,Ride easy conversational,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Friday,26,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Saturday,27,Easy Run,Run,30 min,Easy,Run/walk easy,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,4,Sunday,28,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Monday,29,Rest,Rest,,,Day off,TEST WEEK (re-baseline all 3 disciplines)
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Tuesday,30,Swim Test,Swim,30 min,Test,"WU: 5-10 min easy; MS: Swim 15 min max distance (breaks OK); CD: 5 min easy",Re-test to establish new TP
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Wednesday,31,Easy Bike,Bike,45 min,Easy,Ride easy conversational high cadence,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Thursday,32,Run Test,Run,45 min,Test,"WU: 10 min easy; MS: Run/walk 30 min max distance; CD: 5 min easy walk",Re-test to establish new run TP
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Friday,33,Easy Swim,Swim,20 min,Easy,Swim easy,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Saturday,34,Bike Test,Bike,45 min,Test,"WU: 10 min easy; MS: Ride 30 min max distance; CD: 5 min easy",Re-test to establish new bike TP
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,5,Sunday,35,Easy Run,Run,30 min,Easy,Run/walk easy,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Monday,36,Rest,Rest,,,Day off,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Tuesday,37,Build Swim,Swim,30 min,Moderate,"WU: 5 min easy; MS: 4x4 min at TP with 1 min RI; CD: 5 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Wednesday,38,Easy Bike,Bike,45 min,Easy,Ride easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Thursday,39,Build Run,Run,45 min,Moderate,"WU: 10 min easy; MS: 4x5 min at TP with 2 min RI; CD: 8 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Friday,40,Easy Swim,Swim,20 min,Easy,Swim easy,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Saturday,41,Build Bike,Bike,60 min,Moderate,"WU: 12 min easy; MS: 4x9 min at TP with 2 min RI; CD: 10 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,6,Sunday,42,Easy Run,Run,30 min,Easy,Run/walk easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Monday,43,Rest,Rest,,,Day off,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Tuesday,44,Build Swim,Swim,35 min,Moderate,"WU: 5 min easy; MS: 4x5 min at TP with 1 min RI; CD: 5 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Wednesday,45,Easy Bike,Bike,45 min,Easy,Ride easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Thursday,46,Build Run,Run,50 min,Moderate,"WU: 10 min easy; MS: 4x6 min at TP with 2 min RI; CD: 8 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Friday,47,Easy Swim,Swim,20 min,Easy,Swim easy,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Saturday,48,Build Bike + Brick,Bike+Run,65 min,Moderate,"WU: 12 min easy bike; MS: 4x10 min at TP with 2 min RI; then run 8 min building to TP; CD: 10 min easy",Brick workout
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,7,Sunday,49,Easy Run,Run,30 min,Easy,Run/walk easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Monday,50,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Tuesday,51,Easy Swim,Swim,20 min,Easy,Swim easy - recovery week,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Wednesday,52,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Thursday,53,Easy Bike,Bike,45 min,Easy,Ride easy conversational,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Friday,54,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Saturday,55,Easy Run,Run,30 min,Easy,Run/walk easy,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,8,Sunday,56,Rest,Rest,,,Day off,RECOVERY WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Monday,57,Rest,Rest,,,Day off,TEST WEEK (re-baseline third time)
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Tuesday,58,Swim Test,Swim,30 min,Test,"WU: 5-10 min easy; MS: Swim 15 min max distance (breaks OK); CD: 5 min easy",Final re-test for new TP
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Wednesday,59,Easy Bike,Bike,45 min,Easy,Ride easy conversational,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Thursday,60,Run Test,Run,45 min,Test,"WU: 10 min easy; MS: Run/walk 30 min max distance; CD: 5 min easy walk",Final run re-test
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Friday,61,Easy Swim,Swim,20 min,Easy,Swim easy,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Saturday,62,Bike Test,Bike,45 min,Test,"WU: 10 min easy; MS: Ride 30 min max distance; CD: 5 min easy",Final bike re-test
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,9,Sunday,63,Easy Run,Run,30 min,Easy,Run/walk easy,TEST WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Monday,64,Rest,Rest,,,Day off,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Tuesday,65,Build Swim,Swim,35 min,Moderate,"WU: 5 min easy; MS: 4x5 min at TP with 0:30 RI; CD: 5 min easy",Shorter rest intervals - harder
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Wednesday,66,Easy Bike,Bike,45 min,Easy,Ride easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Thursday,67,Build Run,Run,50 min,Moderate,"WU: 10 min easy; MS: 4x6 min at TP with 1 min RI; CD: 8 min easy",Shorter rest intervals
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Friday,68,Easy Swim,Swim,20 min,Easy,Swim easy,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Saturday,69,Build Bike + Brick,Bike+Run,65 min,Moderate,"WU: 12 min easy bike; MS: 4x10 min at TP with 1 min RI; then run 10 min building to TP; CD: 10 min easy",Brick - longer run than week 7
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,10,Sunday,70,Easy Run,Run,30 min,Easy,Run/walk easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Monday,71,Rest,Rest,,,Day off,PEAK WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Tuesday,72,Peak Swim,Swim,25 min,Race Pace,"WU: 5 min easy; MS: Swim 75% of goal race distance at goal race pace (breaks OK)",Race simulation
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Wednesday,73,Easy Bike,Bike,45 min,Easy,Ride easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Thursday,74,Peak Run,Run,30 min,Race Pace,"WU: 5 min easy walk/jog; MS: Run/walk 50% of goal race distance at goal race pace; CD: 5 min easy walk",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Friday,75,Easy Swim,Swim,20 min,Easy,Swim easy,PEAK WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Saturday,76,Peak Bike,Bike,45 min,Race Pace,"WU: 5 min easy; MS: Bike 75% of goal race distance at goal race pace alternating 10 min on/5 min easy; CD: 5 min easy",
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,11,Sunday,77,Easy Run,Run,30 min,Easy,Run/walk easy conversational,
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Monday,78,Rest,Rest,,,Day off,TAPER/RACE WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Tuesday,79,Taper Run,Run,20 min,Race Pace,Run 33% of goal race distance at goal race pace alternating 4 min run/1 min brisk walk,TAPER
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Wednesday,80,Taper Bike,Bike,30 min,Race Pace,Ride 50% of goal race distance at goal race pace alternating 10 min on/5 min easy,TAPER
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Thursday,81,Taper Swim,Swim,15 min,Race Pace,"Swim 50% of goal race distance at goal race pace (breaks OK). Practice in wetsuit if racing in one. Use race venue pool if possible.",TAPER
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Friday,82,Rest,Rest,,,Day off - stay off feet,RACE WEEK
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Saturday,83,Pre-Race Workout,Multi,20 min,Race Pace,"Bike 15 min progressing to race pace; then immediately run 5 min progressing to race pace",Final shakeout brick
+TRI_SPR_01,Triathlete 12-Week Super Simple Sprint Triathlon,Triathlete.com / Scott Fliegelman,Sprint Triathlon,Beginner,12,12,Sunday,84,Race,Multi,Sprint Distance,Race,SPRINT TRIATHLON RACE DAY - Arrive early. Trust your training. Have fun!,Typical sprint: 750m swim / 20km bike / 5km run
