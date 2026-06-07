@@ -14,9 +14,18 @@ export default async function LoginPage({
   const { error } = await searchParams;
 
   return (
-    <div className="flex min-h-screen bg-nav">
+    <div className="relative flex min-h-screen bg-nav">
+      {/* Small screens: full-bleed hero behind the form (desktop uses the right column). */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/login-hero.jpg"
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover lg:hidden"
+      />
+      <div className="absolute inset-0 bg-nav/75 lg:hidden" />
+
       {/* Left: sign-in form */}
-      <div className="flex w-full flex-col items-center justify-center px-4 lg:w-[440px] lg:flex-none">
+      <div className="relative z-10 flex w-full flex-col items-center justify-center px-4 lg:w-[440px] lg:flex-none">
         <div className="w-full max-w-sm">
           <div className="mb-6 text-center">
             <span className="text-xl font-bold tracking-tight text-white">
