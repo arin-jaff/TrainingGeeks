@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IMPLEMENTED } from "@/lib/dashboard/charts";
 
 type Kind = "bar" | "line" | "pie";
 
@@ -50,7 +51,13 @@ function Icon({ kind }: { kind: Kind }) {
   );
 }
 
-export default function ChartsLibrary() {
+export default function ChartsLibrary({
+  active,
+  onAdd,
+}: {
+  active: string[];
+  onAdd: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const filtered = CHARTS.filter((c) =>
@@ -61,7 +68,7 @@ export default function ChartsLibrary() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex flex-col items-center gap-1 rounded border border-line bg-surface-card px-2 py-1.5 text-[11px] text-ink-muted hover:text-accent"
+        className="flex items-center gap-1.5 rounded border border-line bg-surface-card px-3 py-1.5 text-[11px] font-medium text-ink-muted hover:border-accent hover:text-accent"
         title="Charts Library"
       >
         <Icon kind="bar" />
@@ -92,20 +99,41 @@ export default function ChartsLibrary() {
                 className="w-full rounded bg-surface px-3 py-2 text-sm outline-none"
               />
               <p className="mt-2 text-xs italic text-ink-muted">
-                Drag charts to dashboard
+                Click a chart to add it to your dashboard.
               </p>
             </div>
             <ul className="mt-2">
-              {filtered.map((c) => (
-                <li
-                  key={c.name}
-                  draggable
-                  className="flex cursor-grab items-center gap-3 border-t border-line px-4 py-3 text-sm font-semibold text-ink hover:bg-surface"
-                >
-                  <Icon kind={c.kind} />
-                  {c.name}
-                </li>
-              ))}
+              {filtered.map((c) => {
+                const id = IMPLEMENTED[c.name];
+                const added = id ? active.includes(id) : false;
+                const disabled = !id || added;
+                return (
+                  <li
+                    key={c.name}
+                    onClick={() => {
+                      if (id && !added) onAdd(id);
+                    }}
+                    className={[
+                      "flex items-center gap-3 border-t border-line px-4 py-3 text-sm font-semibold",
+                      disabled
+                        ? "cursor-default text-ink-muted"
+                        : "cursor-pointer text-ink hover:bg-surface",
+                    ].join(" ")}
+                  >
+                    <Icon kind={c.kind} />
+                    <span className="flex-1">{c.name}</span>
+                    {added ? (
+                      <span className="text-[10px] font-medium uppercase tracking-wide text-accent">Added</span>
+                    ) : id ? (
+                      <span className="text-base leading-none text-accent">+</span>
+                    ) : (
+                      <span className="rounded bg-surface px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-muted">
+                        Soon
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
