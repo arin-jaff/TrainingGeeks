@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { getDb } from "@/lib/db/client";
 import { getAthlete } from "@/lib/db/repo";
 import { getDashboardData } from "@/lib/queries/dashboard";
 import { todayLocal } from "@/lib/util/dates";
+import type { Units } from "@/lib/db/types";
 import DashboardClient from "@/components/dashboard/DashboardClient";
 import ChartsLibrary from "@/components/dashboard/ChartsLibrary";
 
@@ -10,6 +12,7 @@ export const dynamic = "force-dynamic";
 export default function DashboardPage() {
   const db = getDb();
   const tz = getAthlete(db)?.timezone ?? "America/New_York";
+  const units: Units = getAthlete(db)?.units ?? "imperial";
   const data = getDashboardData(db, todayLocal(tz));
 
   return (
@@ -18,6 +21,12 @@ export default function DashboardPage() {
         <span className="border-b-2 border-accent pb-2 text-sm font-semibold text-accent">
           Dashboard
         </span>
+        <Link href="/progression" className="pb-2 text-sm text-ink-muted hover:text-ink">
+          Progression
+        </Link>
+        <Link href="/metrics" className="pb-2 text-sm text-ink-muted hover:text-ink">
+          Metrics
+        </Link>
         <span
           className="cursor-not-allowed pb-2 text-sm text-ink-muted"
           title="Coming soon"
@@ -28,7 +37,7 @@ export default function DashboardPage() {
       <div className="mb-3">
         <ChartsLibrary />
       </div>
-      <DashboardClient data={data} />
+      <DashboardClient data={data} units={units} />
     </div>
   );
 }

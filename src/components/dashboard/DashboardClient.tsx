@@ -7,7 +7,11 @@ import {
   DurationByWeekChart,
   FitnessSummaryPie,
   PmcChart,
+  StatTiles,
+  ZoneTimeChart,
 } from "./charts";
+import type { Units } from "@/lib/db/types";
+import { FATIGUE_COLOR } from "@/lib/util/colors";
 
 const CURVES: { key: LoadCurve; label: string }[] = [
   { key: "all", label: "All" },
@@ -67,7 +71,13 @@ function ChartTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   );
 }
 
-export default function DashboardClient({ data }: { data: DashboardData }) {
+export default function DashboardClient({
+  data,
+  units,
+}: {
+  data: DashboardData;
+  units: Units;
+}) {
   const [curve, setCurve] = useState<LoadCurve>("all");
   const [days, setDays] = useState(90);
   const points = (data.pmc[curve] ?? []).slice(-days);
@@ -79,6 +89,11 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
 
   return (
     <div className="space-y-4">
+      <div>
+        <p className="mb-1 text-xs text-ink-muted">Last 28 days</p>
+        <StatTiles totals={data.totals} units={units} />
+      </div>
+
       <section className="rounded border border-line bg-surface-card p-4">
         <div className="relative mb-2 flex items-center">
           <div className="mx-auto">
@@ -123,6 +138,23 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
           <DurationByWeekChart weeks={data.durationByWeek} />
         </section>
       </div>
+
+      {(data.hrZoneTime || data.powerZoneTime) && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {data.hrZoneTime && (
+            <section className="rounded border border-line bg-surface-card p-4">
+              <ChartTitle title="Time in Heart Rate Zones" subtitle="Last 120 days" />
+              <ZoneTimeChart data={data.hrZoneTime} color={FATIGUE_COLOR} />
+            </section>
+          )}
+          {data.powerZoneTime && (
+            <section className="rounded border border-line bg-surface-card p-4">
+              <ChartTitle title="Time in Power Zones" subtitle="Last 120 days" />
+              <ZoneTimeChart data={data.powerZoneTime} color="#7b2d8e" />
+            </section>
+          )}
+        </div>
+      )}
     </div>
   );
 }

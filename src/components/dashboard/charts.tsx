@@ -2,10 +2,75 @@
 
 import type { EChartsOption } from "echarts";
 import EChart from "@/components/charts/EChart";
-import type { PmcPoint, SummarySlice, WeekBar } from "@/lib/queries/dashboard";
+import type {
+  PmcPoint,
+  SummarySlice,
+  Totals,
+  WeekBar,
+  ZoneTime,
+} from "@/lib/queries/dashboard";
 import { MODALITY_COLOR, PMC_COLOR } from "@/lib/util/colors";
-import { MODALITY_LABEL } from "@/lib/util/format";
-import type { Modality } from "@/lib/db/types";
+import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
+import type { Modality, Units } from "@/lib/db/types";
+
+function hms(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return `${h}:${String(m).padStart(2, "0")}`;
+}
+
+export function StatTiles({ totals, units }: { totals: Totals; units: Units }) {
+  const tiles: [string, string][] = [
+    ["Workouts", String(totals.count)],
+    ["Duration", formatDuration(totals.durationS)],
+    ["Distance", formatDistance(totals.distanceM, units)],
+    ["Load", String(Math.round(totals.tss))],
+    [
+      "Elevation",
+      `${Math.round(totals.elevationM * (units === "imperial" ? 3.28084 : 1))} ${units === "imperial" ? "ft" : "m"}`,
+    ],
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      {tiles.map(([label, value]) => (
+        <div key={label} className="rounded border border-line bg-surface-card px-3 py-2 text-center">
+          <div className="text-lg font-semibold tabular-nums text-ink">{value}</div>
+          <div className="text-[11px] uppercase tracking-wide text-ink-muted">{label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function ZoneTimeChart({ data, color }: { data: ZoneTime; color: string }) {
+  const option: EChartsOption = {
+    grid: { left: 52, right: 12, top: 12, bottom: 48 },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+      valueFormatter: (v) => hms((v as number) * 60),
+    },
+    xAxis: {
+      type: "category",
+      data: data.labels,
+      axisLabel: { fontSize: 10, color: "#6b7280", interval: 0, rotate: 30 },
+    },
+    yAxis: {
+      type: "value",
+      name: "min",
+      axisLabel: { fontSize: 10, color: "#6b7280" },
+    },
+    series: [
+      {
+        type: "bar",
+        data: data.seconds.map((s) => Math.round(s / 60)),
+        itemStyle: { color },
+        barMaxWidth: 36,
+      },
+    ],
+  };
+  return <EChart option={option} height={260} />;
+}
 
 const md = (d: string) => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`;
 
