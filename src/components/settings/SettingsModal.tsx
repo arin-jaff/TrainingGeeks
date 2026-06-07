@@ -258,10 +258,37 @@ export default function SettingsModal({
             {section === "apps" && (
               <div className="max-w-2xl">
                 <h2 className="border-b border-line pb-1 text-lg text-ink">Apps &amp; Devices</h2>
-                <h3 className="mt-4 text-sm font-bold text-ink">intervals.icu</h3>
-                <p className="mt-1 text-sm text-ink-muted">
-                  Auto-import activities and planned workouts.
-                </p>
+                <div className="mt-4 rounded border border-line bg-surface p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/intervals-wordmark.png" alt="intervals.icu" className="h-7 w-auto" />
+                    <a
+                      href="https://intervals.icu"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-medium text-accent hover:underline"
+                    >
+                      Visit intervals.icu →
+                    </a>
+                  </div>
+                  <p className="mt-2 text-sm text-ink-muted">
+                    Connect your free{" "}
+                    <a href="https://intervals.icu" target="_blank" rel="noreferrer" className="text-accent hover:underline">
+                      intervals.icu
+                    </a>{" "}
+                    account to auto-import activities and planned workouts. Find
+                    your Athlete ID and API key under{" "}
+                    <a
+                      href="https://intervals.icu/settings"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-accent hover:underline"
+                    >
+                      Settings → Developer
+                    </a>
+                    .
+                  </p>
+                </div>
                 <form action={saveConnector} className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <label className="mb-1 block text-sm">Athlete ID</label>
