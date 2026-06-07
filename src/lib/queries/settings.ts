@@ -1,5 +1,6 @@
 import type { DB } from "../db/client.js";
 import {
+  getAllSettings,
   getAthlete,
   getConnector,
   getEffectiveThreshold,
@@ -21,6 +22,7 @@ export interface SettingsData {
   hrZones: MethodZoneRow[];
   powerZones: MethodZoneRow[];
   paceZones: MethodZoneRow[];
+  prefs: Record<string, string>;
 }
 
 function savedZones(
@@ -54,5 +56,6 @@ export function getSettingsData(db: DB): SettingsData {
     hrZones: savedZones(db, "run", "hr"),
     powerZones: savedZones(db, "bike", "power"),
     paceZones: savedZones(db, "run", "pace"),
+    prefs: getAllSettings(db),
   };
 }

@@ -20,6 +20,7 @@ import {
 import ZoneEditor from "./ZoneEditor";
 import SyncButton from "./SyncButton";
 import HistorySync from "./HistorySync";
+import PrefsForm from "./PrefsForm";
 
 interface SettingsData {
   ftp: number | null;
@@ -30,6 +31,7 @@ interface SettingsData {
   hrZones: ZoneRow[];
   powerZones: ZoneRow[];
   paceZones: ZoneRow[];
+  prefs: Record<string, string>;
 }
 
 type Section = string;
@@ -72,25 +74,6 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Toggle({
-  label,
-  defaultChecked,
-}: {
-  label: string;
-  defaultChecked?: boolean;
-}) {
-  return (
-    <label className="flex items-center justify-between gap-3 border-b border-line py-2 text-sm text-ink">
-      <span>{label}</span>
-      <input
-        type="checkbox"
-        defaultChecked={defaultChecked}
-        className="h-4 w-4 accent-accent"
-      />
-    </label>
-  );
-}
-
 const sel = input;
 
 export default function SettingsModal({
@@ -103,6 +86,7 @@ export default function SettingsModal({
   initialSection?: string;
 }) {
   const router = useRouter();
+  const prefs = settings.prefs ?? {};
   const [section, setSection] = useState<Section>(initialSection);
   const [, startTransition] = useTransition();
   const snaps = useRef<Record<string, ZoneSnapshot>>({});
@@ -298,19 +282,18 @@ export default function SettingsModal({
             )}
 
             {section === "settings" && (
-              <div className="max-w-2xl">
-                <SectionTitle>Settings</SectionTitle>
-                <div className="space-y-3">
-                  <Field label="Units"><select className={sel} defaultValue="imperial"><option value="imperial">English (mi, ft, lb)</option><option value="metric">Metric (km, m, kg)</option></select></Field>
-                  <Field label="Date Format"><select className={sel}><option>MM/DD/YYYY</option><option>DD/MM/YYYY</option><option>YYYY-MM-DD</option></select></Field>
-                  <Field label="First Day of Week"><select className={sel}><option>Monday</option><option>Sunday</option></select></Field>
-                  <Field label="Time Format"><select className={sel}><option>12-hour</option><option>24-hour</option></select></Field>
-                  <Field label="Default View"><select className={sel}><option>Calendar</option><option>Home</option><option>Dashboard</option></select></Field>
-                </div>
-                <div className="mt-3 max-w-md">
-                  <Toggle label="Automatically recalculate zones on threshold change" defaultChecked />
-                </div>
-              </div>
+              <PrefsForm
+                title="Settings"
+                section="settings"
+                prefs={prefs}
+                fields={[
+                  { name: "dateFormat", label: "Date Format", type: "select", options: ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD"] },
+                  { name: "weekStart", label: "First Day of Week", type: "select", options: ["Monday", "Sunday"] },
+                  { name: "timeFormat", label: "Time Format", type: "select", options: ["12-hour", "24-hour"] },
+                  { name: "defaultView", label: "Default View", type: "select", options: ["Calendar", "Home", "Dashboard"] },
+                  { name: "autoRecalc", label: "Recalculate zones on threshold change", type: "toggle", default: "1" },
+                ]}
+              />
             )}
 
             {section === "coaches" && (
@@ -325,37 +308,47 @@ export default function SettingsModal({
             )}
 
             {section === "calendar" && (
-              <div className="max-w-md">
-                <SectionTitle>Calendar</SectionTitle>
-                <Field label="First Day of Week"><select className={sel}><option>Monday</option><option>Sunday</option></select></Field>
-                <div className="mt-3">
-                  <Toggle label="Show completed workouts" defaultChecked />
-                  <Toggle label="Show planned workouts" defaultChecked />
-                  <Toggle label="Show weekly summary column" defaultChecked />
-                  <Toggle label="Show weather" />
-                </div>
-              </div>
+              <PrefsForm
+                title="Calendar"
+                section="calendar"
+                prefs={prefs}
+                fields={[
+                  { name: "weekStart", label: "First Day of Week", type: "select", options: ["Monday", "Sunday"] },
+                  { name: "showCompleted", label: "Show completed workouts", type: "toggle", default: "1" },
+                  { name: "showPlanned", label: "Show planned workouts", type: "toggle", default: "1" },
+                  { name: "showSummary", label: "Show weekly summary column", type: "toggle", default: "1" },
+                  { name: "showWeather", label: "Show weather", type: "toggle", default: "0" },
+                ]}
+              />
             )}
 
             {section === "email" && (
-              <div className="max-w-md">
-                <SectionTitle>Email Options</SectionTitle>
-                <Toggle label="Weekly training summary" defaultChecked />
-                <Toggle label="Workout reminders" />
-                <Toggle label="Goal & event countdowns" defaultChecked />
-                <Toggle label="Product news & tips" />
-              </div>
+              <PrefsForm
+                title="Email Options"
+                section="email"
+                prefs={prefs}
+                fields={[
+                  { name: "weeklySummary", label: "Weekly training summary", type: "toggle", default: "1" },
+                  { name: "reminders", label: "Workout reminders", type: "toggle", default: "0" },
+                  { name: "countdowns", label: "Goal & event countdowns", type: "toggle", default: "1" },
+                  { name: "news", label: "Product news & tips", type: "toggle", default: "0" },
+                ]}
+              />
             )}
 
             {section === "notifications" && (
-              <div className="max-w-md">
-                <SectionTitle>Notifications</SectionTitle>
-                <Toggle label="Comments on my workouts" defaultChecked />
-                <Toggle label="Coach messages" defaultChecked />
-                <Toggle label="New followers" />
-                <Toggle label="Goal & event reminders" defaultChecked />
-                <Toggle label="Sync completed" />
-              </div>
+              <PrefsForm
+                title="Notifications"
+                section="notifications"
+                prefs={prefs}
+                fields={[
+                  { name: "comments", label: "Comments on my workouts", type: "toggle", default: "1" },
+                  { name: "coach", label: "Coach messages", type: "toggle", default: "1" },
+                  { name: "followers", label: "New followers", type: "toggle", default: "0" },
+                  { name: "goals", label: "Goal & event reminders", type: "toggle", default: "1" },
+                  { name: "syncDone", label: "Sync completed", type: "toggle", default: "0" },
+                ]}
+              />
             )}
 
             {section === "export" && (
@@ -400,23 +393,29 @@ export default function SettingsModal({
             )}
 
             {section === "layout" && (
-              <div className="max-w-md">
-                <SectionTitle>Layout</SectionTitle>
-                <Field label="Home Layout"><select className={sel}><option>Default</option><option>Compact</option></select></Field>
-                <Field label="Dashboard Layout"><select className={sel}><option>Default</option><option>Coach</option></select></Field>
-                <Field label="Calendar Density"><select className={sel}><option>Comfortable</option><option>Compact</option></select></Field>
-              </div>
+              <PrefsForm
+                title="Layout"
+                section="layout"
+                prefs={prefs}
+                fields={[
+                  { name: "homeLayout", label: "Home Layout", type: "select", options: ["Default", "Compact"] },
+                  { name: "dashboardLayout", label: "Dashboard Layout", type: "select", options: ["Default", "Coach"] },
+                  { name: "calendarDensity", label: "Calendar Density", type: "select", options: ["Comfortable", "Compact"] },
+                ]}
+              />
             )}
 
             {section === "weather" && (
-              <div className="max-w-md">
-                <SectionTitle>Weather</SectionTitle>
-                <Field label="Provider"><select className={sel}><option>None</option><option>OpenWeather</option></select></Field>
-                <Field label="Units"><select className={sel}><option>Fahrenheit</option><option>Celsius</option></select></Field>
-                <div className="mt-3">
-                  <Toggle label="Show weather on calendar" />
-                </div>
-              </div>
+              <PrefsForm
+                title="Weather"
+                section="weather"
+                prefs={prefs}
+                fields={[
+                  { name: "provider", label: "Provider", type: "select", options: ["None", "OpenWeather"] },
+                  { name: "units", label: "Units", type: "select", options: ["Fahrenheit", "Celsius"] },
+                  { name: "showOnCalendar", label: "Show weather on calendar", type: "toggle", default: "0" },
+                ]}
+              />
             )}
           </div>
         </div>

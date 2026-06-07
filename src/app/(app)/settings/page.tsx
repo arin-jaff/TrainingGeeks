@@ -24,6 +24,7 @@ export default async function SettingsPage({
         hrZones: d.hrZones,
         powerZones: d.powerZones,
         paceZones: d.paceZones,
+        prefs: d.prefs,
       }}
     />
   );

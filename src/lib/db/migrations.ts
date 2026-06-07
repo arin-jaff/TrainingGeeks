@@ -203,4 +203,15 @@ CREATE TABLE goal (
 );
 `,
   },
+  {
+    id: 2,
+    name: "app_settings",
+    sql: /* sql */ `
+CREATE TABLE app_setting (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`,
+  },
 ];

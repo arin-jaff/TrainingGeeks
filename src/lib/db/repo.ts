@@ -449,6 +449,25 @@ export function upsertConnector(
   );
 }
 
+// ---- App settings (key/value preferences) ------------------------------
+
+export function getAllSettings(db: DB): Record<string, string> {
+  const rows = all<{ key: string; value: string }>(
+    db,
+    "SELECT key, value FROM app_setting",
+  );
+  const out: Record<string, string> = {};
+  for (const r of rows) out[r.key] = r.value;
+  return out;
+}
+
+export function setSetting(db: DB, key: string, value: string): void {
+  db.prepare(
+    `INSERT INTO app_setting (key, value) VALUES (?, ?)
+     ON CONFLICT (key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`,
+  ).run(key, value);
+}
+
 // ---- Events & goals ----------------------------------------------------
 
 export function listEvents(db: DB): EventRow[] {

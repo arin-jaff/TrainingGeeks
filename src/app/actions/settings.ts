@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db/client";
 import {
   getAthlete,
   replaceZones,
+  setSetting,
   setThreshold,
   updateAthlete,
   upsertConnector,
@@ -141,4 +142,25 @@ export async function saveZones(payload: string): Promise<void> {
   revalidatePath("/settings");
   revalidatePath("/");
   revalidatePath("/dashboard");
+}
+
+/**
+ * Persist a settings sub-section's preferences. The form includes a hidden
+ * `_section` and `_fields` (comma-separated field names) so unchecked
+ * checkboxes are stored as "0" rather than silently dropped.
+ */
+export async function saveSettings(formData: FormData): Promise<void> {
+  const db = getDb();
+  const section = String(formData.get("_section") ?? "").trim();
+  const fields = String(formData.get("_fields") ?? "")
+    .split(",")
+    .map((f) => f.trim())
+    .filter(Boolean);
+  if (!section) return;
+  for (const f of fields) {
+    const raw = formData.get(f);
+    const value = raw == null ? "0" : raw === "on" ? "1" : String(raw);
+    setSetting(db, `${section}.${f}`, value);
+  }
+  revalidatePath("/settings");
 }
