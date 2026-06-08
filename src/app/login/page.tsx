@@ -67,7 +67,7 @@ export default async function LoginPage({
                 <div className="mb-3 flex items-center gap-2">
                 </div>
                 <p className="text-sm leading-relaxed text-ink-muted" style={{textAlign: "center"}}>
-                  Check out <strong className="text-ink"> the founder's live
+                  Check out <strong className="text-ink"> the founder&apos;s live
                   training data</strong>, so you can see how TrainingGeeks works in practice! Live from June 1, 2026 onward.
                   <br />
                  <br />
@@ -172,7 +172,7 @@ export default async function LoginPage({
           <img src="/logo.png" alt="" className="mx-auto h-48 w-auto" />
           <p className="text-xs uppercase tracking-wide text-white/40">Open source · Self-hosted · Yours Forever</p>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-5xl">
-            We're tired of the proprietary.<span className="text-accent"> We&apos;re here to set PRs.</span>
+            We&apos;re tired of the proprietary.<span className="text-accent"> We&apos;re here to set PRs.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/75">
             You train hard for your precious data. Now you can track all of it, exactly how YOU want, for free.
