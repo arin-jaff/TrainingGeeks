@@ -57,7 +57,7 @@ export default async function LoginPage({
           <div className="w-full max-w-sm">
             <div className="mb-6 text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-wordmark.png" alt="TrainingGeeks" className="mx-auto h-24 w-auto" />
+              <img src="/logo-wordmark.png" alt="TrainingGeeks" className="mx-auto h-48 w-auto" />
               <p className="mt-1 text-xs text-white/50">
                 {readOnly ? "Live, self-hosted training data" : "Your self-hosted training log"}
               </p>
@@ -65,13 +65,12 @@ export default async function LoginPage({
             {readOnly ? (
               <div className="rounded border border-white/10 bg-surface-card p-6 shadow-lg">
                 <div className="mb-3 flex items-center gap-2">
-                  <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-fatigue" />
-                  <span className="text-sm font-semibold text-ink">Live demo</span>
                 </div>
-                <p className="text-sm leading-relaxed text-ink-muted">
-                  Check out the founder, <strong className="text-ink">{founder}&apos;s real, live
-                  training data</strong>, so you can see how TrainingGeeks works in practice. This includes every
-                  run, ride, and lift from <strong className="text-ink">June 1, 2026 onward</strong>.
+                <p className="text-sm leading-relaxed text-ink-muted" style={{textAlign: "center"}}>
+                  Check out <strong className="text-ink"> the founder's live
+                  training data</strong>, so you can see how TrainingGeeks works in practice! Live from June 1, 2026 onward.
+                  <br />
+                 <br />
                   It&apos;s served <strong className="text-ink">read-only</strong> on a simple
                   Raspberry Pi at home, auto-syncing from intervals.icu and Garmin — super easy to
                   set up and run yourself!
@@ -144,23 +143,23 @@ export default async function LoginPage({
           <div className="absolute inset-0 bg-gradient-to-br from-nav/80 via-nav/30 to-nav/60" />
 
           {/* Top-right: logo + headline overlay */}
-          <div className="absolute right-8 top-8 max-w-sm rounded-xl border border-white/10 bg-nav/45 p-5 text-right shadow-lg backdrop-blur-sm">
+          <div className="absolute right-8 top-8 max-w-lg rounded-2xl border border-white/10 bg-nav/45 p-8 text-right shadow-lg backdrop-blur-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="" className="ml-auto mb-3 h-12 w-12 rounded" />
-            <p className="text-2xl font-bold leading-tight text-white">
+            <img src="/logo-wordmark.png" alt="" className="mb-5 h-auto w-full" />
+            <p className="text-4xl font-bold leading-tight text-white">
               A training platform built for you, <span className="text-accent">by you</span>.
             </p>
-            <p className="mt-2 text-sm text-white/70">
+            <p className="mt-3 text-lg text-white/70">
               Open source. Self-hosted. No subscription.
             </p>
           </div>
 
           {/* Bottom-left: tagline */}
           <div className="absolute bottom-12 left-10 max-w-2xl">
-            <p className="text-6xl font-semibold leading-tight text-white drop-shadow">Train with purpose.</p>
-            <p className="mt-4 text-lg leading-relaxed text-white/75 drop-shadow">
-              Every workout, metric, and trend — in one place that you actually own. Scroll down if
-              you&apos;ve ever paid a monthly fee to look at your own heart rate. ↓
+            <p className="text-6xl font-semibold leading-tight text-white drop-shadow">Own Your Training.</p>
+            <p className="mt-4 text-xl leading-relaxed text-white/75 drop-shadow">
+              Every workout, metric, and trend. One platform that you can make your own. <br /> Scroll down if
+              you&apos;ve ever paid a monthly fee to look at your own heart rate.
             </p>
           </div>
         </div>
@@ -170,10 +169,10 @@ export default async function LoginPage({
       <section className="border-t border-white/10 px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="" className="mx-auto mb-6 h-14 w-14 rounded" />
-          <p className="text-xs uppercase tracking-wide text-white/40">Open source · Self-hosted · Yours</p>
+          <img src="/logo.png" alt="" className="mx-auto h-48 w-auto" />
+          <p className="text-xs uppercase tracking-wide text-white/40">Open source · Self-hosted · Yours Forever</p>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-5xl">
-            We were tired of proprietary and paywalls.<span className="text-accent"> We&apos;re here to set PRs.</span>
+            We're tired of the proprietary.<span className="text-accent"> We&apos;re here to set PRs.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/75">
             You train hard for your precious data. Now you can track all of it, exactly how YOU want, for free.
@@ -221,7 +220,7 @@ export default async function LoginPage({
               TrainingGeeks is forever open source. Built by a community of athletes, for a
               community of athletes.
             </p>
-            <p className="mt-4 text-xl font-semibold leading-snug text-ink sm:text-2xl">
+            <p className="mt-4 text-xl font-semibold leading-snug text-ink sm:text-xl">
               Bring <span className="text-accent">PRs</span> (Pull Requests) so that we can keep
               hitting <span className="text-accent">PRs</span> (Personal Records).
             </p>
@@ -258,7 +257,7 @@ export default async function LoginPage({
       {/* ===== Open source CTA ===== */}
       <section className="px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">Open source. Self-hosted. Yours.</h2>
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">Open source. Self-hosted. Yours Forever.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/70">
             Your activities live in a database on <em>your</em> machine — not our cloud, because we
             don&apos;t have one (and never will ask for your card). Don&apos;t like a chart? Change
