@@ -5,6 +5,7 @@ export const MODALITY_COLOR: Record<Modality, string> = {
   run: "#45ae01",
   bike: "#2f6fed",
   swim: "#16a0c8",
+  row: "#0d9488",
   lift: "#7b2d8e",
   core: "#a42ddb",
 };
@@ -19,6 +20,7 @@ export const DISCIPLINE_BAR: Record<string, string> = {
   run: "#45ae01",
   bike: "#2f6fed",
   swim: "#16a0c8",
+  row: "#0d9488",
   strength: "#3b0a52",
   other: "#a42ddb",
 };

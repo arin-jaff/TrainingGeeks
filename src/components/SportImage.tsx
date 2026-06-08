@@ -5,6 +5,7 @@ const SRC: Record<Modality, string> = {
   run: "/sport-run.png",
   bike: "/sport-bike.png",
   swim: "/sport-swim.png",
+  row: "/sport-row.png",
   lift: "/sport-strength.png",
   core: "/sport-core.png",
 };

@@ -46,9 +46,10 @@ const CURVE_LABELS: Record<LoadCurve, string> = {
   run: "Run",
   bike: "Bike",
   swim: "Swim",
+  row: "Row",
   strength: "Strength",
 };
-const CURVE_ORDER: LoadCurve[] = ["all", "run", "bike", "swim", "strength"];
+const CURVE_ORDER: LoadCurve[] = ["all", "run", "bike", "swim", "row", "strength"];
 
 function curveMetrics(db: DB, key: LoadCurve, today: string): CurveMetrics {
   const start = addDays(today, -365);

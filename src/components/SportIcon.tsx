@@ -51,6 +51,15 @@ export default function SportIcon({
           <path d="M12 13V9M10 2h4" />
         </svg>
       );
+    case "row":
+      return (
+        <svg {...common} aria-hidden>
+          {/* two oars + boat */}
+          <path d="M3 20L21 8" />
+          <path d="M3 8L21 20" />
+          <path d="M6 14l12 0" />
+        </svg>
+      );
     case "run":
     default:
       return (

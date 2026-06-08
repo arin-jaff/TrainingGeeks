@@ -4,13 +4,13 @@
  * Five logged modalities; four fitness curves (Core folds into Strength).
  */
 
-export type Modality = "run" | "bike" | "swim" | "lift" | "core";
-export type FitnessCurve = "run" | "bike" | "swim" | "strength";
+export type Modality = "run" | "bike" | "swim" | "row" | "lift" | "core";
+export type FitnessCurve = "run" | "bike" | "swim" | "row" | "strength";
 
-export const MODALITIES: readonly Modality[] = ["run", "bike", "swim", "lift", "core"];
-export const FITNESS_CURVES: readonly FitnessCurve[] = ["run", "bike", "swim", "strength"];
+export const MODALITIES: readonly Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
+export const FITNESS_CURVES: readonly FitnessCurve[] = ["run", "bike", "swim", "row", "strength"];
 
-export const CARDIO_MODALITIES: readonly Modality[] = ["run", "bike", "swim"];
+export const CARDIO_MODALITIES: readonly Modality[] = ["run", "bike", "swim", "row"];
 export const STRENGTH_MODALITIES: readonly Modality[] = ["lift", "core"];
 
 /** Map a logged modality to the fitness curve it contributes to. */
@@ -19,7 +19,7 @@ export function modalityToCurve(m: Modality): FitnessCurve {
 }
 
 export function isCardio(m: Modality): boolean {
-  return m === "run" || m === "bike" || m === "swim";
+  return m === "run" || m === "bike" || m === "swim" || m === "row";
 }
 
 export type Units = "imperial" | "metric";

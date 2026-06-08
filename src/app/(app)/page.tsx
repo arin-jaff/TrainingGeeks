@@ -178,7 +178,7 @@ export default async function HomePage() {
       <div className="mb-4 rounded border border-line bg-surface-card p-4">
         <h2 className="mb-3 text-sm font-semibold text-ink">Your Sports</h2>
         <div className="flex flex-wrap gap-x-8 gap-y-4">
-          {(["run", "bike", "swim", "lift", "core"] as Modality[]).map((m) => (
+          {(["run", "bike", "swim", "row", "lift", "core"] as Modality[]).map((m) => (
             <div key={m} className="flex w-16 flex-col items-center gap-1.5">
               <SportImage modality={m} size={52} />
               <span className="text-xs font-medium text-ink-muted">

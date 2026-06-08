@@ -11,7 +11,7 @@ import { addMetric } from "@/app/actions/metrics";
 import { addInjury, resolveInjury } from "@/app/actions/injury";
 import WorkoutModal from "./WorkoutModal";
 
-const WORKOUTS: Modality[] = ["run", "bike", "swim", "lift", "core"];
+const WORKOUTS: Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
 
 function titleFor(date: string): string {
   return new Date(`${date}T00:00:00Z`).toLocaleString("en-US", {
