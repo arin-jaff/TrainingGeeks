@@ -16,6 +16,16 @@ export function authEnabled(): boolean {
   return getPassword() !== null;
 }
 
+/**
+ * Read-only/demo mode. When TG_READONLY is set, the public landing becomes a
+ * "View Live!" page. (The write-blocking enforcement lives on the
+ * readonly-mode branch, which layers it on top of this flag.)
+ */
+export function isReadOnly(): boolean {
+  const v = process.env.TG_READONLY;
+  return v === "1" || v === "true";
+}
+
 /** Optional bearer token allowing the sync daemon to call /api/sync. */
 export function getSyncToken(): string | null {
   const t = process.env.TG_SYNC_TOKEN;

@@ -15,6 +15,14 @@ training plans, wellness metrics, and injury tracking — a full analytics suite
 that runs on *your* machine, stores data in a single file you control, and never
 asks for your credit card. All the numbers you love, none of the paywall. 💪
 
+## 🔴 Live demo
+
+**[See it running on real data →](https://YOUR-DEMO-URL)**
+
+Not a mockup — that's the founder's actual, live training history, served
+**read-only** from a Raspberry Pi at home and auto-syncing from intervals.icu and
+Garmin. (Maintainers: set this URL once your demo box is online.)
+
 ---
 
 ## Why
