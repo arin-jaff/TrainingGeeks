@@ -22,6 +22,9 @@ data/
 .env*.local
 .env.local
 
+# Packaged asset bundles (redundant with assets/processed + public)
+*.zip
+
 # Working files kept local (references are copyrighted screenshots + personal FITs)
 references/
 docs/
