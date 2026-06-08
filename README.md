@@ -17,7 +17,7 @@ asks for your credit card. All the numbers you love, none of the paywall. 💪
 
 ## 🔴 Live demo
 
-**[See it running on real data →](https://YOUR-DEMO-URL)**
+**[See it running on real data →](https://traininggeeks.arinjaff.com)**
 
 Not a mockup — that's the founder's actual, live training history, served
 **read-only** from a Raspberry Pi at home and auto-syncing from intervals.icu and
@@ -128,8 +128,18 @@ TrainingGeeks collects nothing and phones nowhere. See the in-app
 
 ## Contributing
 
-Issues and pull requests are very welcome — file one from the Issues tab.
-Metrics follow standard endurance-training definitions.
+Issues and pull requests are very welcome. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for local setup, the test workflow, and the commit conventions. Metrics follow
+standard endurance-training definitions (documented in [METHODOLOGY.md](METHODOLOGY.md)).
+
+Bring PRs (Pull Requests) so we can keep hitting PRs (Personal Records).
+
+## License
+
+Licensed under the **GNU Affero General Public License v3.0 or later** — see
+[LICENSE](LICENSE). In short: you can use, modify, and self-host this freely, but
+if you run a modified version as a network service, you must make your source
+available to its users under the same license.
 
 ## Acknowledgements
 

@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the training workflow or analysis you're missing today.
+      placeholder: I want to ... but currently I can't ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should it do? How should it behave?
+    validations:
+      required: false
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Screenshots or links from TrainingPeaks, intervals.icu, or other tools that show what you mean.
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Area
+      options:
+        - label: Calendar / planning
+        - label: Metrics / performance charts
+        - label: Dashboards
+        - label: Sync / connectors
+        - label: Zones / thresholds / plans
+        - label: Other
