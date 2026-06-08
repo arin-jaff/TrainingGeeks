@@ -70,6 +70,7 @@ export const MODALITY_LABEL: Record<Modality, string> = {
   run: "Run",
   bike: "Bike",
   swim: "Swim",
+  row: "Rowing",
   lift: "Strength",
   core: "Core",
 };

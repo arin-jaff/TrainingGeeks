@@ -42,6 +42,7 @@ export function mapSportToModality(
   if (s === "running" || s === "walking" || s === "hiking") return "run";
   if (s === "cycling") return "bike";
   if (s === "swimming") return "swim";
+  if (s === "rowing" || sub.includes("rowing")) return "row";
   if (sub.includes("strength")) return "lift";
   if (sub.includes("core") || sub.includes("flexibility") || sub.includes("yoga"))
     return "core";

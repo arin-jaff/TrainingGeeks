@@ -12,7 +12,7 @@ import type { Modality } from "@/lib/db/types";
 // Auth state comes from runtime env, not build time.
 export const dynamic = "force-dynamic";
 
-const SPORTS: Modality[] = ["run", "bike", "swim", "lift", "core"];
+const SPORTS: Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
 
 const FEATURES: { title: string; body: string }[] = [
   { title: "A calendar that plans and remembers", body: "Drag workouts around, log what you actually did, and watch completed days turn green while the ones you skipped go an accusatory red." },

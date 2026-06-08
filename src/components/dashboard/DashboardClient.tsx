@@ -29,6 +29,7 @@ const CURVES: { key: LoadCurve; label: string }[] = [
   { key: "run", label: "Run" },
   { key: "bike", label: "Bike" },
   { key: "swim", label: "Swim" },
+  { key: "row", label: "Row" },
   { key: "strength", label: "Strength" },
 ];
 

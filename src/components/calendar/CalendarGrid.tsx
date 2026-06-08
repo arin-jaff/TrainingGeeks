@@ -37,6 +37,7 @@ const SPORT_NAME: Record<Modality, string> = {
   run: "Running",
   bike: "Cycling",
   swim: "Swimming",
+  row: "Rowing",
   lift: "Strength",
   core: "Core",
 };
@@ -246,6 +247,7 @@ const DISC_ORDER: [string, string][] = [
   ["run", "Run"],
   ["bike", "Bike"],
   ["swim", "Swim"],
+  ["row", "Row"],
   ["strength", "Strength"],
   ["other", "Other"],
 ];
