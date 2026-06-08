@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { EventRow } from "@/lib/db/types";
 import { addEvent, removeEvent } from "@/app/actions/home";
 import { diffDays } from "@/lib/util/dates";
+import { useReadOnly } from "@/components/ReadOnly";
 
 export default function EventsPanel({
   events,
@@ -14,6 +15,7 @@ export default function EventsPanel({
   today: string;
 }) {
   const router = useRouter();
+  const readOnly = useReadOnly();
   const [adding, setAdding] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -21,13 +23,15 @@ export default function EventsPanel({
     <section className="rounded border border-line bg-surface-card p-4">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink">Events</h2>
-        <button
-          onClick={() => setAdding((v) => !v)}
-          className="text-lg leading-none text-ink-muted hover:text-accent"
-          aria-label="Add event"
-        >
-          +
-        </button>
+        {!readOnly && (
+          <button
+            onClick={() => setAdding((v) => !v)}
+            className="text-lg leading-none text-ink-muted hover:text-accent"
+            aria-label="Add event"
+          >
+            +
+          </button>
+        )}
       </div>
 
       {events.length === 0 && !adding && (
@@ -37,12 +41,14 @@ export default function EventsPanel({
             Keep track of all of your upcoming events and stay focused with a
             countdown.
           </p>
-          <button
-            onClick={() => setAdding(true)}
-            className="mt-3 rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
-          >
-            Add Event
-          </button>
+          {!readOnly && (
+            <button
+              onClick={() => setAdding(true)}
+              className="mt-3 rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
+            >
+              Add Event
+            </button>
+          )}
         </div>
       )}
 
@@ -57,18 +63,20 @@ export default function EventsPanel({
               <span className="text-ink">{e.name}</span>
               <span className="flex items-center gap-2 text-xs text-ink-muted">
                 <span>{days >= 0 ? `${days}d` : "past"}</span>
-                <button
-                  onClick={() =>
-                    startTransition(async () => {
-                      await removeEvent(e.id);
-                      router.refresh();
-                    })
-                  }
-                  className="hover:text-fatigue"
-                  aria-label="Remove event"
-                >
-                  ×
-                </button>
+                {!readOnly && (
+                  <button
+                    onClick={() =>
+                      startTransition(async () => {
+                        await removeEvent(e.id);
+                        router.refresh();
+                      })
+                    }
+                    className="hover:text-fatigue"
+                    aria-label="Remove event"
+                  >
+                    ×
+                  </button>
+                )}
               </span>
             </li>
           );

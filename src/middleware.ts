@@ -4,17 +4,35 @@ import {
   authEnabled,
   getSecret,
   getSyncToken,
+  isReadOnly,
 } from "@/lib/auth/config";
 import { timingSafeEqual, verifySessionToken } from "@/lib/auth/session";
 
 export async function middleware(req: NextRequest) {
-  // The sync daemon authenticates to /api/sync with a bearer token.
-  if (req.nextUrl.pathname === "/api/sync") {
+  const { pathname } = req.nextUrl;
+
+  // The sync daemon authenticates to /api/sync with a bearer token (allowed
+  // even in read-only mode so a hosted demo keeps updating).
+  if (pathname === "/api/sync") {
     const token = getSyncToken();
     const header = req.headers.get("authorization") ?? "";
     if (token && timingSafeEqual(header, `Bearer ${token}`)) {
       return NextResponse.next();
     }
+  }
+
+  // Read-only/demo: serve reads publicly, block every write, hide Settings.
+  if (isReadOnly()) {
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      return new NextResponse("This is a read-only demo.", { status: 403 });
+    }
+    if (pathname === "/settings" || pathname.startsWith("/settings/")) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
   }
 
   if (!authEnabled()) return NextResponse.next();

@@ -26,6 +26,7 @@ import {
   STATUS_PASTDUE_BG,
 } from "@/lib/util/colors";
 import SportImage from "@/components/SportImage";
+import { useReadOnly } from "@/components/ReadOnly";
 import { rescheduleItem } from "@/app/(app)/calendar/actions";
 import { getWorkoutForEdit, type WorkoutEditData } from "@/app/actions/workout";
 import AddMenuModal from "./AddMenuModal";
@@ -63,6 +64,7 @@ function WorkoutCard({
   units: Units;
   onEdit: (kind: "activity" | "planned", id: number) => void;
 }) {
+  const readOnly = useReadOnly();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -77,14 +79,14 @@ function WorkoutCard({
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
+      {...(readOnly ? {} : listeners)}
+      {...(readOnly ? {} : attributes)}
       onClick={() => {
-        if (!isDragging) onEdit(item.kind, item.id);
+        if (!isDragging && !readOnly) onEdit(item.kind, item.id);
       }}
       style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[
-        "cursor-grab overflow-hidden rounded-[4px]",
+        readOnly ? "overflow-hidden rounded-[4px]" : "cursor-grab overflow-hidden rounded-[4px]",
         bannerColor ? "" : "bg-surface-card",
         planned && status === "planned" ? "opacity-90 ring-1 ring-dashed ring-line" : "",
         isDragging ? "opacity-40" : "",
@@ -147,6 +149,7 @@ function DayCell({
   onAdd: (date: string) => void;
   onEdit: (kind: "activity" | "planned", id: number) => void;
 }) {
+  const readOnly = useReadOnly();
   const { setNodeRef, isOver } = useDroppable({ id: date });
   const dayNum = Number(date.slice(8, 10));
   const label =
@@ -206,15 +209,17 @@ function DayCell({
           />
         ))}
       </div>
-      {/* Hover "+" to add a workout/metric/injury on this date. */}
-      <button
-        type="button"
-        onClick={() => onAdd(date)}
-        aria-label={`Add to ${date}`}
-        className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-line text-ink-muted opacity-0 transition-opacity hover:border-accent hover:text-accent group-hover:opacity-100"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-      </button>
+      {/* Hover "+" to add a workout/metric/injury on this date (hidden in read-only). */}
+      {!readOnly && (
+        <button
+          type="button"
+          onClick={() => onAdd(date)}
+          aria-label={`Add to ${date}`}
+          className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-line text-ink-muted opacity-0 transition-opacity hover:border-accent hover:text-accent group-hover:opacity-100"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
+      )}
     </div>
   );
 }

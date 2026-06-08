@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db/client";
+import { isReadOnly } from "@/lib/auth/config";
 import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
 import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
@@ -61,30 +62,36 @@ function DayColumn({
   title,
   items,
   units,
+  readOnly,
 }: {
   title: string;
   items: CalItem[];
   units: Units;
+  readOnly: boolean;
 }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-ink">{title}</h3>
-        <Link href="/import" className="text-lg leading-none text-ink-muted hover:text-accent">
-          +
-        </Link>
+        {!readOnly && (
+          <Link href="/import" className="text-lg leading-none text-ink-muted hover:text-accent">
+            +
+          </Link>
+        )}
       </div>
       {items.length === 0 ? (
         <div className="rounded border border-line bg-surface-card px-3 py-6 text-center">
           <p className="mb-2 text-sm text-ink-muted">
             No scheduled workouts {title === "Today" ? "today" : "tomorrow"}.
           </p>
-          <Link
-            href="/import"
-            className="inline-block rounded bg-accent px-3 py-1 text-sm font-medium text-white hover:bg-accent-hover"
-          >
-            Add a Workout
-          </Link>
+          {!readOnly && (
+            <Link
+              href="/import"
+              className="inline-block rounded bg-accent px-3 py-1 text-sm font-medium text-white hover:bg-accent-hover"
+            >
+              Add a Workout
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-2">
@@ -151,6 +158,7 @@ export default async function HomePage() {
   const today = todayLocal(tz);
   const data = getHomeData(db, today);
   const wellness = latestMetrics(db);
+  const readOnly = isReadOnly();
 
   return (
     <div>
@@ -190,8 +198,8 @@ export default async function HomePage() {
 
         {/* Center: Today + Tomorrow */}
         <div className="space-y-4">
-          <DayColumn title="Today" items={data.todayItems} units={units} />
-          <DayColumn title="Tomorrow" items={data.tomorrowItems} units={units} />
+          <DayColumn title="Today" items={data.todayItems} units={units} readOnly={readOnly} />
+          <DayColumn title="Tomorrow" items={data.tomorrowItems} units={units} readOnly={readOnly} />
         </div>
 
         {/* Right: Performance Metrics + Peak Performances */}

@@ -4,9 +4,11 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { GoalRow } from "@/lib/db/types";
 import { addGoal, removeGoal, toggleGoal } from "@/app/actions/home";
+import { useReadOnly } from "@/components/ReadOnly";
 
 export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
   const router = useRouter();
+  const readOnly = useReadOnly();
   const [adding, setAdding] = useState(false);
   const [, startTransition] = useTransition();
   const run = (fn: () => Promise<void>) =>
@@ -19,13 +21,15 @@ export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
     <section className="rounded border border-line bg-surface-card p-4">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink">Goals</h2>
-        <button
-          onClick={() => setAdding((v) => !v)}
-          className="text-lg leading-none text-ink-muted hover:text-accent"
-          aria-label="Add goal"
-        >
-          +
-        </button>
+        {!readOnly && (
+          <button
+            onClick={() => setAdding((v) => !v)}
+            className="text-lg leading-none text-ink-muted hover:text-accent"
+            aria-label="Add goal"
+          >
+            +
+          </button>
+        )}
       </div>
 
       {goals.length === 0 && !adding && (
@@ -36,12 +40,14 @@ export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
             <li>Do two core sessions</li>
             <li>Get 8 hours of sleep</li>
           </ul>
-          <button
-            onClick={() => setAdding(true)}
-            className="mt-3 rounded border border-accent px-3 py-1.5 text-sm font-medium text-accent hover:bg-accent/5"
-          >
-            Add goal
-          </button>
+          {!readOnly && (
+            <button
+              onClick={() => setAdding(true)}
+              className="mt-3 rounded border border-accent px-3 py-1.5 text-sm font-medium text-accent hover:bg-accent/5"
+            >
+              Add goal
+            </button>
+          )}
         </div>
       )}
 
@@ -51,6 +57,7 @@ export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
             <input
               type="checkbox"
               checked={g.done === 1}
+              disabled={readOnly}
               onChange={() => run(() => toggleGoal(g.id, g.done !== 1))}
               className="accent-accent"
             />
@@ -59,13 +66,15 @@ export default function GoalsPanel({ goals }: { goals: GoalRow[] }) {
             >
               {g.text}
             </span>
-            <button
-              onClick={() => run(() => removeGoal(g.id))}
-              className="ml-auto text-xs text-ink-muted hover:text-fatigue"
-              aria-label="Remove goal"
-            >
-              ×
-            </button>
+            {!readOnly && (
+              <button
+                onClick={() => run(() => removeGoal(g.id))}
+                className="ml-auto text-xs text-ink-muted hover:text-fatigue"
+                aria-label="Remove goal"
+              >
+                ×
+              </button>
+            )}
           </li>
         ))}
       </ul>

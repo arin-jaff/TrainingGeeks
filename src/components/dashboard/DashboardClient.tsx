@@ -23,6 +23,7 @@ import ChartsLibrary from "./ChartsLibrary";
 import RecalcButton from "./RecalcButton";
 import { setDashboardCharts } from "@/app/actions/dashboard";
 import { IMPLEMENTED } from "@/lib/dashboard/charts";
+import { useReadOnly } from "@/components/ReadOnly";
 
 const CURVES: { key: LoadCurve; label: string }[] = [
   { key: "all", label: "All" },
@@ -109,18 +110,21 @@ function Card({
   onRemove: (id: string) => void;
   children: ReactNode;
 }) {
+  const readOnly = useReadOnly();
   return (
     <section
       className={`relative rounded border border-line bg-surface-card p-4 ${span2 ? "lg:col-span-2" : ""}`}
     >
-      <button
-        onClick={() => onRemove(id)}
-        aria-label="Remove chart"
-        title="Remove chart"
-        className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded text-ink-muted hover:bg-surface hover:text-fatigue"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
-      </button>
+      {!readOnly && (
+        <button
+          onClick={() => onRemove(id)}
+          aria-label="Remove chart"
+          title="Remove chart"
+          className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded text-ink-muted hover:bg-surface hover:text-fatigue"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      )}
       {children}
     </section>
   );
@@ -162,6 +166,7 @@ export default function DashboardClient({
   units: Units;
   initialCharts: string[];
 }) {
+  const readOnly = useReadOnly();
   const [curve, setCurve] = useState<LoadCurve>("all");
   const [days, setDays] = useState(90);
   const [charts, setCharts] = useState<string[]>(initialCharts);
@@ -287,11 +292,13 @@ export default function DashboardClient({
 
   return (
     <div className="space-y-4">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <ChartsLibrary active={valid} onAdd={add} />
-        <RecalcButton />
-      </div>
+      {/* Toolbar (hidden in read-only) */}
+      {!readOnly && (
+        <div className="flex items-center justify-between">
+          <ChartsLibrary active={valid} onAdd={add} />
+          <RecalcButton />
+        </div>
+      )}
 
       <div>
         <p className="mb-1 text-xs text-ink-muted">Last 28 days</p>

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
-import { authEnabled } from "@/lib/auth/config";
+import { authEnabled, isReadOnly } from "@/lib/auth/config";
 import { GITHUB_URL } from "@/lib/constants";
 import { getDb } from "@/lib/db/client";
 import { getAthlete } from "@/lib/db/repo";
+import { ReadOnlyProvider } from "@/components/ReadOnly";
 
 // Reads runtime env (auth state); must not be statically prerendered.
 export const dynamic = "force-dynamic";
@@ -14,9 +15,10 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const userName = getAthlete(getDb())?.name ?? "Athlete";
+  const readOnly = isReadOnly();
   return (
-    <>
-      <TopNav showSignOut={authEnabled()} userName={userName} />
+    <ReadOnlyProvider value={readOnly}>
+      <TopNav showSignOut={authEnabled() && !readOnly} userName={userName} readOnly={readOnly} />
       <main className="mx-auto w-full max-w-[1400px] px-4 py-4">{children}</main>
       <footer className="mx-auto mt-6 w-full max-w-[1400px] border-t border-line px-4 py-5 text-xs text-ink-muted">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -37,6 +39,6 @@ export default function AppLayout({
           </div>
         </div>
       </footer>
-    </>
+    </ReadOnlyProvider>
   );
 }
