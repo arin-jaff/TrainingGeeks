@@ -15,3 +15,22 @@ body {
   @apply bg-surface text-ink antialiased;
   font-feature-settings: "tnum" 1; /* tabular numbers for data tables */
 }
+
+/* Gentle bob for the status-screen frown. */
+@keyframes tg-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+}
+.tg-float {
+  animation: tg-float 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tg-float {
+    animation: none;
+  }
+}

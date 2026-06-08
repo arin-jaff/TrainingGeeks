@@ -74,14 +74,16 @@ export default function TopNav({
             </svg>
             GitHub
           </a>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/avatar.png"
-            alt=""
-            width={28}
-            height={28}
-            className="h-7 w-7 rounded-full bg-white/15 object-cover"
-          />
+          <Link href="/settings" aria-label="Account settings" title="Account settings">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/avatar.png"
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-full bg-white/15 object-cover ring-white/40 transition hover:ring-2"
+            />
+          </Link>
           <span className="hidden sm:inline">{userName}</span>
           <span aria-hidden className="text-white/50" title="Notifications">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0" /></svg>

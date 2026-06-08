@@ -22,15 +22,22 @@ export default function StatusScreen({
   githubLabel?: string;
   children?: ReactNode;
 }) {
+  const src = `/frown-${frown}.png`;
   return (
-    <div className="flex min-h-[62vh] flex-col items-center justify-center px-4 py-12 text-center">
+    <div className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-4 py-12 text-center">
+      {/* Faint tiled frown texture across the screen. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{ backgroundImage: `url(${src})`, backgroundSize: "96px", backgroundRepeat: "round" }}
+      />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`/frown-${frown}.png`}
+        src={src}
         alt=""
-        width={150}
-        height={150}
-        className="mb-6 h-[150px] w-[150px] object-contain opacity-90 drop-shadow-sm"
+        width={230}
+        height={230}
+        className="tg-float relative mb-6 h-[230px] w-[230px] object-contain drop-shadow-md"
       />
       {eyebrow && (
         <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-accent">
