@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Live demo
+    url: https://traininggeeks.arinjaff.com
+    about: See the app running on real, read-only data before filing.
+  - name: Questions & discussion
+    url: https://github.com/arin-jaff/TrainingGeeks/discussions
+    about: For setup help, ideas, and show-and-tell, use Discussions instead of an issue.

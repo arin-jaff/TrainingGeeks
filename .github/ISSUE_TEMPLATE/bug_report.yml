@@ -1,0 +1,60 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. Please fill in the details below so it can be reproduced.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, and what you expected instead.
+      placeholder: When I ..., I expected ..., but instead ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: App version or git commit you're running.
+      placeholder: v0.1.0 or commit sha
+    validations:
+      required: false
+  - type: dropdown
+    id: environment
+    attributes:
+      label: How are you running it?
+      options:
+        - Local dev (npm run dev)
+        - Self-hosted (next start)
+        - Raspberry Pi / read-only demo
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Environment details
+      description: Node version, OS, browser, and the relevant activity type (run/bike/swim/row/strength) if it matters.
+      placeholder: "Node 24.x, macOS 15, Chrome; bike activity from a .fit file"
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Relevant console output, server logs, or screenshots.
+      render: shell
+    validations:
+      required: false
