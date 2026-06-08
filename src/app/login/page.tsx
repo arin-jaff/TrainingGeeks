@@ -69,11 +69,12 @@ export default async function LoginPage({
                   <span className="text-sm font-semibold text-ink">Live demo</span>
                 </div>
                 <p className="text-sm leading-relaxed text-ink-muted">
-                  You&apos;re looking at <strong className="text-ink">{founder}&apos;s real, live
-                  training data</strong> — every run, ride, and lift. It&apos;s served{" "}
-                  <strong className="text-ink">read-only</strong> from a Raspberry Pi at home,
-                  auto-syncing from intervals.icu and Garmin. Look around all you like; nothing is
-                  editable.
+                  This takes you to <strong className="text-ink">{founder}&apos;s real, live
+                  training data</strong>, so you can see how TrainingGeeks works in practice — every
+                  run, ride, and lift from <strong className="text-ink">June 1, 2026 onward</strong>.
+                  It&apos;s served <strong className="text-ink">read-only</strong> on a simple
+                  Raspberry Pi at home, auto-syncing from intervals.icu and Garmin — super easy to
+                  set up and run yourself!
                 </p>
                 <Link
                   href="/?enter=1"
@@ -140,12 +141,26 @@ export default async function LoginPage({
         <div className="relative hidden flex-1 lg:block">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/login-hero.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-nav via-nav/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-nav/80 via-nav/30 to-nav/60" />
+
+          {/* Top-right: logo + headline overlay */}
+          <div className="absolute right-8 top-8 max-w-sm rounded-xl border border-white/10 bg-nav/45 p-5 text-right shadow-lg backdrop-blur-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="" className="ml-auto mb-3 h-12 w-12 rounded" />
+            <p className="text-2xl font-bold leading-tight text-white">
+              The training platform shaped like <span className="text-accent">your terms</span>.
+            </p>
+            <p className="mt-2 text-sm text-white/70">
+              Open source. Self-hosted. No subscription.
+            </p>
+          </div>
+
+          {/* Bottom-left: tagline */}
           <div className="absolute bottom-12 left-10 max-w-md">
-            <p className="text-3xl font-semibold leading-snug text-white drop-shadow">Train with purpose.</p>
-            <p className="mt-2 text-sm text-white/75 drop-shadow">
-              Every workout, metric, and trend — in one place that you actually own. Scroll down if
-              you&apos;ve ever paid a monthly fee to look at your own heart rate. ↓
+            <p className="text-3xl font-semibold leading-snug text-white drop-shadow-lg">Train with purpose.</p>
+            <p className="mt-2 text-sm text-white/80 drop-shadow">
+              Every workout, metric, and trend — in one place that you actually own. Scroll if
+              you&apos;ve ever paid a monthly fee to see your own heart rate. ↓
             </p>
           </div>
         </div>
@@ -154,17 +169,18 @@ export default async function LoginPage({
       {/* ===== Landing: the pitch ===== */}
       <section className="border-t border-white/10 px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="" className="mx-auto mb-6 h-14 w-14 rounded" />
-          <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
-            The training platform shaped like <span className="text-accent">your terms</span>.
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/70">
-            You know the one — shaped vaguely like a mountain range, the one that puts <em>your</em>{" "}
-            VO₂max behind a &quot;Premium&quot; button and charges you monthly to scroll your own
-            calendar. TrainingGeeks is that. Minus the invoice. Plus the entire source code.
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            Open source · Self-hosted · Yours
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <h2 className="text-3xl font-bold leading-tight text-white sm:text-5xl">
+            Looks familiar? <span className="text-accent">That&apos;s the point.</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/75">
+            You know the one — shaped vaguely like a mountain range, that puts <em>your</em> VO₂max
+            behind a &quot;Premium&quot; button and charges you monthly to scroll your own calendar.
+            TrainingGeeks is that. <span className="font-semibold text-white">Minus the invoice. Plus the entire source code.</span>
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-white px-5 py-2.5 text-sm font-semibold text-nav hover:opacity-90">
               <GitHubMark /> Star it on GitHub
             </a>
