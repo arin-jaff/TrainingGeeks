@@ -1,0 +1,39 @@
+name: Sync readonly-mode with main
+
+# Keeps the public read-only demo branch (readonly-mode) up to date with main
+# by merging main into it on every push to main. The merge preserves the
+# read-only enforcement commits that live only on readonly-mode. If the merge
+# conflicts, the run fails so a maintainer can resolve it by hand.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-readonly
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge main into readonly-mode
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout readonly-mode
+          if git merge --no-edit origin/main; then
+            git push origin readonly-mode
+            echo "readonly-mode updated from main."
+          else
+            git merge --abort
+            echo "::error::Merge conflict between main and readonly-mode — resolve manually."
+            exit 1
+          fi
