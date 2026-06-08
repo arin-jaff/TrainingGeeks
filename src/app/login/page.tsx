@@ -65,7 +65,13 @@ export default async function LoginPage({
                   autoComplete="current-password"
                   className="w-full rounded border border-line px-3 py-2 text-sm outline-none focus:border-accent"
                 />
-                {error && <p className="text-sm text-fatigue">Incorrect password.</p>}
+                {error === "config" ? (
+                  <p className="text-sm text-fatigue">
+                    Server isn&apos;t configured: set <code>TG_SESSION_SECRET</code>.
+                  </p>
+                ) : error ? (
+                  <p className="text-sm text-fatigue">Incorrect password.</p>
+                ) : null}
                 <button type="submit" className="w-full rounded bg-accent px-3 py-2 text-sm font-medium text-white hover:bg-accent-hover">
                   Sign in
                 </button>
@@ -155,6 +161,31 @@ export default async function LoginPage({
                 <h3 className="text-sm font-semibold text-ink">{f.title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">{f.body}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Product screenshots ===== */}
+      <section className="bg-surface px-6 pb-20">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-center text-2xl font-bold text-ink sm:text-3xl">See it in action</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-ink-muted">
+            Real screens from the app — your calendar, your dashboards, your analysis. No mockups.
+          </p>
+          <div className="mt-10 space-y-6">
+            {[
+              { src: "/shots/dashboard.png", cap: "Dashboard — add and remove the charts you care about." },
+              { src: "/shots/calendar.png", cap: "Calendar — plan, log, and see compliance at a glance." },
+              { src: "/shots/activity.png", cap: "Activity analysis — every metric, planned vs. completed." },
+            ].map((s) => (
+              <figure key={s.src} className="overflow-hidden rounded-xl border border-line bg-surface-card shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={s.src} alt={s.cap} className="w-full" />
+                <figcaption className="border-t border-line px-4 py-2.5 text-center text-xs text-ink-muted">
+                  {s.cap}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
