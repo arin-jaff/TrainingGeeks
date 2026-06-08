@@ -16,11 +16,11 @@ const SPORTS: Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
 
 const FEATURES: { title: string; body: string }[] = [
   { title: "A calendar that plans and remembers", body: "Drag workouts around, log what you actually did, and watch completed days turn green while the ones you skipped go an accusatory red." },
-  { title: "Those three numbers you love", body: "Fitness, Fatigue, and Form — CTL, ATL and TSB — charted per sport, no asterisk telling you to upgrade." },
+  { title: "Three key metrics", body: "Fitness, Fatigue, and Form — CTL, ATL and TSB — charted per sport, no asterisk telling you to upgrade." },
   { title: "Dashboards you control", body: "Add and remove charts with a click. PMC, time-in-zone, peak curves, weekly everything. Build the view you want." },
-  { title: "Peak performances, with hardware", body: "Mean-maximal power, pace, and heart-rate curves, and gold/silver/bronze on your best efforts." },
+  { title: "Peak performances which earn hardware", body: "Mean-maximal power, pace, and heart-rate curves, and gold/silver/bronze on your best efforts." },
   { title: "Zones, thresholds, and plans", body: "HR / power / pace zones from real methods, plus structured training plans you can drop onto the calendar." },
-  { title: "Syncs with intervals.icu", body: "Bring your activities and planned workouts in automatically — with your key, on your terms." },
+  { title: "Auto-sync with your preferred platforms", body: "Bring your activities and planned workouts in automatically. Partnered seamlessly with Intervals.icu to connect Garmin, Polar, Apple, and more." },
 ];
 
 function GitHubMark({ className = "" }: { className?: string }) {
@@ -69,8 +69,8 @@ export default async function LoginPage({
                   <span className="text-sm font-semibold text-ink">Live demo</span>
                 </div>
                 <p className="text-sm leading-relaxed text-ink-muted">
-                  This takes you to <strong className="text-ink">{founder}&apos;s real, live
-                  training data</strong>, so you can see how TrainingGeeks works in practice — every
+                  Check out the founder, <strong className="text-ink">{founder}&apos;s real, live
+                  training data</strong>, so you can see how TrainingGeeks works in practice. This includes every
                   run, ride, and lift from <strong className="text-ink">June 1, 2026 onward</strong>.
                   It&apos;s served <strong className="text-ink">read-only</strong> on a simple
                   Raspberry Pi at home, auto-syncing from intervals.icu and Garmin — super easy to
@@ -148,7 +148,7 @@ export default async function LoginPage({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="" className="ml-auto mb-3 h-12 w-12 rounded" />
             <p className="text-2xl font-bold leading-tight text-white">
-              The training platform shaped like <span className="text-accent">your terms</span>.
+              A training platform built for you, <span className="text-accent">by you</span>.
             </p>
             <p className="mt-2 text-sm text-white/70">
               Open source. Self-hosted. No subscription.
@@ -156,11 +156,11 @@ export default async function LoginPage({
           </div>
 
           {/* Bottom-left: tagline */}
-          <div className="absolute bottom-12 left-10 max-w-md">
-            <p className="text-3xl font-semibold leading-snug text-white drop-shadow-lg">Train with purpose.</p>
-            <p className="mt-2 text-sm text-white/80 drop-shadow">
-              Every workout, metric, and trend — in one place that you actually own. Scroll if
-              you&apos;ve ever paid a monthly fee to see your own heart rate. ↓
+          <div className="absolute bottom-12 left-10 max-w-2xl">
+            <p className="text-6xl font-semibold leading-tight text-white drop-shadow">Train with purpose.</p>
+            <p className="mt-4 text-lg leading-relaxed text-white/75 drop-shadow">
+              Every workout, metric, and trend — in one place that you actually own. Scroll down if
+              you&apos;ve ever paid a monthly fee to look at your own heart rate. ↓
             </p>
           </div>
         </div>
@@ -169,16 +169,17 @@ export default async function LoginPage({
       {/* ===== Landing: the pitch ===== */}
       <section className="border-t border-white/10 px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            Open source · Self-hosted · Yours
-          </p>
-          <h2 className="text-3xl font-bold leading-tight text-white sm:text-5xl">
-            Looks familiar? <span className="text-accent">That&apos;s the point.</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="" className="mx-auto mb-6 h-14 w-14 rounded" />
+          <p className="text-xs uppercase tracking-wide text-white/40">Open source · Self-hosted · Yours</p>
+          <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-5xl">
+            We were tired of proprietary and paywalls.<span className="text-accent"> We&apos;re here to set PRs.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/75">
-            You know the one — shaped vaguely like a mountain range, that puts <em>your</em> VO₂max
+            You train hard for your precious data. Now you can track all of it, exactly how YOU want, for free.
+            This is the platform you&apos;ve been looking for. You know the one — shaped vaguely like a mountain range, that puts <em>your</em> VO₂max
             behind a &quot;Premium&quot; button and charges you monthly to scroll your own calendar.
-            TrainingGeeks is that. <span className="font-semibold text-white">Minus the invoice. Plus the entire source code.</span>
+            TrainingGeeks is that. <span className="font-semibold text-white">Minus the invoice. Plus the entire source code, so you can host it yourself and make it your own.</span>
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-white px-5 py-2.5 text-sm font-semibold text-nav hover:opacity-90">
@@ -195,7 +196,11 @@ export default async function LoginPage({
       <section id="features" className="bg-surface px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-ink sm:text-3xl">Everything you actually used. None of the upsell.</h2>
+            <h2 className="text-2xl font-bold text-ink sm:text-3xl">
+              Everything you actually use.
+              <br />
+              <span className="text-accent">Anything you want to add.</span>
+            </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-ink-muted">
               We rebuilt the parts of the big-name analytics suite that athletes open every day —
               then made them yours to keep, tweak, and host.
@@ -208,6 +213,18 @@ export default async function LoginPage({
                 <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">{f.body}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mx-auto mt-12 max-w-3xl text-center">
+            <h3 className="text-2xl font-bold text-ink sm:text-3xl">Endless additional features.</h3>
+            <p className="mt-4 text-base leading-relaxed text-ink-muted sm:text-lg">
+              TrainingGeeks is forever open source. Built by a community of athletes, for a
+              community of athletes.
+            </p>
+            <p className="mt-4 text-xl font-semibold leading-snug text-ink sm:text-2xl">
+              Bring <span className="text-accent">PRs</span> (Pull Requests) so that we can keep
+              hitting <span className="text-accent">PRs</span> (Personal Records).
+            </p>
           </div>
         </div>
       </section>
@@ -224,6 +241,7 @@ export default async function LoginPage({
               { src: "/shots/dashboard.png", cap: "Dashboard — add and remove the charts you care about." },
               { src: "/shots/calendar.png", cap: "Calendar — plan, log, and see compliance at a glance." },
               { src: "/shots/activity.png", cap: "Activity analysis — every metric, planned vs. completed." },
+              { src: "/shots/activity-analyze.png", cap: "Analyze — route map, elevation, HR, power, and pace on one timeline." },
             ].map((s) => (
               <figure key={s.src} className="overflow-hidden rounded-xl border border-line bg-surface-card shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
