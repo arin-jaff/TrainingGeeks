@@ -199,7 +199,7 @@ export default function DashboardClient({
                 <Pills options={RANGES.map((r) => ({ key: r.days, label: r.label }))} value={days} onChange={(v) => setDays(v as number)} />
               </div>
             </div>
-            <PmcChart points={points} />
+            <PmcChart points={points} injuries={data.injuries} />
           </>
         );
       case "fitness-summary":
