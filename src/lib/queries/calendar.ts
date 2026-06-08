@@ -5,7 +5,7 @@ import {
   listInjuriesOverlapping,
   listPlannedBetween,
 } from "../db/repo.js";
-import type { Modality } from "../db/types.js";
+import { isCardio, type Modality } from "../db/types.js";
 import { MODALITY_LABEL } from "../util/format.js";
 import { eachDay } from "../util/dates.js";
 
@@ -28,7 +28,8 @@ export interface WeekSummary {
   weekStart: string;
   durationS: number;
   distanceM: number;
-  tss: number;
+  tss: number; // cardio training stress only
+  s3: number; // strength load (S³) — tracked separately from Fitness
   elevationM: number;
   workKj: number;
   disc: Record<string, number>; // per-discipline duration seconds: run/bike/swim/strength/other
@@ -129,6 +130,7 @@ export function getCalendarData(
     let durationS = 0;
     let distanceM = 0;
     let tss = 0;
+    let s3 = 0;
     let elevationM = 0;
     let workKj = 0;
     const disc: Record<string, number> = {};
@@ -137,7 +139,9 @@ export function getCalendarData(
         if (it.kind !== "activity") continue;
         durationS += it.durationS ?? 0;
         distanceM += it.distanceM ?? 0;
-        tss += it.stressValue ?? 0;
+        // Cardio stress feeds TSS; strength S³ is tallied separately.
+        if (isCardio(it.modality)) tss += it.stressValue ?? 0;
+        else s3 += it.stressValue ?? 0;
         elevationM += it.elevationM;
         workKj += it.workKj;
         const k = discKey(it.modality);
@@ -159,6 +163,7 @@ export function getCalendarData(
       durationS,
       distanceM,
       tss,
+      s3,
       elevationM,
       workKj,
       disc,

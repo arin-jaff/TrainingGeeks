@@ -20,6 +20,7 @@ import {
   FATIGUE_COLOR,
   FITNESS_COLOR,
   FORM_COLOR,
+  STRENGTH_COLOR,
   STATUS_COMPLETE,
   STATUS_COMPLETE_BG,
   STATUS_PASTDUE,
@@ -257,15 +258,20 @@ const DISC_ORDER: [string, string][] = [
   ["other", "Other"],
 ];
 
-function metricRows(s: WeekSummary, units: Units) {
+type MetricRow = [label: string, value: string, unit: string, color?: string];
+
+function metricRows(s: WeekSummary, units: Units): MetricRow[] {
   const km = units === "metric";
-  return [
+  const rows: MetricRow[] = [
     ["Duration", formatDuration(s.durationS), "hms"],
     ["Distance", (s.distanceM / (km ? 1000 : 1609.34)).toFixed(1), km ? "km" : "mi"],
     ["TSS", String(Math.round(s.tss)), "TSS"],
-    ["El. Gain", String(Math.round(s.elevationM * (km ? 1 : 3.28084))), km ? "m" : "ft"],
-    ["Work", String(Math.round(s.workKj)), "kJ"],
-  ] as const;
+  ];
+  // Strength load is its own score, kept out of the cardio TSS / Fitness.
+  if (s.s3 > 0) rows.push(["Strength", String(Math.round(s.s3)), "S³", STRENGTH_COLOR]);
+  rows.push(["El. Gain", String(Math.round(s.elevationM * (km ? 1 : 3.28084))), km ? "m" : "ft"]);
+  rows.push(["Work", String(Math.round(s.workKj)), "kJ"]);
+  return rows;
 }
 
 function SummaryCell({ s, units }: { s: WeekSummary | undefined; units: Units }) {
@@ -295,11 +301,13 @@ function SummaryCell({ s, units }: { s: WeekSummary | undefined; units: Units })
       )}
 
       <dl className="mt-3 space-y-1 text-[12px]">
-        {metricRows(s, units).map(([label, value, unit]) => (
+        {metricRows(s, units).map(([label, value, unit, color]) => (
           <div key={label} className="flex items-baseline justify-between">
-            <dt className="text-ink-muted">{label}</dt>
-            <dd className="tabular-nums text-ink">
-              <span className="font-semibold">{value}</span>{" "}
+            <dt style={color ? { color } : undefined} className={color ? "font-medium" : "text-ink-muted"}>
+              {label}
+            </dt>
+            <dd className="tabular-nums" style={color ? { color } : undefined}>
+              <span className={color ? "font-semibold" : "font-semibold text-ink"}>{value}</span>{" "}
               <span className="text-[10px] text-ink-muted">{unit}</span>
             </dd>
           </div>
