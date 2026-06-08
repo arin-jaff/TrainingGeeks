@@ -14,6 +14,8 @@ export const MODALITY_COLOR: Record<Modality, string> = {
 export const FITNESS_COLOR = "#1840ec"; // Fitness / CTL (blue)
 export const FATIGUE_COLOR = "#e63788"; // Fatigue / ATL (magenta)
 export const FORM_COLOR = "#fd6b00"; // Form / TSB (orange)
+// Strength load (S³) is tracked separately from cardio Fitness — purple.
+export const STRENGTH_COLOR = "#7b2d8e";
 
 // Discipline duration bars in the weekly summary (TP exact).
 export const DISCIPLINE_BAR: Record<string, string> = {

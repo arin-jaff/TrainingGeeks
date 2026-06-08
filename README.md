@@ -65,11 +65,15 @@ framework-agnostic to ease the planned Tauri macOS build.
 
 ## Quick start
 
+Requires **Node.js 22.6+** (24 LTS recommended — uses the built-in
+`node:sqlite`) and `git`.
+
 ```bash
 git clone https://github.com/arin-jaff/TrainingGeeks.git
 cd TrainingGeeks
 npm install
-npm run dev            # http://localhost:3000
+cp .env.example .env.local   # then edit (see Configuration)
+npm run dev                  # http://localhost:3000
 ```
 
 Build and run in production mode:
@@ -80,6 +84,13 @@ npm start
 ```
 
 The SQLite database and migrations are created automatically on first run.
+Then add your data from **Settings → Apps & Devices** (intervals.icu sync), the
+Import page (FIT files), or by hand from the calendar.
+
+📘 **Full setup & deployment** — including running a public read-only demo on a
+Raspberry Pi — is in **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+📐 **How every number is calculated** (TSS, NP, CTL/ATL/TSB, the S³ Strength
+Score, zones, plans) is in **[METHODOLOGY.md](METHODOLOGY.md)**.
 
 ## Configuration
 
