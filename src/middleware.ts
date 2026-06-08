@@ -5,13 +5,14 @@ import {
   getSecret,
   getSyncToken,
 } from "@/lib/auth/config";
-import { verifySessionToken } from "@/lib/auth/session";
+import { timingSafeEqual, verifySessionToken } from "@/lib/auth/session";
 
 export async function middleware(req: NextRequest) {
   // The sync daemon authenticates to /api/sync with a bearer token.
   if (req.nextUrl.pathname === "/api/sync") {
     const token = getSyncToken();
-    if (token && req.headers.get("authorization") === `Bearer ${token}`) {
+    const header = req.headers.get("authorization") ?? "";
+    if (token && timingSafeEqual(header, `Bearer ${token}`)) {
       return NextResponse.next();
     }
   }
@@ -29,6 +30,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Protect everything except the login/privacy pages, Next internals, and static files.
-  matcher: ["/((?!login|privacy|calendar.ics|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|ico)$).*)"],
+  // Protect everything except the login/privacy pages, Next internals, and static
+  // files. Public tokens are segment-anchored so e.g. /login-data isn't excluded.
+  matcher: ["/((?!login(?:$|/)|privacy(?:$|/)|calendar\\.ics(?:$|/)|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)"],
 };

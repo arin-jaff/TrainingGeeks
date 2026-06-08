@@ -22,10 +22,17 @@ export function getSyncToken(): string | null {
   return t && t.length > 0 ? t : null;
 }
 
-export function getSecret(): string {
-  return (
-    process.env.TG_SESSION_SECRET ||
-    process.env.TG_PASSWORD ||
-    "traininggeeks-insecure-dev-secret"
-  );
+/**
+ * Dedicated secret for signing session cookies. Must be set when auth is
+ * enabled — there is no fallback, so a missing secret fails closed rather than
+ * signing tokens with a guessable value (the password or a hardcoded string).
+ */
+export function getSecret(): string | null {
+  const s = process.env.TG_SESSION_SECRET;
+  return s && s.length > 0 ? s : null;
+}
+
+/** Auth is enabled and correctly configured (password + dedicated secret). */
+export function authReady(): boolean {
+  return authEnabled() && getSecret() !== null;
 }

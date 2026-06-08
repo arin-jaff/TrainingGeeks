@@ -8,9 +8,16 @@ import {
   listZonesFor,
   type EquipmentRow,
 } from "../db/repo.js";
-import type { AthleteRow, ConnectorAccountRow } from "../db/types.js";
+import type { AthleteRow } from "../db/types.js";
 import type { ZoneRow as MethodZoneRow } from "../zones/methods.js";
 import { todayLocal } from "../util/dates.js";
+
+/** Connector info safe to hand to the client — never the raw API key. */
+export interface ConnectorSummary {
+  athlete_id: string | null;
+  enabled: number;
+  hasApiKey: boolean;
+}
 
 export interface SettingsData {
   athlete: AthleteRow | undefined;
@@ -20,7 +27,7 @@ export interface SettingsData {
   thresholdHr: number | null;
   maxHr: number | null;
   restingHr: number | null;
-  connector: ConnectorAccountRow | undefined;
+  connector: ConnectorSummary | undefined;
   hrZones: MethodZoneRow[];
   powerZones: MethodZoneRow[];
   paceZones: MethodZoneRow[];
@@ -55,7 +62,10 @@ export function getSettingsData(db: DB): SettingsData {
     thresholdHr: t("run", "threshold_hr"),
     maxHr: t("run", "max_hr"),
     restingHr: t("run", "resting_hr"),
-    connector: getConnector(db, "intervals"),
+    connector: ((c) =>
+      c
+        ? { athlete_id: c.athlete_id, enabled: c.enabled, hasApiKey: !!c.api_key }
+        : undefined)(getConnector(db, "intervals")),
     hrZones: savedZones(db, "run", "hr"),
     powerZones: savedZones(db, "bike", "power"),
     paceZones: savedZones(db, "run", "pace"),

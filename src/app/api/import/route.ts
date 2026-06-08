@@ -6,11 +6,20 @@ import { recomputeFitness } from "@/lib/fitness/recompute";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const MAX_FILES = 50;
+const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25 MB per FIT file is already generous
+
 export async function POST(req: Request) {
   const form = await req.formData();
   const files = form.getAll("files").filter((f): f is File => f instanceof File);
   if (files.length === 0) {
     return NextResponse.json({ error: "No files provided" }, { status: 400 });
+  }
+  if (files.length > MAX_FILES) {
+    return NextResponse.json({ error: `Too many files (max ${MAX_FILES})` }, { status: 413 });
+  }
+  if (files.some((f) => f.size > MAX_FILE_BYTES)) {
+    return NextResponse.json({ error: "A file exceeds the 25 MB limit" }, { status: 413 });
   }
 
   const db = getDb();

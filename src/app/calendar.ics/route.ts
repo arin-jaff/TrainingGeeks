@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db/client";
 import { getAthlete, listActivitiesBetween } from "@/lib/db/repo";
 import { authEnabled, getSyncToken } from "@/lib/auth/config";
+import { timingSafeEqual } from "@/lib/auth/session";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
 import type { Modality, Units } from "@/lib/db/types";
 
@@ -33,7 +34,7 @@ export async function GET(req: Request) {
   if (authEnabled()) {
     const token = new URL(req.url).searchParams.get("token");
     const expected = getSyncToken();
-    if (!expected || token !== expected) {
+    if (!expected || !token || !timingSafeEqual(token, expected)) {
       return new Response("Unauthorized", { status: 401 });
     }
   }

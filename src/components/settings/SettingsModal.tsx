@@ -2,7 +2,8 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import type { AthleteRow, ConnectorAccountRow } from "@/lib/db/types";
+import type { AthleteRow } from "@/lib/db/types";
+import type { ConnectorSummary } from "@/lib/queries/settings";
 import { updateProfile, saveConnector, saveZones } from "@/app/actions/settings";
 import type { ZoneRow } from "@/lib/zones/methods";
 import type { ZoneSnapshot } from "./ZoneEditor";
@@ -30,7 +31,7 @@ interface SettingsData {
   thresholdHr: number | null;
   maxHr: number | null;
   restingHr: number | null;
-  connector: ConnectorAccountRow | undefined;
+  connector: ConnectorSummary | undefined;
   hrZones: ZoneRow[];
   powerZones: ZoneRow[];
   paceZones: ZoneRow[];
@@ -44,7 +45,6 @@ const ACCOUNT_NAV: [Section, string][] = [
   ["profile", "Profile"],
   ["subscription", "Subscription & Payments"],
   ["settings", "Settings"],
-  ["coaches", "Coaches"],
   ["calendar", "Calendar"],
   ["email", "Email Options"],
   ["apps", "Apps & Devices"],
@@ -53,7 +53,6 @@ const ACCOUNT_NAV: [Section, string][] = [
 ];
 const LOWER_NAV: [Section, string][] = [
   ["zones", "Zones"],
-  ["nutrition", "Nutrition"],
   ["equipment", "Equipment"],
   ["layout", "Layout"],
   ["weather", "Weather"],
@@ -295,8 +294,8 @@ export default function SettingsModal({
                     <input name="athleteId" defaultValue={settings.connector?.athlete_id ?? ""} className={input} />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm">API Key {settings.connector?.api_key && <span className="text-ink-muted">(saved)</span>}</label>
-                    <input name="apiKey" type="password" placeholder={settings.connector?.api_key ? "••••••••" : ""} className={input} />
+                    <label className="mb-1 block text-sm">API Key {settings.connector?.hasApiKey && <span className="text-ink-muted">(saved)</span>}</label>
+                    <input name="apiKey" type="password" placeholder={settings.connector?.hasApiKey ? "••••••••" : ""} className={input} />
                   </div>
                   <label className="flex items-center gap-2 text-sm sm:col-span-2">
                     <input type="checkbox" name="enabled" defaultChecked={settings.connector?.enabled === 1} className="accent-accent" />
