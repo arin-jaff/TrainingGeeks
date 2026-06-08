@@ -64,6 +64,7 @@ function WorkoutCard({
   units: Units;
   onEdit: (kind: "activity" | "planned", id: number) => void;
 }) {
+  const router = useRouter();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -81,7 +82,11 @@ function WorkoutCard({
       {...listeners}
       {...attributes}
       onClick={() => {
-        if (!isDragging) onEdit(item.kind, item.id);
+        if (isDragging) return;
+        // Completed activities open the full analyze view (map, streams,
+        // charts); planned workouts open the quick-add/edit modal.
+        if (item.kind === "activity") router.push(`/activity/${item.id}`);
+        else onEdit(item.kind, item.id);
       }}
       style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[

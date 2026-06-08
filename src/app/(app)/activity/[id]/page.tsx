@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db/client";
-import { getAthlete, listDailyLoad } from "@/lib/db/repo";
+import { getAthlete, listDailyLoad, listEquipment } from "@/lib/db/repo";
 import { getActivityDetail } from "@/lib/queries/activity";
 import type { Modality, Units } from "@/lib/db/types";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
 import { MODALITY_COLOR } from "@/lib/util/colors";
+import { todayLocal } from "@/lib/util/dates";
 import AnalyzeView from "@/components/activity/AnalyzeView";
 import SportImage from "@/components/SportImage";
+import EditActivityButton from "@/components/activity/EditActivityButton";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +50,8 @@ export default async function ActivityPage({
   const a = detail.activity;
   const modality = a.modality as Modality;
   const units: Units = getAthlete(db)?.units ?? "imperial";
+  const tz = getAthlete(db)?.timezone ?? "America/New_York";
+  const equipment = listEquipment(db);
   const fit = listDailyLoad(db, "all", a.local_date, a.local_date)[0];
   const isStrength = modality === "lift" || modality === "core";
   const stress = isStrength ? a.s3 : a.tss;
@@ -84,13 +88,21 @@ export default async function ActivityPage({
               </span>
             )}
           </div>
-          {fit && (
-            <div className="ml-auto flex gap-2">
-              <Pill label="Fitness" value={fit.ctl} color="#1840ec" />
-              <Pill label="Fatigue" value={fit.atl} color="#e63788" />
-              <Pill label="Form" value={fit.tsb} color="#fd6b00" />
-            </div>
-          )}
+          <div className="ml-auto flex items-center gap-3">
+            {fit && (
+              <div className="flex gap-2">
+                <Pill label="Fitness" value={fit.ctl} color="#1840ec" />
+                <Pill label="Fatigue" value={fit.atl} color="#e63788" />
+                <Pill label="Form" value={fit.tsb} color="#fd6b00" />
+              </div>
+            )}
+            <EditActivityButton
+              activityId={a.id}
+              units={units}
+              today={todayLocal(tz)}
+              equipment={equipment}
+            />
+          </div>
         </div>
       </div>
 
