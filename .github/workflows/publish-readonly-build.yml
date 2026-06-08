@@ -1,0 +1,40 @@
+name: Publish read-only build
+
+# Builds the read-only demo and publishes a ready-to-run branch, readonly-deploy,
+# that contains the readonly-mode source PLUS the prebuilt .next. The Raspberry
+# Pi tracks readonly-deploy and just `git pull`s — no on-device build, no rsync.
+# Runs after readonly-mode changes (including the auto-merge from main).
+
+on:
+  push:
+    branches: [readonly-mode]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-readonly-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: readonly-mode
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - name: Publish prebuilt app to readonly-deploy
+        run: |
+          rm -rf .next/cache          # runtime doesn't need the build cache
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f .next            # .next is gitignored; force it into this branch
+          git commit -m "build $(git rev-parse --short HEAD)"
+          git push -f origin HEAD:readonly-deploy
