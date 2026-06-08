@@ -1,5 +1,13 @@
 # TrainingGeeks
 
+[![Next.js](https://img.shields.io/badge/Next.js-15-000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![SQLite](https://img.shields.io/badge/db-node%3Asqlite-003B57?logo=sqlite&logoColor=white)](https://nodejs.org/api/sqlite.html)
+![Self-hosted](https://img.shields.io/badge/self--hosted-yes-45ae01)
+[![Stars](https://img.shields.io/github/stars/arin-jaff/TrainingGeeks?style=flat&logo=github)](https://github.com/arin-jaff/TrainingGeeks)
+[![Issues](https://img.shields.io/github/issues/arin-jaff/TrainingGeeks?logo=github)](https://github.com/arin-jaff/TrainingGeeks/issues)
+![PRs welcome](https://img.shields.io/badge/PRs-welcome-1840ec)
+
 **Open-source, self-hosted training software for endurance and strength athletes.**
 
 A local-first training log and analytics suite — calendar, performance-management
