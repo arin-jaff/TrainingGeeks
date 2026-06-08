@@ -32,6 +32,22 @@ export async function middleware(req: NextRequest) {
       url.search = "";
       return NextResponse.redirect(url);
     }
+    // Front door: show the "View Live!" landing first. Clicking it
+    // (?enter=1) sets a cookie and drops the visitor into the app.
+    if (pathname === "/") {
+      if (req.nextUrl.searchParams.has("enter")) {
+        const res = NextResponse.redirect(new URL("/", req.url));
+        res.cookies.set("tg_demo", "1", {
+          path: "/",
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+        return res;
+      }
+      if (!req.cookies.get("tg_demo")) {
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+    }
     return NextResponse.next();
   }
 
