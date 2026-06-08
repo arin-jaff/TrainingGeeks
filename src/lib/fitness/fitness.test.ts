@@ -55,7 +55,7 @@ test("rest after load: fatigue decays faster than fitness (form rises)", () => {
 
 // ---- DB recompute ----
 
-test("recomputeFitness rolls cardio TSS and strength S³ into curves", () => {
+test("recomputeFitness keeps strength S³ out of the overall 'all' curve", () => {
   const db = openDb(":memory:");
   insertActivity(db, {
     modality: "run",
@@ -73,13 +73,13 @@ test("recomputeFitness rolls cardio TSS and strength S³ into curves", () => {
 
   const all = listDailyLoad(db, "all", "2026-06-01", "2026-06-05");
   assert.equal(all.length, 5); // gap-filled through 'today'
-  assert.equal(all[0].stress, 160); // 100 TSS + 60 S³
+  assert.equal(all[0].stress, 100); // cardio TSS only — strength S³ excluded
   assert.ok(all[0].ctl > 0 && all[0].atl > 0);
 
   const run = listDailyLoad(db, "run", "2026-06-01", "2026-06-01")[0];
   const strength = listDailyLoad(db, "strength", "2026-06-01", "2026-06-01")[0];
   assert.equal(run.stress, 100);
-  assert.equal(strength.stress, 60);
+  assert.equal(strength.stress, 60); // S³ lives on its own 'strength' curve
   // later days decay toward zero with no new stress
   assert.ok(all[4].stress === 0 && all[4].atl < all[0].atl + 1);
 });

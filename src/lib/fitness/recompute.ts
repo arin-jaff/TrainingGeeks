@@ -24,6 +24,11 @@ const ALL_CURVES: LoadCurve[] = [...FITNESS_CURVES, "all"];
  * daily_load. Full recompute is O(days) and runs after each import/edit, so
  * curves stay consistent even when activities are deleted. Per modality plus
  * the combined 'all'. Cardio contributes TSS; strength (lift+core) S³.
+ *
+ * The overall 'all' Fitness score sums CARDIO sports only — strength S³ is
+ * tracked on its own 'strength' curve and deliberately kept out of 'all' so
+ * the headline Fitness/Fatigue/Form reflects endurance load, with Strength
+ * Score reported separately.
  */
 const PROJECT_DAYS = 60; // project fitness forward (zero future stress), like TP
 
@@ -48,7 +53,11 @@ export function recomputeFitness(db: DB, today?: string): void {
     if (stress === 0) continue;
     const curve = modalityToCurve(modality);
     addStress(buckets.get(curve)!, row.local_date, stress);
-    addStress(buckets.get("all")!, row.local_date, stress);
+    // Only cardio sports roll into the overall Fitness score; strength S³
+    // stays on its own curve.
+    if (isCardio(modality)) {
+      addStress(buckets.get("all")!, row.local_date, stress);
+    }
   }
 
   const days = eachDay(earliest, lastDate);
