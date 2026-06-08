@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
-export const GITHUB_URL = "https://github.com/arin-jaff/TrainingGeeks";
+export { GITHUB_URL } from "@/lib/constants";
+import { GITHUB_URL } from "@/lib/constants";
 
 /**
  * Friendly full-bleed status screen (coming-soon, 404, error) with a frown
