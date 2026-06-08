@@ -66,6 +66,7 @@ function WorkoutCard({
   onEdit: (kind: "activity" | "planned", id: number) => void;
 }) {
   const readOnly = useReadOnly();
+  const router = useRouter();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -83,7 +84,11 @@ function WorkoutCard({
       {...(readOnly ? {} : listeners)}
       {...(readOnly ? {} : attributes)}
       onClick={() => {
-        if (!isDragging && !readOnly) onEdit(item.kind, item.id);
+        if (isDragging) return;
+        // Completed activities open the full analyze view (allowed even in
+        // read-only); planned workouts open the editor (off in read-only).
+        if (item.kind === "activity") router.push(`/activity/${item.id}`);
+        else if (!readOnly) onEdit(item.kind, item.id);
       }}
       style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[
