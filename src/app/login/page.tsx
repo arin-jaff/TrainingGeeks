@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { loginAction } from "@/app/actions/auth";
-import { authEnabled } from "@/lib/auth/config";
+import { authEnabled, isReadOnly } from "@/lib/auth/config";
 import { GITHUB_URL } from "@/lib/constants";
+import { getDb } from "@/lib/db/client";
+import { getAthlete } from "@/lib/db/repo";
 import SportImage from "@/components/SportImage";
 import { MODALITY_LABEL } from "@/lib/util/format";
 import type { Modality } from "@/lib/db/types";
@@ -34,8 +36,12 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  if (!authEnabled()) redirect("/");
+  const readOnly = isReadOnly();
+  // Open local instances have nothing to gate — go straight in. Read-only
+  // demos show this page as a public "View Live!" landing.
+  if (!authEnabled() && !readOnly) redirect("/");
   const { error } = await searchParams;
+  const founder = getAthlete(getDb())?.name ?? "the founder";
 
   return (
     <div className="bg-nav">
@@ -52,31 +58,55 @@ export default async function LoginPage({
             <div className="mb-6 text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo-wordmark.png" alt="TrainingGeeks" className="mx-auto h-24 w-auto" />
-              <p className="mt-1 text-xs text-white/50">Your self-hosted training log</p>
+              <p className="mt-1 text-xs text-white/50">
+                {readOnly ? "Live, self-hosted training data" : "Your self-hosted training log"}
+              </p>
             </div>
-            <div className="rounded border border-white/10 bg-surface-card p-6 shadow-lg">
-              <form action={loginAction} className="space-y-3">
-                <label className="block text-sm font-medium text-ink" htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoFocus
-                  autoComplete="current-password"
-                  className="w-full rounded border border-line px-3 py-2 text-sm outline-none focus:border-accent"
-                />
-                {error === "config" ? (
-                  <p className="text-sm text-fatigue">
-                    Server isn&apos;t configured: set <code>TG_SESSION_SECRET</code>.
-                  </p>
-                ) : error ? (
-                  <p className="text-sm text-fatigue">Incorrect password.</p>
-                ) : null}
-                <button type="submit" className="w-full rounded bg-accent px-3 py-2 text-sm font-medium text-white hover:bg-accent-hover">
-                  Sign in
-                </button>
-              </form>
-            </div>
+            {readOnly ? (
+              <div className="rounded border border-white/10 bg-surface-card p-6 shadow-lg">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-fatigue" />
+                  <span className="text-sm font-semibold text-ink">Live demo</span>
+                </div>
+                <p className="text-sm leading-relaxed text-ink-muted">
+                  You&apos;re looking at <strong className="text-ink">{founder}&apos;s real, live
+                  training data</strong> — every run, ride, and lift. It&apos;s served{" "}
+                  <strong className="text-ink">read-only</strong> from a Raspberry Pi at home,
+                  auto-syncing from intervals.icu and Garmin. Look around all you like; nothing is
+                  editable.
+                </p>
+                <Link
+                  href="/"
+                  className="mt-4 block w-full rounded bg-accent px-3 py-2 text-center text-sm font-semibold text-white hover:bg-accent-hover"
+                >
+                  View Live →
+                </Link>
+              </div>
+            ) : (
+              <div className="rounded border border-white/10 bg-surface-card p-6 shadow-lg">
+                <form action={loginAction} className="space-y-3">
+                  <label className="block text-sm font-medium text-ink" htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoFocus
+                    autoComplete="current-password"
+                    className="w-full rounded border border-line px-3 py-2 text-sm outline-none focus:border-accent"
+                  />
+                  {error === "config" ? (
+                    <p className="text-sm text-fatigue">
+                      Server isn&apos;t configured: set <code>TG_SESSION_SECRET</code>.
+                    </p>
+                  ) : error ? (
+                    <p className="text-sm text-fatigue">Incorrect password.</p>
+                  ) : null}
+                  <button type="submit" className="w-full rounded bg-accent px-3 py-2 text-sm font-medium text-white hover:bg-accent-hover">
+                    Sign in
+                  </button>
+                </form>
+              </div>
+            )}
 
             {/* Supported disciplines */}
             <div className="mt-7">

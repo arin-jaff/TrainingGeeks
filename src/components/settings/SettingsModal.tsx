@@ -160,9 +160,7 @@ export default function SettingsModal({
                   />
                   <div>
                     <div className="text-sm font-medium text-ink">{athlete?.name ?? "Athlete"}</div>
-                    <button type="button" className="mt-1 text-xs font-medium text-accent">
-                      Change photo
-                    </button>
+                    <div className="mt-1 text-xs text-ink-muted">Set your name and email below.</div>
                   </div>
                 </div>
                 <p className="mb-4 mt-4 text-sm font-bold text-ink">

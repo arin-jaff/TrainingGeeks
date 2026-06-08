@@ -3,6 +3,7 @@ import {
   getActivityStream,
   listActivitiesBetween,
   listDailyLoad,
+  listInjuriesOverlapping,
   listMetricsByType,
   listPeakCurve,
   listZonesFor,
@@ -75,6 +76,15 @@ export interface MetricSeries {
   points: { date: string; value: number }[];
 }
 
+export interface InjurySpan {
+  start: string; // YYYY-MM-DD
+  end: string; // resolved end (today if ongoing)
+  ongoing: boolean;
+  title: string;
+  bodyPart: string | null;
+  notes: string | null;
+}
+
 export interface DashboardData {
   pmc: Record<LoadCurve, PmcPoint[]>; // last 365 days per curve
   summary: SummarySlice[]; // completed duration by modality, last 28 days
@@ -85,6 +95,7 @@ export interface DashboardData {
   powerZoneTime: ZoneTime | null;
   peaks: PeakCurves; // mean-maximal curves across all activities
   metricSeries: MetricSeries | null; // most-tracked wellness metric, last 180d
+  injuries: InjurySpan[]; // injury periods overlapping the PMC range
 }
 
 function zoneTime(
@@ -225,6 +236,18 @@ export function getDashboardData(db: DB, today: string): DashboardData {
       };
   }
 
+  // Injury periods overlapping the PMC window, for the chart's red bands.
+  const injuries: InjurySpan[] = listInjuriesOverlapping(db, start365, today).map(
+    (i) => ({
+      start: i.start_date,
+      end: i.end_date ?? today,
+      ongoing: i.end_date == null,
+      title: i.title,
+      bodyPart: i.body_part,
+      notes: i.notes,
+    }),
+  );
+
   return {
     pmc,
     summary,
@@ -235,6 +258,7 @@ export function getDashboardData(db: DB, today: string): DashboardData {
     powerZoneTime,
     peaks,
     metricSeries,
+    injuries,
   };
 }
 

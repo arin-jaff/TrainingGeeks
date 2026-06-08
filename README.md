@@ -8,15 +8,20 @@
 [![Issues](https://img.shields.io/github/issues/arin-jaff/TrainingGeeks?logo=github)](https://github.com/arin-jaff/TrainingGeeks/issues)
 ![PRs welcome](https://img.shields.io/badge/PRs-welcome-1840ec)
 
-**Open-source, self-hosted training software for endurance and strength athletes.**
+**The training log you actually own — open-source, self-hosted, and gloriously subscription-free.** 🏃‍♂️🚴‍♀️🏊
 
-A local-first training log and analytics suite — calendar, performance-management
-charts, dashboards, zones, peak performances, training plans, wellness metrics,
-and injury tracking — that you run on your own machine. Think of the analytics
-platform you already pay a monthly fee for, but the source is yours, the data
-lives in a file on your computer, and there is no subscription.
+Calendar, performance-management charts, dashboards, zones, peak performances,
+training plans, wellness metrics, and injury tracking — a full analytics suite
+that runs on *your* machine, stores data in a single file you control, and never
+asks for your credit card. All the numbers you love, none of the paywall. 💪
 
-Repo: <https://github.com/arin-jaff/TrainingGeeks>
+## 🔴 Live demo
+
+**[See it running on real data →](https://YOUR-DEMO-URL)**
+
+Not a mockup — that's the founder's actual, live training history, served
+**read-only** from a Raspberry Pi at home and auto-syncing from intervals.icu and
+Garmin. (Maintainers: set this URL once your demo box is online.)
 
 ---
 
@@ -112,9 +117,8 @@ TrainingGeeks collects nothing and phones nowhere. See the in-app
 
 ## Contributing
 
-Issues and pull requests are welcome:
-<https://github.com/arin-jaff/TrainingGeeks>. The visual reference is
-TrainingPeaks; metrics follow standard endurance-training definitions.
+Issues and pull requests are very welcome — file one from the Issues tab.
+Metrics follow standard endurance-training definitions.
 
 ## Acknowledgements
 

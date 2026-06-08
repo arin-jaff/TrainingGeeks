@@ -76,12 +76,79 @@ export function ZoneTimeChart({ data, color }: { data: ZoneTime; color: string }
 
 const md = (d: string) => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`;
 
-export function PmcChart({ points }: { points: PmcPoint[] }) {
+export interface InjurySpan {
+  start: string; // YYYY-MM-DD
+  end: string; // resolved end (today if ongoing)
+  ongoing: boolean;
+  title: string;
+  bodyPart: string | null;
+  notes: string | null;
+}
+
+export function PmcChart({
+  points,
+  injuries = [],
+}: {
+  points: PmcPoint[];
+  injuries?: InjurySpan[];
+}) {
   const dates = points.map((p) => md(p.date));
+
+  // Map each injury to the band of visible points it overlaps.
+  const bands = injuries
+    .map((inj) => {
+      const lo = points.findIndex((p) => p.date >= inj.start);
+      let hi = -1;
+      for (let i = points.length - 1; i >= 0; i--) {
+        if (points[i].date <= inj.end) { hi = i; break; }
+      }
+      if (lo === -1 || hi === -1 || lo > hi) return null;
+      return { lo, hi, inj };
+    })
+    .filter((b): b is { lo: number; hi: number; inj: InjurySpan } => b !== null);
+
+  const injuryAt = (idx: number): InjurySpan | undefined => {
+    const date = points[idx]?.date;
+    return injuries.find((i) => date && date >= i.start && date <= i.end);
+  };
+
+  const markArea =
+    bands.length > 0
+      ? {
+          silent: true,
+          itemStyle: { color: "rgba(226,87,76,0.14)" },
+          data: bands.map(
+            (b) =>
+              [{ xAxis: dates[b.lo] }, { xAxis: dates[b.hi] }] as [
+                { xAxis: string },
+                { xAxis: string },
+              ],
+          ),
+        }
+      : undefined;
+
   const option: EChartsOption = {
     grid: { left: 44, right: 48, top: 28, bottom: 28 },
     legend: { top: 0, itemWidth: 14, textStyle: { fontSize: 11 } },
-    tooltip: { trigger: "axis" },
+    tooltip: {
+      trigger: "axis",
+      formatter: (params: unknown) => {
+        const arr = params as { dataIndex: number; axisValue: string; marker: string; seriesName: string; value: number }[];
+        if (!arr.length) return "";
+        let html = `<div style="font-weight:600">${arr[0].axisValue}</div>`;
+        for (const p of arr) html += `<div>${p.marker} ${p.seriesName}: ${Math.round(p.value)}</div>`;
+        const inj = injuryAt(arr[0].dataIndex);
+        if (inj) {
+          const range = inj.ongoing
+            ? `since ${md(inj.start)}`
+            : `${md(inj.start)} – ${md(inj.end)}`;
+          html += `<div style="margin-top:5px;color:#e2574c;font-weight:600">Injury: ${inj.title}${inj.bodyPart ? ` · ${inj.bodyPart}` : ""}</div>`;
+          html += `<div style="color:#e2574c;font-size:11px">${range}</div>`;
+          if (inj.notes) html += `<div style="font-size:11px;color:#6b7280;max-width:220px;white-space:normal">${inj.notes}</div>`;
+        }
+        return html;
+      },
+    },
     xAxis: {
       type: "category",
       data: dates,
@@ -114,6 +181,7 @@ export function PmcChart({ points }: { points: PmcPoint[] }) {
         data: points.map((p) => Math.round(p.stress)),
         itemStyle: { color: PMC_COLOR.stress },
         barMaxWidth: 6,
+        markArea,
       },
       {
         name: "Fitness",

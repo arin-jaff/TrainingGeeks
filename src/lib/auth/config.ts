@@ -18,8 +18,9 @@ export function authEnabled(): boolean {
 
 /**
  * Read-only/demo mode. When TG_READONLY is set, the instance serves a public,
- * view-only copy: all writes are blocked and Settings is off-limits, while the
- * background sync still updates the data (so a hosted demo stays live).
+ * view-only copy: the landing becomes a "View Live!" page, all writes are
+ * blocked, and Settings is off-limits — while the background sync still
+ * updates the data so a hosted demo stays live.
  */
 export function isReadOnly(): boolean {
   const v = process.env.TG_READONLY;
