@@ -257,4 +257,30 @@ CREATE TABLE equipment (
 );
 `,
   },
+  {
+    id: 5,
+    name: "activity_private_notes",
+    // Private notes live alongside the public `notes`/description; never synced
+    // out, shown only to the owner on the activity summary.
+    sql: /* sql */ `ALTER TABLE activity ADD COLUMN private_notes TEXT;`,
+  },
+  {
+    id: 6,
+    name: "activity_file",
+    // User-uploaded attachments for an activity. The bytes live on disk under
+    // data/uploads/<activity_id>/; only metadata + the stored path is in the DB.
+    sql: /* sql */ `
+CREATE TABLE activity_file (
+  id INTEGER PRIMARY KEY,
+  activity_id INTEGER NOT NULL REFERENCES activity (id) ON DELETE CASCADE,
+  filename TEXT NOT NULL,        -- original name shown to the user
+  mime TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  stored_path TEXT NOT NULL,     -- absolute path on disk
+  is_image INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_activity_file_activity ON activity_file (activity_id);
+`,
+  },
 ];
