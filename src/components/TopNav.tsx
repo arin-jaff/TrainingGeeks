@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
@@ -10,6 +11,8 @@ const TABS = [
   { href: "/calendar", label: "Calendar" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/atp", label: "ATP" },
+  // Social is an opt-in, sectioned-off experience — never affects personal use.
+  { href: "/social", label: "Social" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -27,10 +30,35 @@ export default function TopNav({
   readOnly?: boolean;
 }) {
   const pathname = usePathname() ?? "/";
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close the mobile menu whenever the route changes.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const tabClass = (active: boolean) =>
+    [
+      "rounded px-3 py-1.5 text-[13px] font-medium transition-colors",
+      active ? "bg-nav-active text-white" : "text-white/70 hover:text-white",
+    ].join(" ");
 
   return (
     <header className="bg-nav text-white">
       <div className="relative mx-auto flex h-12 items-center px-4">
+        {/* Mobile menu button (small screens only) */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+          className="mr-2 -ml-1 rounded p-1.5 text-white/80 hover:bg-white/10 md:hidden"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
+          </svg>
+        </button>
+
         {/* Wordmark (left) */}
         <Link href="/" className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -40,26 +68,18 @@ export default function TopNav({
           </span>
         </Link>
 
-        {/* Tabs (centered) */}
-        <nav className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1">
-          {TABS.map((tab) => {
-            const active = isActive(pathname, tab.href);
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                aria-current={active ? "page" : undefined}
-                className={[
-                  "rounded px-3 py-1.5 text-[13px] font-medium transition-colors",
-                  active
-                    ? "bg-nav-active text-white"
-                    : "text-white/70 hover:text-white",
-                ].join(" ")}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
+        {/* Tabs (centered, md+ only) */}
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
+          {TABS.map((tab) => (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              aria-current={isActive(pathname, tab.href) ? "page" : undefined}
+              className={tabClass(isActive(pathname, tab.href))}
+            >
+              {tab.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Right cluster */}
@@ -119,6 +139,22 @@ export default function TopNav({
           )}
         </div>
       </div>
+
+      {/* Mobile dropdown menu (small screens) */}
+      {menuOpen && (
+        <nav className="border-t border-white/10 px-2 py-2 md:hidden">
+          {TABS.map((tab) => (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              aria-current={isActive(pathname, tab.href) ? "page" : undefined}
+              className={`block ${tabClass(isActive(pathname, tab.href))}`}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

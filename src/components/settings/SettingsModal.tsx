@@ -24,7 +24,6 @@ import HistorySync from "./HistorySync";
 import PrefsForm from "./PrefsForm";
 import ExportData from "./ExportData";
 import EquipmentManager from "./EquipmentManager";
-import FederationPanel from "./FederationPanel";
 import type { EquipmentRow } from "@/lib/db/repo";
 
 interface SettingsData {
@@ -49,7 +48,6 @@ const ACCOUNT_NAV: [Section, string][] = [
   ["calendar", "Calendar"],
   ["email", "Email Options"],
   ["apps", "Apps & Devices"],
-  ["friends", "Friends"],
   ["notifications", "Notifications"],
   ["export", "Export Data"],
 ];
@@ -309,13 +307,6 @@ export default function SettingsModal({
                   <SyncButton />
                   <HistorySync />
                 </div>
-              </div>
-            )}
-
-            {section === "friends" && (
-              <div>
-                <SectionTitle>Friends</SectionTitle>
-                <FederationPanel />
               </div>
             )}
 
