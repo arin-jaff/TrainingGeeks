@@ -136,6 +136,15 @@ npx tsc --noEmit  # type-check
 TrainingGeeks collects nothing and phones nowhere. See the in-app
 [Privacy Policy](src/app/privacy/page.tsx) (served at `/privacy`).
 
+## Federation (experimental)
+
+An optional, opt-in module lets independently self-hosted instances add friends
+and share training data — coordinated by a lean, pluggable directory service.
+Your data stays on your box; only what you choose to share is exposed. The
+coordination server lives in its own repo:
+**[TrainingGeeks-Directory](https://github.com/arin-jaff/TrainingGeeks-Directory)**
+(see its `PLAN.md` for the architecture). Early-stage; not yet wired into the app.
+
 ## Contributing
 
 Issues and pull requests are very welcome. See [CONTRIBUTING.md](CONTRIBUTING.md)
