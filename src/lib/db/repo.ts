@@ -821,6 +821,15 @@ export function getAllSettings(db: DB): Record<string, string> {
   return out;
 }
 
+export function getSetting(db: DB, key: string): string | null {
+  const r = one<{ value: string }>(
+    db,
+    "SELECT value FROM app_setting WHERE key = ?",
+    key,
+  );
+  return r?.value ?? null;
+}
+
 export function setSetting(db: DB, key: string, value: string): void {
   db.prepare(
     `INSERT INTO app_setting (key, value) VALUES (?, ?)
