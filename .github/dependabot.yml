@@ -4,17 +4,25 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
-    groups:
-      production-dependencies:
-        dependency-type: production
-      development-dependencies:
-        dependency-type: development
+    open-pull-requests-limit: 10
     commit-message:
       prefix: "deps"
+    groups:
+      # Safe, low-risk updates batched into one PR.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    # Major (breaking) bumps come as isolated PRs so each can be reviewed and
+    # migrated on its own rather than bundled in with the safe updates.
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     commit-message:
       prefix: "ci"
+    groups:
+      actions:
+        update-types:
+          - minor
+          - patch

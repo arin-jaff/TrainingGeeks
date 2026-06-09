@@ -3,12 +3,13 @@ import { getDb } from "@/lib/db/client";
 import { isReadOnly } from "@/lib/auth/config";
 import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
+import { getSportSummaries } from "@/lib/queries/sports";
 import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
 import type { CalItem } from "@/lib/queries/calendar";
-import type { Modality, Units } from "@/lib/db/types";
+import type { Units } from "@/lib/db/types";
 import { todayLocal } from "@/lib/util/dates";
-import { formatDistance, formatDuration, formatPace, MODALITY_LABEL } from "@/lib/util/format";
-import SportImage from "@/components/SportImage";
+import { formatDistance, formatDuration, formatPace } from "@/lib/util/format";
+import SportsBar from "@/components/home/SportsBar";
 import PerformanceMetrics from "@/components/home/PerformanceMetrics";
 import EventsPanel from "@/components/home/EventsPanel";
 import GoalsPanel from "@/components/home/GoalsPanel";
@@ -157,6 +158,7 @@ export default async function HomePage() {
   const tz = athlete?.timezone ?? "America/New_York";
   const today = todayLocal(tz);
   const data = getHomeData(db, today);
+  const sports = getSportSummaries(db, today);
   const wellness = latestMetrics(db);
   const readOnly = isReadOnly();
 
@@ -174,20 +176,8 @@ export default async function HomePage() {
         </h1>
       </div>
 
-      {/* Your Sports */}
-      <div className="mb-4 rounded border border-line bg-surface-card p-4">
-        <h2 className="mb-3 text-sm font-semibold text-ink">Your Sports</h2>
-        <div className="flex flex-wrap gap-x-8 gap-y-4">
-          {(["run", "bike", "swim", "row", "lift", "core"] as Modality[]).map((m) => (
-            <div key={m} className="flex w-16 flex-col items-center gap-1.5">
-              <SportImage modality={m} size={52} />
-              <span className="text-xs font-medium text-ink-muted">
-                {MODALITY_LABEL[m]}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Your Sports — hover a sport for last activity + week/all-time stats. */}
+      <SportsBar sports={sports} units={units} today={today} />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Left: Events + Goals */}

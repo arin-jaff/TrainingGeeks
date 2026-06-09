@@ -102,6 +102,7 @@ export interface WorkoutEditData {
   modality: string;
   name: string;
   description: string;
+  privateNotes: string;
   plannedId: number | null;
   activityId: number | null;
   planned: { durationS: number | null; distanceM: number | null; tss: number | null } | null;
@@ -155,6 +156,7 @@ export async function getWorkoutForEdit(
       modality: p.modality,
       name: p.name ?? "",
       description: p.description ?? "",
+      privateNotes: act?.private_notes ?? "",
       plannedId: p.id,
       activityId: act?.id ?? null,
       planned: {
@@ -174,6 +176,7 @@ export async function getWorkoutForEdit(
     modality: a.modality,
     name: a.name ?? "",
     description: a.notes ?? "",
+    privateNotes: a.private_notes ?? "",
     plannedId: null,
     activityId: a.id,
     planned: null,

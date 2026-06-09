@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   DndContext,
@@ -53,6 +53,12 @@ function statusOf(item: CalItem, date: string, today: string): CardStatus {
   return date < today ? "pastdue" : "planned";
 }
 
+const STATUS_TEXT: Record<CardStatus, string> = {
+  complete: "Completed",
+  pastdue: "Past due",
+  planned: "Planned",
+};
+
 function WorkoutCard({
   item,
   date,
@@ -79,6 +85,31 @@ function WorkoutCard({
   const bodyBg =
     status === "complete" ? STATUS_COMPLETE_BG : status === "pastdue" ? STATUS_PASTDUE_BG : undefined;
 
+  // Delayed hover preview, anchored to the card's viewport rect so the
+  // calendar's overflow-hidden wrapper can't clip it. The timeout keeps the
+  // popover from flashing while dragging or skimming across cells.
+  const [preview, setPreview] = useState<{ top: number; left: number } | null>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openPreview(e: React.MouseEvent) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => {
+      setPreview({ top: rect.bottom + 6, left: rect.left });
+    }, 250);
+  }
+  function closePreview() {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    setPreview(null);
+  }
+
+  const go = () => {
+    // Completed activities open the analyze view (allowed even in read-only);
+    // planned workouts open the editor (disabled in read-only).
+    if (item.kind === "activity") router.push(`/activity/${item.id}`);
+    else if (!readOnly) onEdit(item.kind, item.id);
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -86,14 +117,16 @@ function WorkoutCard({
       {...(readOnly ? {} : attributes)}
       onClick={() => {
         if (isDragging) return;
-        // Completed activities open the full analyze view (allowed even in
-        // read-only); planned workouts open the editor (off in read-only).
-        if (item.kind === "activity") router.push(`/activity/${item.id}`);
-        else if (!readOnly) onEdit(item.kind, item.id);
+        closePreview();
+        go();
       }}
+      onMouseEnter={openPreview}
+      onMouseLeave={closePreview}
       style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[
-        readOnly ? "overflow-hidden rounded-[4px]" : "cursor-grab overflow-hidden rounded-[4px]",
+        readOnly
+          ? "overflow-hidden rounded-[4px] transition-shadow hover:ring-1 hover:ring-accent/40"
+          : "cursor-grab overflow-hidden rounded-[4px] transition-shadow hover:ring-1 hover:ring-accent/40",
         bannerColor ? "" : "bg-surface-card",
         planned && status === "planned" ? "opacity-90 ring-1 ring-dashed ring-line" : "",
         isDragging ? "opacity-40" : "",
@@ -110,27 +143,87 @@ function WorkoutCard({
             ⋮
           </span>
         </div>
-        <div className="mt-1 space-y-0.5 text-[12px] leading-tight">
-          {item.durationS != null && (
-            <div className="font-semibold text-ink">
-              {formatDuration(item.durationS)}
-            </div>
-          )}
-          {item.distanceM != null && (
-            <div className="text-ink">{formatDistance(item.distanceM, units)}</div>
-          )}
-          {item.stressValue != null && (
-            <div className="font-semibold text-ink">
-              {item.stressValue} {item.stressLabel}
-            </div>
-          )}
-          {planned && (
-            <div className={status === "pastdue" ? "italic text-fatigue" : "italic text-ink-muted"}>
-              {status === "pastdue" ? "past due" : "planned"}
-            </div>
+        <div className="mt-1 flex items-start gap-1.5">
+          <div className="min-w-0 flex-1 space-y-0.5 text-[12px] leading-tight">
+            {item.durationS != null && (
+              <div className="font-semibold text-ink">
+                {formatDuration(item.durationS)}
+              </div>
+            )}
+            {item.distanceM != null && (
+              <div className="text-ink">{formatDistance(item.distanceM, units)}</div>
+            )}
+            {item.stressValue != null && (
+              <div className="font-semibold text-ink">
+                {item.stressValue} {item.stressLabel}
+              </div>
+            )}
+            {planned && (
+              <div className={status === "pastdue" ? "italic text-fatigue" : "italic text-ink-muted"}>
+                {status === "pastdue" ? "past due" : "planned"}
+              </div>
+            )}
+          </div>
+          {item.thumbUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.thumbUrl}
+              alt=""
+              className="h-12 w-12 shrink-0 rounded object-cover ring-1 ring-line"
+            />
           )}
         </div>
       </div>
+
+      {preview && !isDragging && (
+        <div
+          style={{ top: preview.top, left: preview.left, borderTopColor: bannerColor ?? undefined }}
+          className="fixed z-40 w-56 rounded-md border border-line bg-surface-card p-3 text-left shadow-xl"
+          onClick={(e) => {
+            e.stopPropagation();
+            closePreview();
+            go();
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <SportImage modality={item.modality} size={22} className="rounded-sm" />
+            <div className="min-w-0">
+              <div className="truncate text-[13px] font-semibold text-ink">
+                {item.name || SPORT_NAME[item.modality]}
+              </div>
+              <div
+                className="text-[11px] font-medium"
+                style={{ color: bannerColor ?? undefined }}
+              >
+                {STATUS_TEXT[status]}
+              </div>
+            </div>
+          </div>
+          <dl className="mt-2 space-y-1 text-[12px]">
+            {item.durationS != null && (
+              <Stat label="Duration" value={formatDuration(item.durationS)} />
+            )}
+            {item.distanceM != null && (
+              <Stat label="Distance" value={formatDistance(item.distanceM, units)} />
+            )}
+            {item.stressValue != null && (
+              <Stat label={item.stressLabel ?? "TSS"} value={String(item.stressValue)} />
+            )}
+          </dl>
+          <div className="mt-2 text-[11px] font-medium text-accent">
+            {item.kind === "activity" ? "View activity →" : "Edit workout →"}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between">
+      <dt className="text-ink-muted">{label}</dt>
+      <dd className="font-semibold tabular-nums text-ink">{value}</dd>
     </div>
   );
 }

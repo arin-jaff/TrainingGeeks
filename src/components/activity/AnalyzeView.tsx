@@ -112,7 +112,9 @@ export default function AnalyzeView({
 
   const num = (v: number | null, suffix = "") =>
     v == null ? "—" : `${Math.round(v)}${suffix}`;
-  const metricRows = [
+  const cadenceUnit = modality === "bike" ? "rpm" : "spm";
+  type MetricRow = { label: string; completed: string; unit: string };
+  const metricRows: MetricRow[] = [
     { label: "Duration", completed: formatDuration(a.duration_s), unit: "h:m:s" },
     { label: "Distance", completed: formatDistance(a.distance_m, units).split(" ")[0], unit: units === "imperial" ? "mi" : "km" },
     { label: "Average Pace", completed: formatPace(a.avg_speed_mps, units, modality).split(" ")[0], unit: modality === "swim" ? "/100m" : units === "imperial" ? "min/mi" : "min/km" },
@@ -122,6 +124,24 @@ export default function AnalyzeView({
     { label: "IF", completed: round(a.intensity_factor, 2), unit: "IF" },
     { label: "Work", completed: num(a.kj), unit: "kJ" },
   ];
+  // Additional metrics shown only when the activity actually has the data.
+  if (a.np != null) metricRows.push({ label: "Normalized Power", completed: num(a.np), unit: "W" });
+  if (a.variability_index != null) metricRows.push({ label: "Variability Index", completed: round(a.variability_index, 2), unit: "VI" });
+  if (a.efficiency_factor != null) metricRows.push({ label: "Efficiency Factor", completed: round(a.efficiency_factor, 2), unit: "EF" });
+  if (a.decoupling != null) metricRows.push({ label: "Decoupling", completed: a.decoupling.toFixed(1), unit: "%" });
+  if (a.avg_cadence != null) metricRows.push({ label: "Avg Cadence", completed: num(a.avg_cadence), unit: cadenceUnit });
+  if (a.max_cadence != null) metricRows.push({ label: "Max Cadence", completed: num(a.max_cadence), unit: cadenceUnit });
+
+  // Min over the moving stream (ignore standing/zero samples).
+  const minOf = (xs: (number | null)[] | undefined) => {
+    if (!xs) return null;
+    let m: number | null = null;
+    for (const v of xs) {
+      if (v == null || v <= 0) continue;
+      m = m == null ? v : Math.min(m, v);
+    }
+    return m;
+  };
 
   const mamRows = [
     {
@@ -137,6 +157,14 @@ export default function AnalyzeView({
       max: num(a.max_hr),
     },
   ];
+  if (a.avg_power != null || a.max_power != null) {
+    mamRows.push({
+      label: "Power",
+      min: num(minOf(s?.power)),
+      avg: num(a.avg_power),
+      max: num(a.max_power),
+    });
+  }
 
   return (
     <div>
@@ -186,15 +214,17 @@ export default function AnalyzeView({
           </div>
           <div className="text-sm text-ink-muted">
             <h3 className="mb-1 font-semibold text-ink">Description</h3>
-            <p className="mb-4">{a.notes || "No description."}</p>
-            {isStrength && (
-              <>
-                <h3 className="mb-1 font-semibold text-ink">
-                  Rating of Perceived Exertion (RPE)
-                </h3>
-                <p>{a.rpe ?? "—"} / 10</p>
-              </>
-            )}
+            <p className="mb-4 whitespace-pre-line">{a.notes || "No description."}</p>
+
+            <h3 className="mb-1 font-semibold text-ink">Private Notes</h3>
+            <p className="mb-4 whitespace-pre-line">
+              {a.private_notes || "No private notes."}
+            </p>
+
+            <h3 className="mb-1 font-semibold text-ink">
+              Rating of Perceived Exertion (RPE)
+            </h3>
+            <p>{a.rpe == null ? "—" : `${a.rpe} / 10`}</p>
           </div>
         </div>
       ) : (

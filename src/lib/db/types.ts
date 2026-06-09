@@ -79,6 +79,7 @@ export interface ActivityRow {
   timezone: string | null;
   name: string | null;
   notes: string | null;
+  private_notes: string | null;
   duration_s: number | null;
   elapsed_s: number | null;
   distance_m: number | null;
@@ -105,6 +106,17 @@ export interface ActivityRow {
   metrics_version: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface ActivityFileRow {
+  id: number;
+  activity_id: number;
+  filename: string;
+  mime: string;
+  size: number;
+  stored_path: string;
+  is_image: number; // 0 | 1
+  created_at: string;
 }
 
 export interface DailyLoadRow {

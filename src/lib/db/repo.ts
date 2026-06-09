@@ -1,5 +1,6 @@
 import type { DB } from "./client.js";
 import type {
+  ActivityFileRow,
   ActivityRow,
   AthleteRow,
   ConnectorAccountRow,
@@ -138,6 +139,7 @@ const ACTIVITY_COLUMNS = [
   "timezone",
   "name",
   "notes",
+  "private_notes",
   "duration_s",
   "elapsed_s",
   "distance_m",
@@ -208,6 +210,52 @@ export function listActivitiesBetween(
   );
 }
 
+/** Most recent activity of a given modality (by start time), if any. */
+export function latestActivityForModality(
+  db: DB,
+  modality: string,
+): ActivityRow | undefined {
+  return one<ActivityRow>(
+    db,
+    `SELECT * FROM activity WHERE modality = ?
+     ORDER BY start_time DESC LIMIT 1`,
+    modality,
+  );
+}
+
+export interface ModalityTotals {
+  count: number;
+  durationS: number;
+  distanceM: number;
+  tss: number;
+  s3: number;
+}
+
+/**
+ * Aggregate totals for one modality, optionally restricted to [startDate,
+ * endDate] (inclusive, by local_date). Omit the dates for all-time.
+ */
+export function activityTotalsForModality(
+  db: DB,
+  modality: string,
+  startDate?: string,
+  endDate?: string,
+): ModalityTotals {
+  const range = startDate && endDate ? "AND local_date >= ? AND local_date <= ?" : "";
+  const params = startDate && endDate ? [modality, startDate, endDate] : [modality];
+  const r = one<ModalityTotals>(
+    db,
+    `SELECT COUNT(*) AS count,
+            COALESCE(SUM(duration_s), 0) AS durationS,
+            COALESCE(SUM(distance_m), 0) AS distanceM,
+            COALESCE(SUM(tss), 0) AS tss,
+            COALESCE(SUM(s3), 0) AS s3
+       FROM activity WHERE modality = ? ${range}`,
+    ...params,
+  );
+  return r ?? { count: 0, durationS: 0, distanceM: 0, tss: 0, s3: 0 };
+}
+
 export function updateActivityMetrics(
   db: DB,
   id: number,
@@ -226,6 +274,56 @@ export function updateActivityMetrics(
 
 export function deleteActivity(db: DB, id: number): void {
   db.prepare("DELETE FROM activity WHERE id = ?").run(id);
+}
+
+// ---- Activity files (attachments) --------------------------------------
+
+export function insertActivityFile(
+  db: DB,
+  f: Omit<ActivityFileRow, "id" | "created_at">,
+): number {
+  const info = db
+    .prepare(
+      `INSERT INTO activity_file (activity_id, filename, mime, size, stored_path, is_image)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .run(f.activity_id, f.filename, f.mime, f.size, f.stored_path, f.is_image);
+  return Number(info.lastInsertRowid);
+}
+
+export function listActivityFiles(db: DB, activityId: number): ActivityFileRow[] {
+  return all<ActivityFileRow>(
+    db,
+    "SELECT * FROM activity_file WHERE activity_id = ? ORDER BY created_at, id",
+    activityId,
+  );
+}
+
+export function getActivityFile(db: DB, id: number): ActivityFileRow | undefined {
+  return one<ActivityFileRow>(db, "SELECT * FROM activity_file WHERE id = ?", id);
+}
+
+export function deleteActivityFile(db: DB, id: number): void {
+  db.prepare("DELETE FROM activity_file WHERE id = ?").run(id);
+}
+
+/** First image attachment per activity in the set — powers calendar thumbnails. */
+export function firstImageByActivity(
+  db: DB,
+  activityIds: number[],
+): Map<number, number> {
+  const out = new Map<number, number>();
+  if (activityIds.length === 0) return out;
+  const placeholders = activityIds.map(() => "?").join(", ");
+  const rows = all<{ activity_id: number; file_id: number }>(
+    db,
+    `SELECT activity_id, MIN(id) AS file_id FROM activity_file
+     WHERE is_image = 1 AND activity_id IN (${placeholders})
+     GROUP BY activity_id`,
+    ...activityIds,
+  );
+  for (const r of rows) out.set(r.activity_id, r.file_id);
+  return out;
 }
 
 // ---- Activity streams --------------------------------------------------

@@ -114,6 +114,16 @@ intervals.icu → Settings → Developer), enable sync, and use **Sync now** or
 **Sync history** to backfill. Sync is entirely opt-in and runs between your
 instance and intervals.icu only.
 
+### Why intervals.icu and not Strava directly?
+
+intervals.icu is the recommended sync path because it already aggregates Garmin,
+Wahoo, Strava, and more — and hands TrainingGeeks the original activity files.
+A direct Strava integration is intentionally **not** built in: as of 2026 Strava
+requires a paid subscription for API access, its API only returns processed
+streams (not the original device file), and its 2024 API agreement adds terms
+better handled upstream. Pulling from intervals.icu sidesteps all of that while
+giving richer data. (Strava → intervals.icu → TrainingGeeks works today.)
+
 ## Tests
 
 ```bash
