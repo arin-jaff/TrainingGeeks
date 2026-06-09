@@ -15,7 +15,7 @@ import type { StreamSeries } from "./StreamChart";
 const StreamChart = dynamic(() => import("./StreamChart"), { ssr: false });
 const RouteMap = dynamic(() => import("./RouteMap"), { ssr: false });
 
-const MEDAL = ["#d4af37", "#9aa3af", "#b45309"];
+const MEDAL_SRC = ["/medal-gold.png", "/medal-silver.png", "/medal-bronze.png"];
 
 function distanceLabel(m: number): string {
   if (Math.abs(m - 1609.34) < 1) return "1 mi";
@@ -196,7 +196,8 @@ export default function AnalyzeView({
                 <ul className="space-y-1.5">
                   {detail.pacePeaks.slice(0, 5).map((p, i) => (
                     <li key={p.window} className="flex items-center gap-3 text-sm">
-                      <span style={{ color: MEDAL[i % 3] }} aria-hidden>●</span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={MEDAL_SRC[i % 3]} alt="" className="h-5 w-5 object-contain" />
                       <span className="w-16 font-semibold tabular-nums text-ink">
                         {formatDuration(p.window / p.speed)}
                       </span>
