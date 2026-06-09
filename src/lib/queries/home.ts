@@ -99,6 +99,7 @@ function itemsForDate(db: DB, date: string): CalItem[] {
     plannedTss: null,
     elevationM: a.elevation_gain_m ?? 0,
     workKj: a.kj ?? 0,
+    thumbUrl: null,
   }));
   for (const p of planned) {
     if (p.completed_activity_id) continue;
@@ -115,6 +116,7 @@ function itemsForDate(db: DB, date: string): CalItem[] {
       plannedTss: p.planned_tss,
       elevationM: 0,
       workKj: 0,
+      thumbUrl: null,
     });
   }
   return out;

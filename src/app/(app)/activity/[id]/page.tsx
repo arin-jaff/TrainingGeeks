@@ -9,6 +9,7 @@ import { todayLocal } from "@/lib/util/dates";
 import AnalyzeView from "@/components/activity/AnalyzeView";
 import SportImage from "@/components/SportImage";
 import EditActivityButton from "@/components/activity/EditActivityButton";
+import FilesButton from "@/components/activity/FilesButton";
 
 export const dynamic = "force-dynamic";
 
@@ -96,6 +97,7 @@ export default async function ActivityPage({
                 <Pill label="Form" value={fit.tsb} color="#fd6b00" />
               </div>
             )}
+            <FilesButton activityId={a.id} />
             <EditActivityButton
               activityId={a.id}
               units={units}

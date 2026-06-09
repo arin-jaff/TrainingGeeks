@@ -9,6 +9,7 @@ import { isCardio } from "@/lib/db/types";
 import { MODALITY_LABEL } from "@/lib/util/format";
 import { computeS3 } from "@/lib/metrics/strength";
 import SportIcon from "@/components/SportIcon";
+import FilesModal from "@/components/activity/FilesModal";
 import {
   saveWorkout,
   deleteWorkout,
@@ -134,9 +135,11 @@ export default function WorkoutModal({
 
   const [name, setName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [privateNotes, setPrivateNotes] = useState(initial?.privateNotes ?? "");
   const [planned, setPlanned] = useState<StrMap>(seed.p);
   const [completed, setCompleted] = useState<StrMap>(seed.c);
   const [equipmentId, setEquipmentId] = useState<string>("");
+  const [filesOpen, setFilesOpen] = useState(false);
 
   const eqOptions = equipment.filter(
     (e) => (modality === "run" && e.type === "shoes") || (modality === "bike" && e.type === "bike"),
@@ -164,6 +167,7 @@ export default function WorkoutModal({
       modality,
       name,
       description,
+      privateNotes,
       plannedId: initial?.plannedId ?? null,
       activityId: initial?.activityId ?? null,
       planned: {
@@ -231,6 +235,7 @@ export default function WorkoutModal({
               { key: "maxPower", label: "Max Power", unit: "W", plannedEditable: false },
             ]
           : []),
+        { key: "rpe", label: "RPE", unit: "1–10", plannedEditable: false },
       ]
     : [
         { key: "duration", label: "Duration", unit: "h:m:s", plannedEditable: true },
@@ -268,9 +273,23 @@ export default function WorkoutModal({
               <span className="text-sm font-medium text-ink">{MODALITY_LABEL[modality]}</span>
             </div>
           </div>
-          <button onClick={onClose} className="text-xl leading-none text-ink-muted hover:text-ink" aria-label="Close">
-            ×
-          </button>
+          <div className="flex items-center gap-3">
+            {initial?.activityId && (
+              <button
+                onClick={() => setFilesOpen(true)}
+                className="flex items-center gap-1.5 rounded border border-line px-3 py-1.5 text-sm font-medium text-ink hover:border-accent hover:text-accent"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" />
+                </svg>
+                Files
+              </button>
+            )}
+            <button onClick={onClose} className="text-xl leading-none text-ink-muted hover:text-ink" aria-label="Close">
+              ×
+            </button>
+          </div>
         </div>
 
         <div className="px-6 py-4">
@@ -333,13 +352,23 @@ export default function WorkoutModal({
               )}
             </div>
 
-            {/* Description */}
+            {/* Description + Private Notes */}
             <div>
               <label className="text-xs font-medium text-ink-muted">Description</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows={6}
+                rows={5}
+                className="mt-1 w-full rounded border border-line px-2 py-1.5 text-sm text-ink outline-none focus:border-accent"
+              />
+              <label className="mt-3 block text-xs font-medium text-ink-muted">
+                Private Notes
+              </label>
+              <textarea
+                value={privateNotes}
+                onChange={(e) => setPrivateNotes(e.target.value)}
+                rows={3}
+                placeholder="Only you can see this."
                 className="mt-1 w-full rounded border border-line px-2 py-1.5 text-sm text-ink outline-none focus:border-accent"
               />
               {isFuture && (
@@ -383,6 +412,10 @@ export default function WorkoutModal({
           </div>
         </div>
       </div>
+
+      {filesOpen && initial?.activityId && (
+        <FilesModal activityId={initial.activityId} onClose={() => setFilesOpen(false)} />
+      )}
     </div>
   );
 }

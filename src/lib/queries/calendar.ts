@@ -1,5 +1,6 @@
 import type { DB } from "../db/client.js";
 import {
+  firstImageByActivity,
   listActivitiesBetween,
   listDailyLoad,
   listInjuriesOverlapping,
@@ -22,6 +23,7 @@ export interface CalItem {
   plannedTss: number | null;
   elevationM: number;
   workKj: number;
+  thumbUrl: string | null; // first image attachment, shown on the card
 }
 
 export interface WeekSummary {
@@ -80,6 +82,7 @@ export function getCalendarData(
   }
 
   const activities = listActivitiesBetween(db, gridStart, gridEnd);
+  const thumbs = firstImageByActivity(db, activities.map((a) => a.id));
   const planned = listPlannedBetween(db, gridStart, gridEnd);
   const fitness = listDailyLoad(db, "all", gridStart, gridEnd);
   const fitByDate = new Map(fitness.map((f) => [f.date, f]));
@@ -104,6 +107,7 @@ export function getCalendarData(
       plannedTss: null,
       elevationM: a.elevation_gain_m ?? 0,
       workKj: a.kj ?? 0,
+      thumbUrl: thumbs.has(a.id) ? `/api/activity-file/${thumbs.get(a.id)}` : null,
     });
   }
   for (const p of planned) {
@@ -121,6 +125,7 @@ export function getCalendarData(
       plannedTss: p.planned_tss,
       elevationM: 0,
       workKj: 0,
+      thumbUrl: null,
     });
   }
 

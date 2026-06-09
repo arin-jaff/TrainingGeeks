@@ -31,6 +31,7 @@ export interface WorkoutInput {
   modality: Modality;
   name: string;
   description: string;
+  privateNotes: string;
   plannedId?: number | null;
   activityId?: number | null;
   planned: PlannedInput | null;
@@ -57,6 +58,7 @@ export interface ActivityWrite {
   source: "manual";
   name: string | null;
   notes: string | null;
+  private_notes: string | null;
   duration_s: number | null;
   distance_m: number | null;
   avg_speed_mps: number | null;
@@ -91,7 +93,7 @@ function hasAny(o: Record<string, unknown> | null): boolean {
  * DB or framework access, so it can be unit-tested in isolation.
  */
 export function buildWorkoutWrites(input: WorkoutInput): WorkoutWrites {
-  const { modality, date, name, description } = input;
+  const { modality, date, name, description, privateNotes } = input;
   const cardio = isCardio(modality);
 
   let planned: PlannedWrite | null = null;
@@ -132,6 +134,7 @@ export function buildWorkoutWrites(input: WorkoutInput): WorkoutWrites {
       source: "manual",
       name: name || null,
       notes: description || null,
+      private_notes: privateNotes || null,
       duration_s: durationS,
       distance_m: distanceM,
       avg_speed_mps: avgSpeed,

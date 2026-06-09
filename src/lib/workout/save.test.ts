@@ -7,6 +7,7 @@ const base = (over: Partial<WorkoutInput>): WorkoutInput => ({
   modality: "run",
   name: "",
   description: "",
+  privateNotes: "",
   planned: null,
   completed: null,
   ...over,
@@ -86,6 +87,18 @@ test("explicit avg speed is preserved over derived", () => {
     }),
   );
   assert.equal(w.activity!.avg_speed_mps, 3);
+});
+
+test("description and private notes map onto the activity write", () => {
+  const w = buildWorkoutWrites(
+    base({
+      description: "Felt strong",
+      privateNotes: "Left knee a bit tight",
+      completed: { ...emptyCompleted, durationS: 1800, stress: 30 },
+    }),
+  );
+  assert.equal(w.activity!.notes, "Felt strong");
+  assert.equal(w.activity!.private_notes, "Left knee a bit tight");
 });
 
 test("empty form yields no writes", () => {
