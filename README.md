@@ -44,8 +44,13 @@ Garmin. (Maintainers: set this URL once your demo box is online.)
   time-in-zone, weekly distance/duration/elevation/kJ/calories, longest workout,
   fitness history, wellness metrics, and mean-maximal peak power/HR/pace curves.
 - **Activity analysis** — streams (uPlot), route maps (MapLibre + OSM), and the
-  full metric set: NP, IF, TSS/rTSS, VI, EF, decoupling, work.
-- **Strength load (S³)** — a duration × perceived-effort model for lifting/core.
+  full metric set: NP, IF, TSS/rTSS, VI, EF, decoupling, cadence, work. Edit
+  the title, description, private notes, and RPE; attach images (shown as a
+  gallery, and as a thumbnail on the calendar).
+- **Strength suite** — strength load (S³), plus per-set detail parsed from
+  Garmin FIT files (exercise, reps, time, rest, weight) in an editable table.
+  Estimated 1-rep maxes (Brzycki/Epley), a home **Strength Maxes** leaderboard,
+  a `/strength` records page, lift-progression charts, and tonnage.
 - **Zones** — HR / power / pace zones from real published methods, editable and
   persisted.
 - **Peak performances** — bests by distance/duration with medals.
@@ -53,6 +58,9 @@ Garmin. (Maintainers: set this URL once your demo box is online.)
   calendar.
 - **Wellness & injuries** — weight, HRV, resting HR, sleep, mood, plus injury
   logs with calendar indicators.
+- **Social / federation** (opt-in, experimental) — add friends on other
+  self-hosted instances and share chosen data; your data stays on your box.
+  See [Federation](#federation-experimental).
 - **intervals.icu sync** — import activities and planned workouts automatically.
 - **Export** — CSV export and a calendar `.ics` feed.
 
@@ -102,7 +110,10 @@ Create a `.env.local` (all variables are optional):
 | `TG_SESSION_SECRET` | Secret used to sign the session cookie. Set this whenever `TG_PASSWORD` is set. |
 | `TG_INTERVALS_ATHLETE_ID` | Your intervals.icu athlete ID (or set it in Settings → Apps & Devices). |
 | `TG_INTERVALS_API_KEY` | Your intervals.icu API key. |
-| `TG_SYNC_TOKEN` | Bearer token allowing a background sync daemon to call `/api/sync`. |
+| `TG_SYNC_TOKEN` | Bearer token allowing a background sync daemon to call `/api/sync` and the federation heartbeat. |
+| `TG_READONLY` | Set to `1` for a public, view-only demo (blocks writes, hides Settings). |
+| `TG_DIRECTORY_URL` | *(federation, optional)* Coordination directory to federate through. Unset = Social is off. |
+| `TG_PUBLIC_URL` | *(federation, optional)* This instance's own public HTTPS URL, so friends can reach it. |
 
 > When `TG_PASSWORD` is set the app requires sign-in and the landing page is
 > served at `/login`. Run behind HTTPS for any non-local deployment.
