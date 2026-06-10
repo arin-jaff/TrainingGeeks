@@ -125,7 +125,9 @@ export async function assembleFeed(db: DB): Promise<SocialFeed> {
     error = (e as Error).message;
   }
 
-  const items = buildFeed(sources, today);
+  // 100 matches the directory's social-summary batch cap, and gives the
+  // leaderboards the full 30-day window to total up.
+  const items = buildFeed(sources, today, { limit: 100 });
 
   // Annotate with kudos/comment counts (one batched call; absent on failure).
   let counts: (SocialCounts | null)[] = items.map(() => null);

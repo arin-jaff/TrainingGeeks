@@ -1,25 +1,32 @@
 import { getDb } from "@/lib/db/client";
 import { getAthlete } from "@/lib/db/repo";
+import { isReadOnly } from "@/lib/auth/config";
+import { assembleFeed } from "@/lib/federation/feedServer";
 import type { Units } from "@/lib/db/types";
-import FederationPanel from "@/components/settings/FederationPanel";
+import SocialHub from "@/components/social/SocialHub";
 
 export const dynamic = "force-dynamic";
 
 // The Social hub: an opt-in, sectioned-off space for friends and shared data.
 // It never touches the personal experience — if you never open it (or never set
-// TG_DIRECTORY_URL), nothing here affects Home/Calendar/Dashboard.
-export default function SocialPage() {
-  const units: Units = getAthlete(getDb())?.units ?? "imperial";
+// TG_DIRECTORY_URL), nothing here affects Home/Calendar/Dashboard. The feed is
+// assembled server-side (plain reads), so it renders on the read-only demo too;
+// kudos and comments are disabled there.
+export default async function SocialPage() {
+  const db = getDb();
+  const units: Units = getAthlete(db)?.units ?? "imperial";
+  const feed = await assembleFeed(db);
+
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-5xl">
       <div className="mb-4">
         <h1 className="text-lg font-semibold text-ink">Social</h1>
         <p className="mt-0.5 text-sm text-ink-muted">
-          Connect with friends on their own self-hosted instances and share the
-          training data you choose. Your data stays on your machine.
+          Train with friends on their own self-hosted instances — share what you
+          choose, give kudos, talk shop. Your data stays on your machine.
         </p>
       </div>
-      <FederationPanel units={units} />
+      <SocialHub feed={feed} units={units} readOnly={isReadOnly()} />
     </div>
   );
 }
