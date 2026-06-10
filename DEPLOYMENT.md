@@ -38,6 +38,8 @@ Edit `.env.local`:
 | `TG_INTERVALS_ATHLETE_ID` | Your intervals.icu athlete id (also settable later in Settings → Apps & Devices). |
 | `TG_INTERVALS_API_KEY` | Your intervals.icu API key (intervals.icu → Settings → Developer). |
 | `TG_SYNC_TOKEN` | Random token used by the background sync daemon / `.ics` feed. `openssl rand -hex 16`. |
+| `TG_DIRECTORY_URL` | *(optional, federation)* Coordination directory to federate through. Unset = Social/federation is off. |
+| `TG_PUBLIC_URL` | *(optional, federation)* This instance's own public HTTPS URL, so friends can reach it. |
 
 ### 3. Build & run
 
@@ -299,3 +301,40 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST https://demo.yourdomain.com/api
 
 Your whole history is the gitignored **`data/`** directory on the Pi. Periodically
 copy it somewhere safe (and remember it's also reproducible from intervals.icu).
+
+## C. Federation (optional)
+
+To add friends on other self-hosted instances, deploy the companion
+[TrainingGeeks-Directory](https://github.com/arin-jaff/TrainingGeeks-Directory)
+(its `DEPLOYMENT.md` has the steps — it can ride the same Pi + tunnel), then set
+`TG_DIRECTORY_URL` and `TG_PUBLIC_URL` on this instance and restart. Claim a
+handle in the **Social** tab.
+
+### Federation heartbeat
+
+So friends see you as online without anyone opening the app, hit the heartbeat
+endpoint on a timer. It's authenticated with `TG_SYNC_TOKEN` (same as sync).
+
+```bash
+sudo nano /etc/systemd/system/tg-heartbeat.service
+# [Unit]
+# Description=TrainingGeeks federation heartbeat
+# [Service]
+# Type=oneshot
+# ExecStart=/usr/bin/curl -fsS -X POST -H "Authorization: Bearer <TG_SYNC_TOKEN>" http://localhost:3000/api/federation/heartbeat
+
+sudo nano /etc/systemd/system/tg-heartbeat.timer
+# [Unit]
+# Description=Send a federation heartbeat every minute
+# [Timer]
+# OnBootSec=1min
+# OnUnitActiveSec=60
+# [Install]
+# WantedBy=timers.target
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now tg-heartbeat.timer
+```
+
+The endpoint no-ops when no directory is configured or no handle is registered,
+so it's safe to enable before you set things up.

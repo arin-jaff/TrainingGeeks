@@ -13,7 +13,8 @@ export interface FriendView {
   publicKey: string;
   url: string;
   displayName: string | null;
-  scope: string[];
+  sharesWithMe: string[]; // scopes the friend lets me read
+  iShareWith: string[]; // scopes I let the friend read
   presence: Presence;
 }
 export interface PendingView {
@@ -104,4 +105,18 @@ export function respondFriend(
 
 export function listFriends(signer: Signer, directoryUrl: string): Promise<FriendsResponse> {
   return call(signer, directoryUrl, "GET", "/v1/friends");
+}
+
+/** Fetch one shared scope directly from a friend's instance (peer-to-peer). */
+export function fetchScope(
+  signer: Signer,
+  friendBaseUrl: string,
+  scope: string,
+): Promise<unknown> {
+  return call(
+    signer,
+    friendBaseUrl.replace(/\/+$/, ""),
+    "GET",
+    `/api/federation/v1/${encodeURIComponent(scope)}`,
+  );
 }

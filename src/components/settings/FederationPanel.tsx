@@ -8,6 +8,8 @@ import {
   sendFriendRequest,
   type FederationStatus,
 } from "@/app/actions/federation";
+import type { Units } from "@/lib/db/types";
+import FriendData from "./FriendData";
 
 const SCOPES = ["calendar", "pmc", "activities", "peaks"] as const;
 const input =
@@ -53,7 +55,7 @@ function ScopePicker({
   );
 }
 
-export default function FederationPanel() {
+export default function FederationPanel({ units = "imperial" }: { units?: Units }) {
   const [status, setStatus] = useState<FederationStatus | null>(null);
   const [, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -117,7 +119,7 @@ export default function FederationPanel() {
           <AddFriend onSend={run} />
           <Requests incoming={status.incoming} onRespond={run} />
           <Pending outgoing={status.outgoing} />
-          <Friends friends={status.friends} />
+          <Friends friends={status.friends} units={units} />
         </>
       )}
 
@@ -276,7 +278,14 @@ function Pending({ outgoing }: { outgoing: FederationStatus["outgoing"] }) {
   );
 }
 
-function Friends({ friends }: { friends: FederationStatus["friends"] }) {
+function Friends({
+  friends,
+  units,
+}: {
+  friends: FederationStatus["friends"];
+  units: Units;
+}) {
+  const [viewing, setViewing] = useState<string | null>(null);
   return (
     <div className="space-y-2">
       <h3 className="text-sm font-semibold text-ink">Friends</h3>
@@ -285,17 +294,40 @@ function Friends({ friends }: { friends: FederationStatus["friends"] }) {
       ) : (
         <ul className="space-y-1.5">
           {friends.map((f) => (
-            <li key={f.publicKey} className="flex items-center gap-2 rounded border border-line px-3 py-2 text-sm">
-              <PresenceDot online={f.presence.online} />
-              <span className="font-medium text-ink">@{f.handle}</span>
-              {f.displayName && <span className="text-ink-muted">{f.displayName}</span>}
-              <span className="ml-auto flex flex-wrap gap-1">
-                {f.scope.map((s) => (
-                  <span key={s} className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-ink-muted">
-                    {s}
-                  </span>
-                ))}
-              </span>
+            <li key={f.publicKey} className="rounded border border-line px-3 py-2">
+              <div className="flex items-center gap-2 text-sm">
+                <PresenceDot online={f.presence.online} />
+                <span className="font-medium text-ink">@{f.handle}</span>
+                {f.displayName && <span className="text-ink-muted">{f.displayName}</span>}
+                <span className="ml-auto flex flex-wrap items-center gap-1">
+                  {f.sharesWithMe.length > 0 ? (
+                    <>
+                      <span className="text-[10px] text-ink-muted">shares</span>
+                      {f.sharesWithMe.map((s) => (
+                        <span key={s} className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-ink-muted">
+                          {s}
+                        </span>
+                      ))}
+                      <button
+                        onClick={() => setViewing(viewing === f.handle ? null : f.handle)}
+                        className="ml-1 text-[11px] font-medium text-accent"
+                      >
+                        {viewing === f.handle ? "Hide" : "View"}
+                      </button>
+                    </>
+                  ) : (
+                    <span className="text-[10px] text-ink-muted">shares nothing with you yet</span>
+                  )}
+                </span>
+              </div>
+              {viewing === f.handle && f.sharesWithMe.length > 0 && (
+                <FriendData
+                  handle={f.handle}
+                  scopes={f.sharesWithMe}
+                  units={units}
+                  onClose={() => setViewing(null)}
+                />
+              )}
             </li>
           ))}
         </ul>

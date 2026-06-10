@@ -116,3 +116,21 @@ export async function respondToFriend(
     return { ok: false, error: (e as Error).message };
   }
 }
+
+/** Fetch one scope of a friend's shared data, peer-to-peer via their instance. */
+export async function getFriendData(
+  handle: string,
+  scope: string,
+): Promise<{ ok: boolean; data?: unknown; error?: string }> {
+  const db = getDb();
+  const url = directoryUrl();
+  if (!url) return { ok: false, error: "No directory configured." };
+  try {
+    const signer = getSigner(db);
+    const peer = await dir.resolve(signer, url, handle);
+    const data = await dir.fetchScope(signer, peer.url, scope);
+    return { ok: true, data };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
