@@ -18,6 +18,7 @@ import {
 import { WELLNESS_BY_ID } from "../metrics/wellness.js";
 import type { LoadCurve } from "../fitness/recompute.js";
 import { addDays, startOfWeekMonday } from "../util/dates.js";
+import { getExerciseProgression, weightedExercises } from "./strength.js";
 
 export interface PmcPoint {
   date: string;
@@ -96,6 +97,12 @@ export interface DashboardData {
   peaks: PeakCurves; // mean-maximal curves across all activities
   metricSeries: MetricSeries | null; // most-tracked wellness metric, last 180d
   injuries: InjurySpan[]; // injury periods overlapping the PMC range
+  liftProgression: LiftProgression; // estimated-1RM history per exercise
+}
+
+export interface LiftProgression {
+  exercises: string[]; // exercises with weighted sets
+  byExercise: Record<string, { date: string; estOneRmKg: number }[]>;
 }
 
 function zoneTime(
@@ -248,6 +255,10 @@ export function getDashboardData(db: DB, today: string): DashboardData {
     }),
   );
 
+  const liftExercises = weightedExercises(db);
+  const byExercise: LiftProgression["byExercise"] = {};
+  for (const ex of liftExercises) byExercise[ex] = getExerciseProgression(db, ex);
+
   return {
     pmc,
     summary,
@@ -259,6 +270,7 @@ export function getDashboardData(db: DB, today: string): DashboardData {
     peaks,
     metricSeries,
     injuries,
+    liftProgression: { exercises: liftExercises, byExercise },
   };
 }
 

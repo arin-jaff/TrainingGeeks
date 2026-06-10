@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import type { EChartsOption } from "echarts";
 import EChart from "@/components/charts/EChart";
 import type {
+  LiftProgression,
   MetricSeries,
   PmcPoint,
   SummarySlice,
@@ -439,4 +441,84 @@ export function FitnessHistoryChart({ points }: { points: PmcPoint[] }) {
     ],
   };
   return <EChart option={option} height={280} />;
+}
+
+// ---- Lift progression (estimated 1RM per workout over time) -------------
+
+const KG_PER_LB = 0.453592;
+
+export function LiftProgressionChart({
+  progression,
+  units,
+}: {
+  progression: LiftProgression;
+  units: Units;
+}) {
+  const [exercise, setExercise] = useState(progression.exercises[0] ?? "");
+  if (progression.exercises.length === 0) {
+    return (
+      <p className="px-1 py-8 text-center text-sm text-ink-muted">
+        Add weights to your strength sets to chart estimated-1RM progression.
+      </p>
+    );
+  }
+
+  const toDisplay = (kg: number) =>
+    Math.round(units === "imperial" ? kg / KG_PER_LB : kg);
+  const unit = units === "imperial" ? "lb" : "kg";
+  const pts = (progression.byExercise[exercise] ?? []).map((p) => ({
+    date: p.date,
+    value: toDisplay(p.estOneRmKg),
+  }));
+  const pr = pts.reduce((m, p) => Math.max(m, p.value), 0);
+
+  const option: EChartsOption = {
+    grid: { left: 44, right: 16, top: 16, bottom: 28 },
+    tooltip: {
+      trigger: "item",
+      formatter: (p: unknown) => {
+        const d = (p as { data: [string, number] }).data;
+        return `${d[0]}: ${d[1]} ${unit}`;
+      },
+    },
+    xAxis: { type: "time", axisLabel: { fontSize: 10, color: "#6b7280" } },
+    yAxis: {
+      type: "value",
+      scale: true,
+      name: `est 1RM (${unit})`,
+      nameTextStyle: { fontSize: 10, color: "#6b7280" },
+      axisLabel: { fontSize: 10, color: "#6b7280" },
+    },
+    series: [
+      {
+        type: "scatter",
+        symbolSize: 9,
+        data: pts.map((p) => [p.date, p.value]),
+        itemStyle: { color: "#7b2d8e" },
+        markLine: {
+          symbol: "none",
+          data: [{ yAxis: pr, name: "PR" }],
+          label: { formatter: `PR ${pr} ${unit}`, fontSize: 10, color: "#6b7280" },
+          lineStyle: { color: "#d4af37", type: "dashed" },
+        },
+      },
+    ],
+  };
+
+  return (
+    <div>
+      <select
+        value={exercise}
+        onChange={(e) => setExercise(e.target.value)}
+        className="mb-2 rounded border border-line px-2 py-1 text-xs text-ink outline-none focus:border-accent"
+      >
+        {progression.exercises.map((ex) => (
+          <option key={ex} value={ex}>
+            {ex}
+          </option>
+        ))}
+      </select>
+      <EChart option={option} height={260} />
+    </div>
+  );
 }

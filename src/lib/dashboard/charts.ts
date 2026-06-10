@@ -32,4 +32,5 @@ export const IMPLEMENTED: Record<string, string> = {
   "Peak Power": "peak-power",
   "Time In Heart Rate Zones": "hr-zones",
   "Time In Power Zones": "power-zones",
+  "Lift Progression": "lift-progression",
 };
