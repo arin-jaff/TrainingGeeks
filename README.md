@@ -59,8 +59,9 @@ Garmin. (Maintainers: set this URL once your demo box is online.)
 - **Wellness & injuries** — weight, HRV, resting HR, sleep, mood, plus injury
   logs with calendar indicators.
 - **Social / federation** (opt-in, experimental) — add friends on other
-  self-hosted instances and share chosen data; your data stays on your box.
-  See [Federation](#federation-experimental).
+  self-hosted instances, share chosen data, and follow each other in an
+  activity feed with kudos, comments, and friends-only leaderboards; your
+  data stays on your box. See [Federation](#federation-experimental).
 - **intervals.icu sync** — import activities and planned workouts automatically.
 - **Export** — CSV export and a calendar `.ics` feed.
 
@@ -152,9 +153,12 @@ TrainingGeeks collects nothing and phones nowhere. See the in-app
 An optional, opt-in module lets independently self-hosted instances add friends
 and share training data — coordinated by a lean, pluggable directory service.
 Your data stays on your box; only what you choose to share is exposed. The
-coordination server lives in its own repo:
+**Social** tab includes a friend activity feed with kudos and comments, a
+friends-only weekly leaderboard, presence, and an offline cache so friends
+stay viewable when their instance is down. The coordination server lives in
+its own repo:
 **[TrainingGeeks-Directory](https://github.com/arin-jaff/TrainingGeeks-Directory)**
-(see its `PLAN.md` for the architecture). Early-stage; not yet wired into the app.
+(see its `PLAN.md` for the architecture and `DEPLOYMENT.md` to run one).
 
 ## Contributing
 

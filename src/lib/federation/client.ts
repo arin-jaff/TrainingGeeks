@@ -52,7 +52,13 @@ async function call<T>(
 
   let res: Response;
   try {
-    res = await fetch(url, { method, headers, body: raw || undefined });
+    // Bounded so one dead peer can't hang a whole feed assembly.
+    res = await fetch(url, {
+      method,
+      headers,
+      body: raw || undefined,
+      signal: AbortSignal.timeout(8000),
+    });
   } catch (e) {
     throw new DirectoryError(`Cannot reach the directory: ${(e as Error).message}`);
   }
@@ -144,4 +150,77 @@ export function fetchCachedScope(
     "GET",
     `/v1/cache/${encodeURIComponent(handle)}/${encodeURIComponent(scope)}`,
   );
+}
+
+// ---- social: kudos + comments (stored on the directory) -------------------
+
+export interface SocialCounts {
+  kudos: number;
+  comments: number;
+  mine: boolean; // I have kudos'd this activity
+}
+
+export interface ActivitySocial {
+  kudos: { handle: string; displayName: string | null }[];
+  myKudos: boolean;
+  comments: {
+    id: number;
+    handle: string;
+    displayName: string | null;
+    body: string;
+    createdAt: string;
+    mine: boolean;
+  }[];
+}
+
+/** Toggle a kudos on a friend's activity. `ref` is "<date>:<activityId>". */
+export function toggleKudos(
+  signer: Signer,
+  directoryUrl: string,
+  handle: string,
+  ref: string,
+): Promise<{ ok: boolean; kudosed: boolean; count: number }> {
+  return call(signer, directoryUrl, "POST", "/v1/social/kudos", { handle, ref });
+}
+
+export function postComment(
+  signer: Signer,
+  directoryUrl: string,
+  handle: string,
+  ref: string,
+  body: string,
+): Promise<{ ok: boolean; id: number }> {
+  return call(signer, directoryUrl, "POST", "/v1/social/comment", { handle, ref, body });
+}
+
+export function deleteComment(
+  signer: Signer,
+  directoryUrl: string,
+  id: number,
+): Promise<{ ok: boolean }> {
+  return call(signer, directoryUrl, "DELETE", `/v1/social/comment/${id}`);
+}
+
+/** The full kudos list + comment thread on one activity. */
+export function fetchActivitySocial(
+  signer: Signer,
+  directoryUrl: string,
+  handle: string,
+  ref: string,
+): Promise<ActivitySocial> {
+  return call(
+    signer,
+    directoryUrl,
+    "GET",
+    `/v1/social/${encodeURIComponent(handle)}/${encodeURIComponent(ref)}`,
+  );
+}
+
+/** Batched kudos/comment counts for a feed (max 100 items). */
+export function fetchSocialSummary(
+  signer: Signer,
+  directoryUrl: string,
+  items: { handle: string; ref: string }[],
+): Promise<{ counts: SocialCounts[] }> {
+  return call(signer, directoryUrl, "POST", "/v1/social/summary", { items });
 }
