@@ -1,15 +1,25 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db/client";
-import { getAthlete, listActivityFiles, listDailyLoad, listEquipment } from "@/lib/db/repo";
+import {
+  getAthlete,
+  listActivityFiles,
+  listAllStrengthSets,
+  listDailyLoad,
+  listEquipment,
+  listStrengthSets,
+} from "@/lib/db/repo";
 import { getActivityDetail } from "@/lib/queries/activity";
+import { isReadOnly } from "@/lib/auth/config";
 import type { Modality, Units } from "@/lib/db/types";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
 import { MODALITY_COLOR } from "@/lib/util/colors";
 import { todayLocal } from "@/lib/util/dates";
+import { exerciseDisplayName } from "@/lib/strength/naming";
 import AnalyzeView from "@/components/activity/AnalyzeView";
 import SportImage from "@/components/SportImage";
 import EditActivityButton from "@/components/activity/EditActivityButton";
 import FilesButton from "@/components/activity/FilesButton";
+import StrengthSets from "@/components/activity/StrengthSets";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +70,17 @@ export default async function ActivityPage({
   const isStrength = modality === "lift" || modality === "core";
   const stress = isStrength ? a.s3 : a.tss;
   const stressLabel = isStrength ? "S³" : "TSS";
+
+  const strengthSets = isStrength ? listStrengthSets(db, a.id) : [];
+  const knownExercises = isStrength
+    ? [
+        ...new Set(
+          listAllStrengthSets(db)
+            .map((s) => exerciseDisplayName(s.exercise_key, s.exercise_name))
+            .filter((n) => n && n !== "Unnamed"),
+        ),
+      ].sort()
+    : [];
 
   return (
     <div>
@@ -112,6 +133,16 @@ export default async function ActivityPage({
       </div>
 
       <AnalyzeView detail={detail} units={units} images={images} />
+
+      {isStrength && (
+        <StrengthSets
+          activityId={a.id}
+          sets={strengthSets}
+          knownExercises={knownExercises}
+          units={units}
+          readOnly={isReadOnly()}
+        />
+      )}
     </div>
   );
 }
