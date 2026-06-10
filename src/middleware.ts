@@ -8,8 +8,9 @@ import {
 import { timingSafeEqual, verifySessionToken } from "@/lib/auth/session";
 
 export async function middleware(req: NextRequest) {
-  // The sync daemon authenticates to /api/sync with a bearer token.
-  if (req.nextUrl.pathname === "/api/sync") {
+  // Local daemons (sync, federation heartbeat) authenticate with a bearer token.
+  const pathname = req.nextUrl.pathname;
+  if (pathname === "/api/sync" || pathname === "/api/federation/heartbeat") {
     const token = getSyncToken();
     const header = req.headers.get("authorization") ?? "";
     if (token && timingSafeEqual(header, `Bearer ${token}`)) {
