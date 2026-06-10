@@ -89,10 +89,12 @@ export default function AnalyzeView({
   detail,
   units,
   images = [],
+  tonnageKg = null,
 }: {
   detail: ActivityDetail;
   units: Units;
   images?: { id: number; filename: string }[];
+  tonnageKg?: number | null;
 }) {
   const [tab, setTab] = useState<"summary" | "analyze">("summary");
   const a = detail.activity;
@@ -133,6 +135,10 @@ export default function AnalyzeView({
   if (a.decoupling != null) metricRows.push({ label: "Decoupling", completed: a.decoupling.toFixed(1), unit: "%" });
   if (a.avg_cadence != null) metricRows.push({ label: "Avg Cadence", completed: num(a.avg_cadence), unit: cadenceUnit });
   if (a.max_cadence != null) metricRows.push({ label: "Max Cadence", completed: num(a.max_cadence), unit: cadenceUnit });
+  if (isStrength && tonnageKg != null && tonnageKg > 0) {
+    const t = units === "imperial" ? tonnageKg / 0.453592 : tonnageKg;
+    metricRows.push({ label: "Tonnage", completed: String(Math.round(t)), unit: units === "imperial" ? "lb" : "kg" });
+  }
 
   // Min over the moving stream (ignore standing/zero samples).
   const minOf = (xs: (number | null)[] | undefined) => {
