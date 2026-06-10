@@ -53,6 +53,7 @@ const ACCOUNT_NAV: [Section, string][] = [
 ];
 const LOWER_NAV: [Section, string][] = [
   ["zones", "Zones"],
+  ["strength", "Strength"],
   ["equipment", "Equipment"],
   ["layout", "Layout"],
   ["weather", "Weather"],
@@ -334,6 +335,23 @@ export default function SettingsModal({
                   { name: "timeFormat", label: "Time Format", type: "select", options: ["12-hour", "24-hour"] },
                   { name: "defaultView", label: "Default View", type: "select", options: ["Calendar", "Home", "Dashboard"] },
                   { name: "autoRecalc", label: "Recalculate zones on threshold change", type: "toggle", default: "1" },
+                ]}
+              />
+            )}
+
+            {section === "strength" && (
+              <PrefsForm
+                title="Strength"
+                section="strength"
+                prefs={prefs}
+                fields={[
+                  {
+                    name: "formula",
+                    label: "Estimated 1RM formula",
+                    type: "select",
+                    options: ["Brzycki", "Epley"],
+                    default: "Brzycki",
+                  },
                 ]}
               />
             )}
