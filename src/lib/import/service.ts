@@ -6,6 +6,7 @@ import {
   getAthlete,
   getEffectiveThreshold,
   insertActivity,
+  replaceStrengthSets,
   setActivityStream,
   type NewActivity,
 } from "../db/repo.js";
@@ -168,6 +169,20 @@ function persist(
   );
   insertLaps(db, activityId, n);
   insertPeaks(db, activityId, n);
+  if (n.sets.length > 0) {
+    replaceStrengthSets(
+      db,
+      activityId,
+      n.sets.map((s) => ({
+        set_index: s.setIndex,
+        exercise_key: s.exerciseKey,
+        reps: s.reps,
+        duration_s: s.durationS,
+        rest_s: s.restS,
+        weight_kg: s.weightKg,
+      })),
+    );
+  }
   return activityId;
 }
 

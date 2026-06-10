@@ -283,4 +283,27 @@ CREATE TABLE activity_file (
 CREATE INDEX idx_activity_file_activity ON activity_file (activity_id);
 `,
   },
+  {
+    id: 7,
+    name: "strength_set",
+    // Per-set detail for strength activities, parsed from Garmin FIT setMesgs.
+    // weight_kg is SI (null when unknown); exercise_name is a user override of
+    // the derived display name. Rest is the pause after the set.
+    sql: /* sql */ `
+CREATE TABLE strength_set (
+  id INTEGER PRIMARY KEY,
+  activity_id INTEGER NOT NULL REFERENCES activity (id) ON DELETE CASCADE,
+  set_index INTEGER NOT NULL,
+  exercise_key TEXT NOT NULL DEFAULT 'unknown', -- e.g. benchPress, lateralRaise
+  exercise_name TEXT,                            -- user override; NULL = derived
+  reps INTEGER,
+  duration_s REAL,
+  rest_s REAL,
+  weight_kg REAL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_strength_set_activity ON strength_set (activity_id, set_index);
+CREATE INDEX idx_strength_set_exercise ON strength_set (exercise_key);
+`,
+  },
 ];
