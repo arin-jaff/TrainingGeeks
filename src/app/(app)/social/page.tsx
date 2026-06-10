@@ -1,3 +1,6 @@
+import { getDb } from "@/lib/db/client";
+import { getAthlete } from "@/lib/db/repo";
+import type { Units } from "@/lib/db/types";
 import FederationPanel from "@/components/settings/FederationPanel";
 
 export const dynamic = "force-dynamic";
@@ -6,6 +9,7 @@ export const dynamic = "force-dynamic";
 // It never touches the personal experience — if you never open it (or never set
 // TG_DIRECTORY_URL), nothing here affects Home/Calendar/Dashboard.
 export default function SocialPage() {
+  const units: Units = getAthlete(getDb())?.units ?? "imperial";
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-4">
@@ -15,7 +19,7 @@ export default function SocialPage() {
           training data you choose. Your data stays on your machine.
         </p>
       </div>
-      <FederationPanel />
+      <FederationPanel units={units} />
     </div>
   );
 }
