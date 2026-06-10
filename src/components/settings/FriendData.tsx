@@ -43,6 +43,7 @@ export default function FriendData({
 }) {
   const [scope, setScope] = useState(scopes[0] ?? "calendar");
   const [data, setData] = useState<unknown>(null);
+  const [stale, setStale] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,10 +52,13 @@ export default function FriendData({
     setLoading(true);
     setError(null);
     setData(null);
+    setStale(null);
     getFriendData(handle, scope).then((r) => {
       if (!live) return;
-      if (r.ok) setData(r.data);
-      else setError(r.error ?? "Could not load");
+      if (r.ok) {
+        setData(r.data);
+        setStale(r.stale ? (r.updatedAt ?? "earlier") : null);
+      } else setError(r.error ?? "Could not load");
       setLoading(false);
     });
     return () => {
@@ -85,6 +89,11 @@ export default function FriendData({
         ))}
       </div>
 
+      {stale && (
+        <p className="mb-2 text-[11px] text-ink-muted">
+          Offline — showing a cached copy (updated {stale.slice(0, 16).replace("T", " ")}).
+        </p>
+      )}
       {loading && <p className="text-sm text-ink-muted">Loading…</p>}
       {error && <p className="text-sm text-fatigue">{error}</p>}
       {!loading && !error && data != null && (

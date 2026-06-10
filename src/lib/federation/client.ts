@@ -120,3 +120,28 @@ export function fetchScope(
     `/api/federation/v1/${encodeURIComponent(scope)}`,
   );
 }
+
+/** Push a cached copy of one shared scope to the directory (offline fallback). */
+export function putCache(
+  signer: Signer,
+  directoryUrl: string,
+  scope: string,
+  payload: unknown,
+): Promise<{ ok: boolean }> {
+  return call(signer, directoryUrl, "PUT", `/v1/cache/${encodeURIComponent(scope)}`, { payload });
+}
+
+/** Read a friend's cached scope from the directory (when they're offline). */
+export function fetchCachedScope(
+  signer: Signer,
+  directoryUrl: string,
+  handle: string,
+  scope: string,
+): Promise<{ scope: string; updatedAt: string; payload: unknown }> {
+  return call(
+    signer,
+    directoryUrl,
+    "GET",
+    `/v1/cache/${encodeURIComponent(handle)}/${encodeURIComponent(scope)}`,
+  );
+}
