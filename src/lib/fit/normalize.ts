@@ -5,8 +5,38 @@ import type {
   NormalizedActivity,
   NormalizedLap,
   NormalizedSession,
+  NormalizedStrengthSet,
   StreamChannels,
 } from "./types.js";
+
+/**
+ * Parse FIT `setMesgs` into active strength sets, folding each set's trailing
+ * `rest` set into restS. The FIT `category` is an array (often padded with
+ * "unknown"); we take the first meaningful value as the exercise key.
+ */
+export function parseStrengthSets(setsRaw: Msg[]): NormalizedStrengthSet[] {
+  const out: NormalizedStrengthSet[] = [];
+  let idx = 0;
+  for (let i = 0; i < setsRaw.length; i++) {
+    const s = setsRaw[i];
+    if (String(s.setType) !== "active") continue;
+    const next = setsRaw[i + 1];
+    const restS = next && String(next.setType) === "rest" ? num(next.duration) : null;
+    const cat = Array.isArray(s.category)
+      ? (s.category.find((c) => c && c !== "unknown") as string | undefined) ?? "unknown"
+      : (s.category as string | undefined) ?? "unknown";
+    const w = num(s.weight);
+    out.push({
+      setIndex: idx++,
+      exerciseKey: String(cat),
+      reps: num(s.repetitions),
+      durationS: num(s.duration),
+      restS,
+      weightKg: w != null && w > 0 ? w : null,
+    });
+  }
+  return out;
+}
 
 const SEMI_TO_DEG = 180 / 2 ** 31;
 const SPEED_SENTINEL = 65.535; // 16-bit invalid speed marker (m/s)
@@ -159,6 +189,7 @@ export function normalizeDecoded(
     channels,
     laps,
     sessions,
+    sets: parseStrengthSets(messages.setMesgs ?? []),
   };
 }
 

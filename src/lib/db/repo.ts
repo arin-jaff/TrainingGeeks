@@ -3,6 +3,7 @@ import type {
   ActivityFileRow,
   ActivityRow,
   AthleteRow,
+  StrengthSetRow,
   ConnectorAccountRow,
   DailyLoadRow,
   EventRow,
@@ -305,6 +306,68 @@ export function getActivityFile(db: DB, id: number): ActivityFileRow | undefined
 
 export function deleteActivityFile(db: DB, id: number): void {
   db.prepare("DELETE FROM activity_file WHERE id = ?").run(id);
+}
+
+// ---- Strength sets -----------------------------------------------------
+
+export interface NewStrengthSet {
+  set_index: number;
+  exercise_key: string;
+  exercise_name?: string | null;
+  reps: number | null;
+  duration_s: number | null;
+  rest_s: number | null;
+  weight_kg: number | null;
+}
+
+export function listStrengthSets(db: DB, activityId: number): StrengthSetRow[] {
+  return all<StrengthSetRow>(
+    db,
+    "SELECT * FROM strength_set WHERE activity_id = ? ORDER BY set_index",
+    activityId,
+  );
+}
+
+export function deleteStrengthSets(db: DB, activityId: number): void {
+  db.prepare("DELETE FROM strength_set WHERE activity_id = ?").run(activityId);
+}
+
+/** Replace all sets for an activity (used by import and the editor). */
+export function replaceStrengthSets(
+  db: DB,
+  activityId: number,
+  sets: NewStrengthSet[],
+): void {
+  deleteStrengthSets(db, activityId);
+  const stmt = db.prepare(
+    `INSERT INTO strength_set (activity_id, set_index, exercise_key, exercise_name,
+       reps, duration_s, rest_s, weight_kg)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+  );
+  sets.forEach((s, i) =>
+    stmt.run(
+      activityId,
+      s.set_index ?? i,
+      s.exercise_key,
+      s.exercise_name ?? null,
+      s.reps,
+      s.duration_s,
+      s.rest_s,
+      s.weight_kg,
+    ),
+  );
+}
+
+/** Every strength set joined to its activity date — powers maxes/progression. */
+export function listAllStrengthSets(
+  db: DB,
+): (StrengthSetRow & { local_date: string })[] {
+  return all<StrengthSetRow & { local_date: string }>(
+    db,
+    `SELECT s.*, a.local_date FROM strength_set s
+       JOIN activity a ON a.id = s.activity_id
+      ORDER BY a.local_date, s.set_index`,
+  );
 }
 
 /** First image attachment per activity in the set — powers calendar thumbnails. */

@@ -119,6 +119,19 @@ export interface ActivityFileRow {
   created_at: string;
 }
 
+export interface StrengthSetRow {
+  id: number;
+  activity_id: number;
+  set_index: number;
+  exercise_key: string;
+  exercise_name: string | null; // user override; null = derive from key
+  reps: number | null;
+  duration_s: number | null;
+  rest_s: number | null;
+  weight_kg: number | null;
+  created_at: string;
+}
+
 export interface DailyLoadRow {
   id: number;
   date: string; // YYYY-MM-DD

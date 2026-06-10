@@ -67,4 +67,15 @@ export interface NormalizedActivity {
   channels: StreamChannels;
   laps: NormalizedLap[];
   sessions: NormalizedSession[];
+  sets: NormalizedStrengthSet[];
+}
+
+/** One strength set from FIT setMesgs (active sets only; rest folded in). */
+export interface NormalizedStrengthSet {
+  setIndex: number;
+  exerciseKey: string; // FIT category, e.g. "benchPress" | "unknown"
+  reps: number | null;
+  durationS: number | null;
+  restS: number | null; // pause after the set (the following rest set)
+  weightKg: number | null; // null when the device logged no weight (0)
 }

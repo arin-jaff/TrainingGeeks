@@ -53,6 +53,7 @@ function toNormalized(row: ActivityRow, channels: StreamChannels): NormalizedAct
     channels,
     laps: [],
     sessions: [],
+    sets: [],
   };
 }
 
