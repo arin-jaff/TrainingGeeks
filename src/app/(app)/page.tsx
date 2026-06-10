@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
 import { getSportSummaries } from "@/lib/queries/sports";
+import { getExerciseMaxes } from "@/lib/queries/strength";
 import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
 import type { CalItem } from "@/lib/queries/calendar";
 import type { Units } from "@/lib/db/types";
@@ -12,6 +13,7 @@ import SportsBar from "@/components/home/SportsBar";
 import PerformanceMetrics from "@/components/home/PerformanceMetrics";
 import EventsPanel from "@/components/home/EventsPanel";
 import GoalsPanel from "@/components/home/GoalsPanel";
+import StrengthMaxes from "@/components/home/StrengthMaxes";
 
 export const dynamic = "force-dynamic";
 
@@ -152,6 +154,7 @@ export default async function HomePage() {
   const today = todayLocal(tz);
   const data = getHomeData(db, today);
   const sports = getSportSummaries(db, today);
+  const strengthMaxes = getExerciseMaxes(db);
   const wellness = latestMetrics(db);
 
   return (
@@ -188,6 +191,7 @@ export default async function HomePage() {
         <div className="space-y-4">
           <PerformanceMetrics curves={data.curves} />
           <PeakPerformances bests={data.peakBests} units={units} />
+          <StrengthMaxes maxes={strengthMaxes} units={units} />
           <section className="rounded border border-line bg-surface-card p-4">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-ink">Body Metrics</h2>
