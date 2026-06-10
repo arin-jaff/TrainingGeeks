@@ -7,6 +7,7 @@ import {
   DurationByWeekChart,
   FitnessHistoryChart,
   FitnessSummaryPie,
+  LiftProgressionChart,
   MetricLineChart,
   PeakCurveChart,
   PmcChart,
@@ -259,6 +260,13 @@ export default function DashboardClient({
             ) : (
               <EmptyState title="No metrics logged" description="Log weight, HRV, sleep and more from the calendar or Metrics page." />
             )}
+          </>
+        );
+      case "lift-progression":
+        return (
+          <>
+            <ChartTitle title="Lift Progression" subtitle="Estimated 1RM over time" />
+            <LiftProgressionChart progression={data.liftProgression} units={units} />
           </>
         );
       case "peak-power":
