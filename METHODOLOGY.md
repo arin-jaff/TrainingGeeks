@@ -62,6 +62,40 @@ overall Fitness**.
 
 ---
 
+## Strength sets, estimated 1RM & tonnage
+
+Garmin (and other) FIT files record strength workouts set-by-set — exercise,
+reps, time, rest, and weight. TrainingGeeks parses these into an editable table
+and derives per-exercise records.
+
+### Estimated one-rep max (1RM)
+
+From any weight × reps set, the estimated max you could lift once:
+
+```
+Brzycki (default):  1RM = weight / (1.0278 − 0.0278 × reps)
+Epley:              1RM = weight × (1 + reps / 30)
+```
+
+Both return the lifted weight for a true single. Brzycki's denominator goes
+non-positive past ~37 reps, where it falls back to Epley. Pick the formula in
+**Settings → Strength**. A 1RM needs a weight, so estimates only appear for sets
+you've entered a weight on (watches usually log weight as 0).
+
+### Per-exercise records & tonnage
+
+- **Exercise identity** is the display name (FIT `category` camelCase → Title
+  Case, e.g. `benchPress` → "Bench Press", editable), so renamed sets group
+  together. There's no preset list — exercises appear once you log them.
+- **Estimated max** per exercise = the best 1RM estimate across its weighted
+  sets; also tracked: max weight, max reps, best single-set volume (reps ×
+  weight), and **tonnage** (Σ reps × weight).
+- These surface in the home **Strength Maxes** panel, the `/strength` records
+  page, and a **Lift Progression** dashboard chart (best est-1RM per workout
+  over time, with a PR line).
+
+---
+
 ## Intensity Factor (IF)
 
 IF is how hard a session was **relative to your threshold**, where 1.0 = riding/
