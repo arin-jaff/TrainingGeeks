@@ -117,19 +117,30 @@ export async function respondToFriend(
   }
 }
 
-/** Fetch one scope of a friend's shared data, peer-to-peer via their instance. */
+/**
+ * Fetch one scope of a friend's shared data. Tries their instance directly
+ * (peer-to-peer); if they're offline/unreachable, falls back to the directory's
+ * cached copy (marked stale, with when it was last updated).
+ */
 export async function getFriendData(
   handle: string,
   scope: string,
-): Promise<{ ok: boolean; data?: unknown; error?: string }> {
+): Promise<{ ok: boolean; data?: unknown; stale?: boolean; updatedAt?: string; error?: string }> {
   const db = getDb();
   const url = directoryUrl();
   if (!url) return { ok: false, error: "No directory configured." };
+  const signer = getSigner(db);
+
   try {
-    const signer = getSigner(db);
     const peer = await dir.resolve(signer, url, handle);
-    const data = await dir.fetchScope(signer, peer.url, scope);
-    return { ok: true, data };
+    try {
+      const data = await dir.fetchScope(signer, peer.url, scope);
+      return { ok: true, data, stale: false };
+    } catch {
+      // Peer unreachable — fall back to the directory's cached copy.
+      const cached = await dir.fetchCachedScope(signer, url, handle, scope);
+      return { ok: true, data: cached.payload, stale: true, updatedAt: cached.updatedAt };
+    }
   } catch (e) {
     return { ok: false, error: (e as Error).message };
   }

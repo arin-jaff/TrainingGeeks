@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { directoryUrl } from "@/lib/federation/config";
 import { getHandle, getSigner } from "@/lib/federation/keystore";
 import { heartbeat } from "@/lib/federation/client";
+import { pushSharedCache } from "@/lib/federation/push";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +23,8 @@ export async function POST() {
 
   try {
     const res = await heartbeat(getSigner(db), url);
+    // Refresh the offline-viewable cache (throttled internally to ~15 min).
+    await pushSharedCache(db).catch(() => {});
     return NextResponse.json({ ok: true, lastSeen: res.lastSeen });
   } catch (e) {
     return NextResponse.json({ ok: false, error: (e as Error).message }, { status: 502 });
