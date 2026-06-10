@@ -18,6 +18,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // The federation read API is called by peer instances and authenticates
+  // itself with an Ed25519 signature inside the route — not a session.
+  if (pathname.startsWith("/api/federation/v1/")) {
+    return NextResponse.next();
+  }
+
   if (!authEnabled()) return NextResponse.next();
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;

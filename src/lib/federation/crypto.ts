@@ -1,9 +1,14 @@
 import {
   createHash,
   createPrivateKey,
+  createPublicKey,
   generateKeyPairSync,
   sign as edSign,
+  verify as edVerify,
 } from "node:crypto";
+
+/** Peer reads must be signed within this clock-skew window (replay guard). */
+export const SKEW_MS = 5 * 60 * 1000;
 
 /**
  * Client-side identity crypto. The wire format MUST match the directory's
@@ -49,4 +54,33 @@ export function signerFrom(kp: StoredKeypair): Signer {
     sign: (message: string) =>
       edSign(null, Buffer.from(message), priv).toString("base64"),
   };
+}
+
+export interface VerifyInput {
+  key: string | undefined; // base64url Ed25519 public key (X-TG-Key)
+  method: string;
+  path: string;
+  timestamp: string | undefined; // ms (X-TG-Timestamp)
+  body: string;
+  signature: string | undefined; // base64 (X-TG-Signature)
+  now?: number;
+}
+
+/** Verify a peer's signed request (signature valid AND within skew). */
+export function verifySignature(input: VerifyInput): boolean {
+  const { key, method, path, timestamp, body, signature } = input;
+  if (!key || !signature || !timestamp) return false;
+  const ts = Number(timestamp);
+  const now = input.now ?? Date.now();
+  if (!Number.isFinite(ts) || Math.abs(now - ts) > SKEW_MS) return false;
+  try {
+    const pub = createPublicKey({
+      key: { kty: "OKP", crv: "Ed25519", x: key },
+      format: "jwk",
+    });
+    const msg = Buffer.from(canonicalString(method, path, ts, body));
+    return edVerify(null, msg, pub, Buffer.from(signature, "base64"));
+  } catch {
+    return false;
+  }
 }

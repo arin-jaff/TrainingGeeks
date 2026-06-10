@@ -13,7 +13,8 @@ export interface FriendView {
   publicKey: string;
   url: string;
   displayName: string | null;
-  scope: string[];
+  sharesWithMe: string[]; // scopes the friend lets me read
+  iShareWith: string[]; // scopes I let the friend read
   presence: Presence;
 }
 export interface PendingView {

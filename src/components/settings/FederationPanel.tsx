@@ -289,12 +289,19 @@ function Friends({ friends }: { friends: FederationStatus["friends"] }) {
               <PresenceDot online={f.presence.online} />
               <span className="font-medium text-ink">@{f.handle}</span>
               {f.displayName && <span className="text-ink-muted">{f.displayName}</span>}
-              <span className="ml-auto flex flex-wrap gap-1">
-                {f.scope.map((s) => (
-                  <span key={s} className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-ink-muted">
-                    {s}
-                  </span>
-                ))}
+              <span className="ml-auto flex flex-wrap items-center gap-1">
+                {f.sharesWithMe.length > 0 ? (
+                  <>
+                    <span className="text-[10px] text-ink-muted">shares</span>
+                    {f.sharesWithMe.map((s) => (
+                      <span key={s} className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-ink-muted">
+                        {s}
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  <span className="text-[10px] text-ink-muted">shares nothing yet</span>
+                )}
               </span>
             </li>
           ))}
