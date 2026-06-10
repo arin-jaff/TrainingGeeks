@@ -88,9 +88,11 @@ function MinAvgMax({
 export default function AnalyzeView({
   detail,
   units,
+  images = [],
 }: {
   detail: ActivityDetail;
   units: Units;
+  images?: { id: number; filename: string }[];
 }) {
   const [tab, setTab] = useState<"summary" | "analyze">("summary");
   const a = detail.activity;
@@ -226,6 +228,31 @@ export default function AnalyzeView({
               Rating of Perceived Exertion (RPE)
             </h3>
             <p>{a.rpe == null ? "—" : `${a.rpe} / 10`}</p>
+
+            {images.length > 0 && (
+              <>
+                <h3 className="mb-2 mt-4 font-semibold text-ink">Images</h3>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {images.map((img) => (
+                    <a
+                      key={img.id}
+                      href={`/api/activity-file/${img.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={img.filename}
+                      className="block overflow-hidden rounded border border-line hover:border-accent"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/api/activity-file/${img.id}`}
+                        alt={img.filename}
+                        className="aspect-square w-full object-cover"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       ) : (

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db/client";
-import { getAthlete, listDailyLoad, listEquipment } from "@/lib/db/repo";
+import { getAthlete, listActivityFiles, listDailyLoad, listEquipment } from "@/lib/db/repo";
 import { getActivityDetail } from "@/lib/queries/activity";
 import type { Modality, Units } from "@/lib/db/types";
 import { formatDistance, formatDuration, MODALITY_LABEL } from "@/lib/util/format";
@@ -53,6 +53,9 @@ export default async function ActivityPage({
   const units: Units = getAthlete(db)?.units ?? "imperial";
   const tz = getAthlete(db)?.timezone ?? "America/New_York";
   const equipment = listEquipment(db);
+  const images = listActivityFiles(db, a.id)
+    .filter((f) => f.is_image === 1)
+    .map((f) => ({ id: f.id, filename: f.filename }));
   const fit = listDailyLoad(db, "all", a.local_date, a.local_date)[0];
   const isStrength = modality === "lift" || modality === "core";
   const stress = isStrength ? a.s3 : a.tss;
@@ -108,7 +111,7 @@ export default async function ActivityPage({
         </div>
       </div>
 
-      <AnalyzeView detail={detail} units={units} />
+      <AnalyzeView detail={detail} units={units} images={images} />
     </div>
   );
 }

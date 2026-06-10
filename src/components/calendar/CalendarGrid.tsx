@@ -161,11 +161,13 @@ function WorkoutCard({
             )}
           </div>
           {item.thumbUrl && (
+            // Shown only when the cell has room (hidden on narrow/mobile); the
+            // full set of images lives on the activity detail page.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={item.thumbUrl}
               alt=""
-              className="h-12 w-12 shrink-0 rounded object-cover ring-1 ring-line"
+              className="hidden h-10 w-10 shrink-0 rounded object-cover ring-1 ring-line lg:block"
             />
           )}
         </div>
@@ -458,7 +460,9 @@ export default function CalendarGrid({
     });
   }
 
-  const cols = "grid grid-cols-[repeat(7,1fr)_220px]";
+  // minmax(0,1fr) keeps the 7 day columns rigid/equal regardless of card
+  // content (an image no longer stretches its column past its share).
+  const cols = "grid grid-cols-[repeat(7,minmax(0,1fr))_220px]";
 
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
