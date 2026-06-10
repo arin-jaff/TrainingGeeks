@@ -72,6 +72,10 @@ export default async function ActivityPage({
   const stressLabel = isStrength ? "S³" : "TSS";
 
   const strengthSets = isStrength ? listStrengthSets(db, a.id) : [];
+  const tonnageKg = strengthSets.reduce(
+    (sum, s) => sum + (s.weight_kg && s.reps ? s.weight_kg * s.reps : 0),
+    0,
+  );
   const knownExercises = isStrength
     ? [
         ...new Set(
@@ -132,7 +136,7 @@ export default async function ActivityPage({
         </div>
       </div>
 
-      <AnalyzeView detail={detail} units={units} images={images} />
+      <AnalyzeView detail={detail} units={units} images={images} tonnageKg={tonnageKg} />
 
       {isStrength && (
         <StrengthSets
