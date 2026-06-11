@@ -1,13 +1,14 @@
 name: Publish read-only build
 
-# Builds the read-only demo and publishes a ready-to-run branch, readonly-deploy,
-# that contains the readonly-mode source PLUS the prebuilt .next. The Raspberry
-# Pi tracks readonly-deploy and just `git pull`s — no on-device build, no rsync.
-# Runs after readonly-mode changes (including the auto-merge from main).
+# Builds the app from main and publishes a ready-to-run branch, readonly-deploy,
+# that contains the source PLUS the prebuilt .next. The Raspberry Pi tracks
+# readonly-deploy and just `git pull`s — no on-device build, no rsync.
+# Read-only enforcement is a runtime flag (TG_READONLY=1), so the same build
+# serves both the public demo and a normal instance.
 
 on:
   push:
-    branches: [readonly-mode]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -23,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: readonly-mode
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v6
         with:

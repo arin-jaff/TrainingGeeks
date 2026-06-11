@@ -80,10 +80,10 @@ npm run build
 
 ## B. Public read-only demo on a Raspberry Pi
 
-Goal: a Pi at home runs the **`readonly-mode`** branch 24/7, auto-syncs your
+Goal: a Pi at home runs the app 24/7 with **`TG_READONLY=1`**, auto-syncs your
 real data from intervals.icu, and is reachable on the internet as a **read-only
 "View Live!"** site. Visitors can explore everything; nobody can edit your data
-or open Settings.
+or open Settings. Read-only is a runtime flag on `main` — no special branch.
 
 **Data flow:** `Garmin → intervals.icu → (sync daemon) → Pi's SQLite → public
 read-only site`. You train and edit on your own devices; the Pi mirrors it.
@@ -102,20 +102,17 @@ sudo apt -y install nodejs
 node -v   # expect v24.x
 ```
 
-### 2. Clone the read-only branch & build
+### 2. Get the code & build
 
-Two branches serve this purpose:
-
-- **`readonly-mode`** — source: `main` + read-only enforcement. Build it
-  yourself (needs ~2 GB RAM or swap).
-- **`readonly-deploy`** — the same source **with a prebuilt `.next`** published
-  by CI on every push to `main`. Use this on low-memory Pis (a 1 GB Pi cannot
-  run `next build`).
+- **`main`** — build it yourself (needs ~2 GB RAM or swap).
+- **`readonly-deploy`** — `main` **with a prebuilt `.next`** published by CI
+  on every push. Use this on low-memory Pis (a 1 GB Pi cannot run
+  `next build`).
 
 ```bash
 cd ~
 # Build-capable box:
-git clone --branch readonly-mode https://github.com/arin-jaff/TrainingGeeks.git
+git clone https://github.com/arin-jaff/TrainingGeeks.git
 cd TrainingGeeks && npm install && npm run build
 
 # Or, low-memory Pi (no build step):
@@ -228,11 +225,11 @@ journalctl -u traininggeeks-sync -f       # watch it sync every 30 min
 
 ### 6. Stay up to date with `main` (auto)
 
-`main` auto-merges into `readonly-mode` on GitHub (the `sync-readonly` Action),
-which also builds and publishes `readonly-deploy`. So both branches always
-carry the latest features **with** the read-only enforcement. To pull those
-onto the Pi, add a small updater + timer (on `readonly-deploy`, skip the
-`npm run build` line — the pulled `.next` is already built):
+Every push to `main` rebuilds and force-publishes `readonly-deploy` (the
+`Publish read-only build` Action), so that branch always carries the latest
+features with a prebuilt `.next`. To pull updates onto the Pi, add a small
+updater + timer (if you build on-device from `main`, swap in the commented
+lines):
 
 ```bash
 cat > ~/TrainingGeeks/scripts/pi-update.sh <<'SH'
@@ -240,9 +237,9 @@ cat > ~/TrainingGeeks/scripts/pi-update.sh <<'SH'
 set -e
 cd /home/pi/TrainingGeeks
 git fetch origin
-git reset --hard origin/readonly-deploy   # or: git pull --ff-only origin readonly-mode
+git reset --hard origin/readonly-deploy   # or: git pull --ff-only origin main
 npm install
-# npm run build                           # readonly-mode only
+# npm run build                           # only when tracking main
 sudo systemctl restart traininggeeks
 SH
 chmod +x ~/TrainingGeeks/scripts/pi-update.sh
