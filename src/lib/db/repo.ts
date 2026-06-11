@@ -304,6 +304,21 @@ export function getActivityFile(db: DB, id: number): ActivityFileRow | undefined
   return one<ActivityFileRow>(db, "SELECT * FROM activity_file WHERE id = ?", id);
 }
 
+/** Image attachment ids per activity (one query, for feed/share assembly). */
+export function mapActivityImageIds(db: DB): Map<number, number[]> {
+  const rows = all<{ id: number; activity_id: number }>(
+    db,
+    "SELECT id, activity_id FROM activity_file WHERE is_image = 1 ORDER BY created_at, id",
+  );
+  const out = new Map<number, number[]>();
+  for (const r of rows) {
+    const list = out.get(r.activity_id) ?? [];
+    list.push(r.id);
+    out.set(r.activity_id, list);
+  }
+  return out;
+}
+
 export function deleteActivityFile(db: DB, id: number): void {
   db.prepare("DELETE FROM activity_file WHERE id = ?").run(id);
 }
