@@ -4,7 +4,9 @@ import { getAthlete, listEquipment, listInjuries } from "@/lib/db/repo";
 import { getCalendarData } from "@/lib/queries/calendar";
 import { addMonths, monthMatrix, todayLocal } from "@/lib/util/dates";
 import type { Units } from "@/lib/db/types";
+import { isReadOnly } from "@/lib/auth/config";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
+import DropImport from "@/components/calendar/DropImport";
 
 export const dynamic = "force-dynamic";
 
@@ -124,17 +126,19 @@ export default async function CalendarPage({
           </div>
         </div>
 
-        <CalendarGrid
-          weeks={weeks}
-          itemsByDate={itemsByDate}
-          weekSummaries={weekSummaries}
-          injuredDates={injuredDates}
-          openInjuries={openInjuries}
-          equipment={equipment}
-          month={month}
-          today={today}
-          units={units}
-        />
+        <DropImport readOnly={isReadOnly()}>
+          <CalendarGrid
+            weeks={weeks}
+            itemsByDate={itemsByDate}
+            weekSummaries={weekSummaries}
+            injuredDates={injuredDates}
+            openInjuries={openInjuries}
+            equipment={equipment}
+            month={month}
+            today={today}
+            units={units}
+          />
+        </DropImport>
       </div>
     </div>
   );
