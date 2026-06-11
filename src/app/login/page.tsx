@@ -6,6 +6,7 @@ import { GITHUB_URL } from "@/lib/constants";
 import { getDb } from "@/lib/db/client";
 import { getAthlete } from "@/lib/db/repo";
 import SportImage from "@/components/SportImage";
+import { ChevronDownIcon } from "@/components/icons";
 import { MODALITY_LABEL } from "@/lib/util/format";
 import type { Modality } from "@/lib/db/types";
 
@@ -77,7 +78,7 @@ export default async function LoginPage({
                   set up and run yourself!
                 </p>
                 <Link
-                  href="/?enter=1"
+                  href="/home"
                   className="mt-4 block w-full rounded bg-accent px-3 py-2 text-center text-sm font-semibold text-white hover:bg-accent-hover"
                 >
                   View Live →
@@ -160,14 +161,28 @@ export default async function LoginPage({
             <p className="text-3xl font-semibold leading-snug text-white drop-shadow-lg">Train with purpose.</p>
             <p className="mt-2 text-sm text-white/80 drop-shadow">
               Every workout, metric, and trend — in one place that you actually own. Scroll if
-              you&apos;ve ever paid a monthly fee to see your own heart rate. ↓
+              you&apos;ve ever paid a monthly fee to see your own heart rate.
             </p>
           </div>
         </div>
+
+        {/* Scroll cue: a bouncing nudge toward the rest of the page */}
+        <a
+          href="#pitch"
+          aria-label="Scroll down to learn more"
+          className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 animate-bounce flex-col items-center gap-1.5 text-white/70 hover:text-white"
+        >
+          <span className="text-[11px] font-medium uppercase tracking-widest">
+            There&apos;s more
+          </span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-nav/40 backdrop-blur-sm">
+            <ChevronDownIcon size={16} />
+          </span>
+        </a>
       </div>
 
       {/* ===== Landing: the pitch ===== */}
-      <section className="border-t border-white/10 px-6 py-20">
+      <section id="pitch" className="border-t border-white/10 px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Open source · Self-hosted · Yours
