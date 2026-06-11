@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginAction } from "@/app/actions/auth";
 import { authEnabled, isReadOnly } from "@/lib/auth/config";
@@ -41,6 +42,16 @@ export default async function LoginPage({
   // Open local instances have nothing to gate — go straight in. Read-only
   // demos show this page as a public "View Live!" landing.
   if (!authEnabled() && !readOnly) redirect("/");
+  // When a dedicated landing host is configured (e.g. the bare
+  // traininggeeks.net), the demo host never serves the landing — bounce
+  // straight to the data.
+  const landingHost = process.env.TG_LANDING_HOST?.toLowerCase();
+  if (readOnly && landingHost) {
+    const host = ((await headers()).get("host") ?? "").toLowerCase().split(":")[0];
+    if (host !== landingHost) redirect("/");
+  }
+  // Where "View Live" sends people: the demo's own URL when configured.
+  const demoUrl = process.env.TG_DEMO_URL || "/home";
   const { error } = await searchParams;
   const founder = getAthlete(getDb())?.name ?? "the founder";
 
@@ -77,7 +88,7 @@ export default async function LoginPage({
                   set up and run yourself!
                 </p>
                 <Link
-                  href="/home"
+                  href={demoUrl}
                   className="mt-4 block w-full rounded bg-accent px-3 py-2 text-center text-sm font-semibold text-white hover:bg-accent-hover"
                 >
                   View Live →

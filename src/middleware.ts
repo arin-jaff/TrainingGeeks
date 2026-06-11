@@ -34,23 +34,21 @@ export async function middleware(req: NextRequest) {
     }
     if (pathname === "/settings" || pathname.startsWith("/settings/")) {
       const url = req.nextUrl.clone();
-      url.pathname = "/home";
+      url.pathname = "/";
       url.search = "";
       return NextResponse.redirect(url);
     }
-    // The landing IS the demo's front door: serve it at the bare root, and
-    // move the athlete home to /home so the demo's "/" can't be mistaken for
-    // a personal instance. Old ?enter=1 links land on the app home.
-    if (pathname === "/") {
+    // Hostname split: the demo host serves the app directly ("/" IS the
+    // athlete home), while the marketing landing lives on TG_LANDING_HOST
+    // (e.g. the bare traininggeeks.net), whose root rewrites to the landing.
+    const landingHost = process.env.TG_LANDING_HOST?.toLowerCase();
+    const host = (req.headers.get("host") ?? "").toLowerCase().split(":")[0];
+    if (pathname === "/" && landingHost && host === landingHost) {
       const url = req.nextUrl.clone();
-      if (req.nextUrl.searchParams.has("enter")) {
-        url.pathname = "/home";
-        url.search = "";
-        return NextResponse.redirect(url);
-      }
       url.pathname = "/login";
       return NextResponse.rewrite(url);
     }
+    // Legacy paths from the old front-door flow keep working.
     if (pathname === "/home") {
       const url = req.nextUrl.clone();
       url.pathname = "/";

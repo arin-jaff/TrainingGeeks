@@ -33,13 +33,6 @@ export default function TopNav({
   const pathname = usePathname() ?? "/";
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // On the read-only demo "/" is the public landing page and the athlete
-  // home lives at /home — point every home link there.
-  const homeHref = readOnly ? "/home" : "/";
-  const tabs = readOnly
-    ? TABS.map((t) => (t.href === "/" ? { ...t, href: homeHref } : t))
-    : TABS;
-
   // Close the mobile menu whenever the route changes.
   useEffect(() => {
     setMenuOpen(false);
@@ -66,7 +59,7 @@ export default function TopNav({
         </button>
 
         {/* Wordmark (left) */}
-        <Link href={homeHref} className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="" width={22} height={22} className="rounded" />
           <span className="text-[15px] font-bold tracking-tight">
@@ -76,7 +69,7 @@ export default function TopNav({
 
         {/* Tabs (centered, md+ only) */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
-          {tabs.map((tab) => (
+          {TABS.map((tab) => (
             <Link
               key={tab.href}
               href={tab.href}
@@ -147,7 +140,7 @@ export default function TopNav({
       {/* Mobile dropdown menu (small screens) */}
       {menuOpen && (
         <nav className="border-t border-white/10 px-2 py-2 md:hidden">
-          {tabs.map((tab) => (
+          {TABS.map((tab) => (
             <Link
               key={tab.href}
               href={tab.href}
