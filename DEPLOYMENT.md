@@ -104,12 +104,23 @@ node -v   # expect v24.x
 
 ### 2. Clone the read-only branch & build
 
+Two branches serve this purpose:
+
+- **`readonly-mode`** — source: `main` + read-only enforcement. Build it
+  yourself (needs ~2 GB RAM or swap).
+- **`readonly-deploy`** — the same source **with a prebuilt `.next`** published
+  by CI on every push to `main`. Use this on low-memory Pis (a 1 GB Pi cannot
+  run `next build`).
+
 ```bash
 cd ~
+# Build-capable box:
 git clone --branch readonly-mode https://github.com/arin-jaff/TrainingGeeks.git
-cd TrainingGeeks
-npm install
-npm run build
+cd TrainingGeeks && npm install && npm run build
+
+# Or, low-memory Pi (no build step):
+git clone --branch readonly-deploy https://github.com/arin-jaff/TrainingGeeks.git
+cd TrainingGeeks && npm install
 ```
 
 ### 3. Configure for a read-only public demo
@@ -211,17 +222,20 @@ journalctl -u traininggeeks-sync -f       # watch it sync every 30 min
 ### 6. Stay up to date with `main` (auto)
 
 `main` auto-merges into `readonly-mode` on GitHub (the `sync-readonly` Action),
-so the branch always carries the latest features **with** the read-only
-enforcement. To pull those onto the Pi, add a small updater + daily timer:
+which also builds and publishes `readonly-deploy`. So both branches always
+carry the latest features **with** the read-only enforcement. To pull those
+onto the Pi, add a small updater + timer (on `readonly-deploy`, skip the
+`npm run build` line — the pulled `.next` is already built):
 
 ```bash
 cat > ~/TrainingGeeks/scripts/pi-update.sh <<'SH'
 #!/usr/bin/env bash
 set -e
 cd /home/pi/TrainingGeeks
-git pull --ff-only origin readonly-mode
+git fetch origin
+git reset --hard origin/readonly-deploy   # or: git pull --ff-only origin readonly-mode
 npm install
-npm run build
+# npm run build                           # readonly-mode only
 sudo systemctl restart traininggeeks
 SH
 chmod +x ~/TrainingGeeks/scripts/pi-update.sh
@@ -304,11 +318,18 @@ copy it somewhere safe (and remember it's also reproducible from intervals.icu).
 
 ## C. Federation (optional)
 
-To add friends on other self-hosted instances, deploy the companion
+To add friends on other self-hosted instances, point the app at a coordination
+directory — the reference instance at `https://directory.traininggeeks.net`,
+or your own deployment of
 [TrainingGeeks-Directory](https://github.com/arin-jaff/TrainingGeeks-Directory)
-(its `DEPLOYMENT.md` has the steps — it can ride the same Pi + tunnel), then set
-`TG_DIRECTORY_URL` and `TG_PUBLIC_URL` on this instance and restart. Claim a
-handle in the **Social** tab.
+(its `DEPLOYMENT.md` has the steps — it can ride the same Pi + tunnel as the
+demo; one Cloudflare Tunnel can serve any number of hostnames across any
+domains in your account). Set `TG_DIRECTORY_URL` and `TG_PUBLIC_URL` on this
+instance, restart, and claim a handle in the **Social** tab.
+
+Note: a `TG_READONLY=1` demo cannot register or send requests (writes are
+blocked) — claim your handle from your personal, writable instance. The feed
+itself renders fine on the demo.
 
 ### Federation heartbeat
 

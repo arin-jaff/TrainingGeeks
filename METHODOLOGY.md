@@ -213,7 +213,7 @@ distances — e.g. best 5-second power, best 20-minute power, fastest 1 km, fast
 mile. Plotted across all activities, these form a **mean-maximal curve**: the
 highest value you've ever sustained for each window. Power and heart-rate peaks
 are by duration; pace peaks are by both duration and distance. Your top efforts
-earn 🥇🥈🥉.
+earn gold, silver, and bronze medals.
 
 ---
 
