@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import {
@@ -86,11 +87,54 @@ export default async function ActivityPage({
       ].sort()
     : [];
 
+  // Chronological neighbors for stepping through the training log.
+  const neighbor = (dir: "prev" | "next") =>
+    db
+      .prepare(
+        dir === "prev"
+          ? "SELECT id, name, modality FROM activity WHERE start_time < ? OR (start_time = ? AND id < ?) ORDER BY start_time DESC, id DESC LIMIT 1"
+          : "SELECT id, name, modality FROM activity WHERE start_time > ? OR (start_time = ? AND id > ?) ORDER BY start_time ASC, id ASC LIMIT 1",
+      )
+      .get(a.start_time, a.start_time, a.id) as
+      | { id: number; name: string | null; modality: string }
+      | undefined;
+  const prev = neighbor("prev");
+  const next = neighbor("next");
+  const navLabel = (n: { name: string | null; modality: string }) =>
+    n.name ?? MODALITY_LABEL[n.modality as Modality];
+
   return (
     <div>
       <div className="mb-4 border-b border-line pb-3">
-        <div className="mb-1 text-sm font-medium uppercase tracking-wide text-ink-muted">
-          {longDate(a.local_date)}
+        <div className="mb-1 flex items-center justify-between">
+          <div className="text-sm font-medium uppercase tracking-wide text-ink-muted">
+            {longDate(a.local_date)}
+          </div>
+          <div className="flex items-center gap-3 text-xs font-medium">
+            {prev ? (
+              <Link
+                href={`/activity/${prev.id}`}
+                className="max-w-44 truncate text-accent hover:underline"
+                title={navLabel(prev)}
+              >
+                ← {navLabel(prev)}
+              </Link>
+            ) : (
+              <span className="text-ink-muted/50">← Oldest</span>
+            )}
+            <span className="text-line">|</span>
+            {next ? (
+              <Link
+                href={`/activity/${next.id}`}
+                className="max-w-44 truncate text-accent hover:underline"
+                title={navLabel(next)}
+              >
+                {navLabel(next)} →
+              </Link>
+            ) : (
+              <span className="text-ink-muted/50">Latest →</span>
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-5">
           <div className="flex items-center gap-3">
