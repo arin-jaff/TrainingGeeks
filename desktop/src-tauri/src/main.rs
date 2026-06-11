@@ -20,25 +20,49 @@ fn main() {
     tauri::Builder::default()
         .manage(ServerProc(Mutex::new(None)))
         .setup(|app| {
-            let node = std::env::current_exe()?
+            let exe = std::env::current_exe()?;
+            let macos_dir = exe
                 .parent()
                 .expect("executable has a parent directory")
-                .join("node");
-            let resources = app.path().resource_dir()?;
+                .to_path_buf();
+            let node = macos_dir.join("node");
+
+            // macOS bundle layout is fixed: Contents/MacOS -> Contents/Resources.
+            // Derive it from the exe path (resource_dir() panics when the
+            // binary is launched directly), falling back to the API.
+            let resources = macos_dir
+                .parent()
+                .map(|contents| contents.join("Resources"))
+                .filter(|p| p.join("server").exists())
+                .or_else(|| app.path().resource_dir().ok())
+                .expect("cannot locate bundled resources");
             let shim = resources
                 .join("server")
                 .join("scripts")
                 .join("desktop-server.mjs");
 
-            let mut child = Command::new(&node)
+            let fail = |app: &tauri::App, msg: String| {
+                eprintln!("{msg}");
+                if let Some(win) = app.get_webview_window("main") {
+                    let safe = msg.replace('`', "'").replace('\\', "/");
+                    let _ = win.eval(&format!(
+                        "document.querySelector('.sub').textContent = `{safe}`"
+                    ));
+                }
+            };
+
+            let mut child = match Command::new(&node)
                 .arg(&shim)
                 .stdout(Stdio::piped())
                 .stderr(Stdio::inherit())
                 .spawn()
-                .unwrap_or_else(|e|
-
-                    panic!("failed to start the embedded server ({}): {e}", shim.display())
-                );
+            {
+                Ok(c) => c,
+                Err(e) => {
+                    fail(app, format!("Could not start the training server: {e}"));
+                    return Ok(());
+                }
+            };
 
             let stdout = child.stdout.take().expect("server stdout is piped");
             *app.state::<ServerProc>().0.lock().unwrap() = Some(child);

@@ -61,4 +61,5 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" "$DMG" \
             --prerelease \
             --title "TrainingGeeks Desktop ${GITHUB_REF_NAME#desktop-} (early access, macOS)" \
-            --notes "Early-access macOS build (Apple Silicon), unsigned: on first launch, right-click the app and choose Open. Your data lives in ~/Library/Application Support/TrainingGeeks. Wraps app commit $(git rev-parse --short HEAD)."
+            --notes "Early-access macOS build (Apple Silicon), unsigned: on first launch, right-click the app and choose Open. Your data lives in ~/Library/Application Support/TrainingGeeks. Wraps app commit $(git rev-parse --short HEAD)." \
+          || gh release upload "${GITHUB_REF_NAME}" "$DMG" --clobber
