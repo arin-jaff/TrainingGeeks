@@ -10,6 +10,7 @@ import {
   formatDistance,
   formatDuration,
   formatPace,
+  formatSpeed,
   MODALITY_LABEL,
 } from "@/lib/util/format";
 import { MODALITY_COLOR } from "@/lib/util/colors";
@@ -193,7 +194,11 @@ export default function FeedCard({
               <Stat label="Distance" value={formatDistance(item.distanceM, units)} />
             )}
             {!isStrength && item.avgSpeedMps != null && item.avgSpeedMps > 0 && (
-              <Stat label="Pace" value={formatPace(item.avgSpeedMps, units, modality)} />
+              modality === "bike" ? (
+                <Stat label="Speed" value={formatSpeed(item.avgSpeedMps, units)} />
+              ) : (
+                <Stat label="Pace" value={formatPace(item.avgSpeedMps, units, modality)} />
+              )
             )}
             {item.avgHr != null && <Stat label="Avg HR" value={String(Math.round(item.avgHr))} />}
             {stress != null && (

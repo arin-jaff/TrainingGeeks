@@ -8,6 +8,7 @@ import {
   formatDistance,
   formatDuration,
   formatPace,
+  formatSpeed,
   round,
 } from "@/lib/util/format";
 import type { StreamSeries } from "./StreamChart";
@@ -121,7 +122,9 @@ export default function AnalyzeView({
   const metricRows: MetricRow[] = [
     { label: "Duration", completed: formatDuration(a.duration_s), unit: "h:m:s" },
     { label: "Distance", completed: formatDistance(a.distance_m, units).split(" ")[0], unit: units === "imperial" ? "mi" : "km" },
-    { label: "Average Pace", completed: formatPace(a.avg_speed_mps, units, modality).split(" ")[0], unit: modality === "swim" ? "/100m" : units === "imperial" ? "min/mi" : "min/km" },
+    modality === "bike"
+      ? { label: "Average Speed", completed: formatSpeed(a.avg_speed_mps, units).split(" ")[0], unit: units === "imperial" ? "mph" : "km/h" }
+      : { label: "Average Pace", completed: formatPace(a.avg_speed_mps, units, modality).split(" ")[0], unit: modality === "swim" ? "/100m" : units === "imperial" ? "min/mi" : "min/km" },
     { label: "Calories", completed: num(a.calories), unit: "kcal" },
     { label: "Elevation Gain", completed: a.elevation_gain_m == null ? "—" : String(Math.round(a.elevation_gain_m * (units === "imperial" ? 3.28084 : 1))), unit: units === "imperial" ? "ft" : "m" },
     { label: isStrength ? "S³" : "TSS", completed: num(isStrength ? a.s3 : a.tss), unit: isStrength ? "S³" : "rTSS" },
@@ -152,12 +155,21 @@ export default function AnalyzeView({
   };
 
   const mamRows = [
-    {
-      label: "Pace",
-      min: formatPace(detail.minSpeed, units, modality).split(" ")[0],
-      avg: formatPace(a.avg_speed_mps, units, modality).split(" ")[0],
-      max: formatPace(detail.maxSpeed, units, modality).split(" ")[0],
-    },
+    // Cyclists read speed; runners and swimmers read pace. Note min/max swap:
+    // the slowest moving speed is the fastest (largest) pace and vice versa.
+    modality === "bike"
+      ? {
+          label: "Speed",
+          min: formatSpeed(detail.minSpeed, units).split(" ")[0],
+          avg: formatSpeed(a.avg_speed_mps, units).split(" ")[0],
+          max: formatSpeed(detail.maxSpeed, units).split(" ")[0],
+        }
+      : {
+          label: "Pace",
+          min: formatPace(detail.minSpeed, units, modality).split(" ")[0],
+          avg: formatPace(a.avg_speed_mps, units, modality).split(" ")[0],
+          max: formatPace(detail.maxSpeed, units, modality).split(" ")[0],
+        },
     {
       label: "Heart Rate",
       min: num(detail.minHr),

@@ -47,6 +47,16 @@ function pad(totalSeconds: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+/** Speed from m/s — what cyclists expect instead of pace. */
+export function formatSpeed(
+  speedMps: number | null | undefined,
+  units: Units,
+): string {
+  if (!speedMps || speedMps <= 0) return "—";
+  const v = units === "imperial" ? (speedMps * 3600) / M_PER_MI : (speedMps * 3600) / M_PER_KM;
+  return `${v.toFixed(1)} ${units === "imperial" ? "mph" : "km/h"}`;
+}
+
 export function formatStress(
   modality: Modality,
   tss: number | null,
