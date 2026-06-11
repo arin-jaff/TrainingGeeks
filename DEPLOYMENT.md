@@ -144,6 +144,13 @@ TG_INTERVALS_API_KEY=<your intervals.icu key>
 # Lets the local sync daemon refresh data (allowed even in read-only mode).
 TG_SYNC_TOKEN=<openssl rand -hex 16>
 
+# Optional hostname split: serve the marketing landing page at one domain
+# (its root rewrites to the landing) while the demo domain goes straight to
+# the data. Unset = the demo root is the athlete home and the landing is
+# reachable at /login.
+TG_LANDING_HOST=traininggeeks.net
+TG_DEMO_URL=https://demo.traininggeeks.net
+
 # Do NOT set TG_PASSWORD — read-only mode serves reads publicly.
 ```
 
