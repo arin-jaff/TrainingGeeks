@@ -34,25 +34,27 @@ export async function middleware(req: NextRequest) {
     }
     if (pathname === "/settings" || pathname.startsWith("/settings/")) {
       const url = req.nextUrl.clone();
-      url.pathname = "/";
+      url.pathname = "/home";
       url.search = "";
       return NextResponse.redirect(url);
     }
-    // Front door: show the "View Live!" landing first. Clicking it
-    // (?enter=1) sets a cookie and drops the visitor into the app.
+    // The landing IS the demo's front door: serve it at the bare root, and
+    // move the athlete home to /home so the demo's "/" can't be mistaken for
+    // a personal instance. Old ?enter=1 links land on the app home.
     if (pathname === "/") {
+      const url = req.nextUrl.clone();
       if (req.nextUrl.searchParams.has("enter")) {
-        const res = NextResponse.redirect(new URL("/", req.url));
-        res.cookies.set("tg_demo", "1", {
-          path: "/",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 7,
-        });
-        return res;
+        url.pathname = "/home";
+        url.search = "";
+        return NextResponse.redirect(url);
       }
-      if (!req.cookies.get("tg_demo")) {
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
+      url.pathname = "/login";
+      return NextResponse.rewrite(url);
+    }
+    if (pathname === "/home") {
+      const url = req.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.rewrite(url);
     }
     return NextResponse.next();
   }
