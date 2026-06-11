@@ -12,10 +12,16 @@ export const dynamic = "force-dynamic";
 // TG_DIRECTORY_URL), nothing here affects Home/Calendar/Dashboard. The feed is
 // assembled server-side (plain reads), so it renders on the read-only demo too;
 // kudos and comments are disabled there.
-export default async function SocialPage() {
+export default async function SocialPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ days?: string }>;
+}) {
   const db = getDb();
   const units: Units = getAthlete(db)?.units ?? "imperial";
-  const feed = await assembleFeed(db);
+  const { days } = await searchParams;
+  const window = Number(days) || 30;
+  const feed = await assembleFeed(db, { days: window });
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -26,7 +32,7 @@ export default async function SocialPage() {
           choose, give kudos, talk shop. Your data stays on your machine.
         </p>
       </div>
-      <SocialHub feed={feed} units={units} readOnly={isReadOnly()} />
+      <SocialHub feed={feed} units={units} readOnly={isReadOnly()} days={window} />
     </div>
   );
 }

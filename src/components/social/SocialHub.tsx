@@ -17,10 +17,12 @@ export default function SocialHub({
   feed,
   units,
   readOnly,
+  days = 30,
 }: {
   feed: SocialFeed;
   units: Units;
   readOnly: boolean;
+  days?: number;
 }) {
   // Without a directory or a handle there is nothing to feed — go to setup.
   const setupOnly = !feed.enabled || !feed.handle;
@@ -109,6 +111,16 @@ export default function SocialHub({
                     readOnly={readOnly}
                   />
                 ))}
+                {days < 90 && (
+                  <div className="pt-1 text-center">
+                    <a
+                      href={`/social?days=${Math.min(days + 30, 90)}`}
+                      className="text-xs font-medium text-accent hover:underline"
+                    >
+                      Show older activities
+                    </a>
+                  </div>
+                )}
               </div>
             )}
           </div>

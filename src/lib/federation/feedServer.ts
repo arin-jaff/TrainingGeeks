@@ -1,5 +1,5 @@
 import type { DB } from "../db/client.js";
-import { getAthlete } from "../db/repo.js";
+import { getAthlete, getSetting, setSetting } from "../db/repo.js";
 import { todayLocal } from "../util/dates.js";
 import { directoryUrl } from "./config.js";
 import { getHandle, getSigner } from "./keystore.js";
@@ -82,7 +82,10 @@ async function friendSource(
  * read-only demo too): own activities + every friend who shares "activities",
  * merged newest-first, annotated with kudos/comment counts from the directory.
  */
-export async function assembleFeed(db: DB): Promise<SocialFeed> {
+export async function assembleFeed(
+  db: DB,
+  { days = 30 }: { days?: number } = {},
+): Promise<SocialFeed> {
   const tz = getAthlete(db)?.timezone ?? "America/New_York";
   const today = todayLocal(tz);
   const dirUrl = directoryUrl();
@@ -90,6 +93,9 @@ export async function assembleFeed(db: DB): Promise<SocialFeed> {
 
   const handle = getHandle(db);
   if (!handle) return none(today, { enabled: true });
+
+  // The share scope itself is windowed to 90 days — no point asking past it.
+  const window = Math.min(Math.max(days, 7), 90);
 
   const self: FeedPerson = {
     handle,
@@ -131,8 +137,15 @@ export async function assembleFeed(db: DB): Promise<SocialFeed> {
   }
 
   // 100 matches the directory's social-summary batch cap, and gives the
-  // leaderboards the full 30-day window to total up.
-  const items = buildFeed(sources, today, { limit: 100 });
+  // leaderboards the full window to total up.
+  const items = buildFeed(sources, today, { days: window, limit: 100 });
+
+  // Remember the newest item the owner has now seen, so the nav badge knows
+  // what counts as new next time (handle-qualified ref = globally unique).
+  if (items.length > 0) {
+    const newest = items[0];
+    setSetting(db, "social_seen_marker", `${newest.person.handle}|${newest.ref}`);
+  }
 
   // Annotate with kudos/comment counts (one batched call; absent on failure).
   let counts: (SocialCounts | null)[] = items.map(() => null);
@@ -158,4 +171,53 @@ export async function assembleFeed(db: DB): Promise<SocialFeed> {
     people,
     error,
   };
+}
+
+/**
+ * How many friend activities arrived since the feed was last opened. Cheap by
+ * design — reads only the directory's cached copies (one server, no peer
+ * fan-out) so the nav badge can poll it without waking the network.
+ */
+export async function countNewSocial(db: DB): Promise<number> {
+  const dirUrl = directoryUrl();
+  const handle = getHandle(db);
+  if (!dirUrl || !handle) return 0;
+
+  const tz = getAthlete(db)?.timezone ?? "America/New_York";
+  const today = todayLocal(tz);
+
+  let sources: FeedSource[] = [];
+  try {
+    const { friends } = await listFriends(getSigner(db), dirUrl);
+    const sharing = friends.filter((f) => f.sharesWithMe.includes("activities"));
+    const fetched = await Promise.all(
+      sharing.map(async (f) => {
+        try {
+          const cached = await fetchCachedScope(getSigner(db), dirUrl, f.handle, "activities");
+          const data = cached.payload as { activities?: SharedActivity[] };
+          const person: FeedPerson = {
+            handle: f.handle,
+            displayName: f.displayName,
+            isSelf: false,
+            online: f.presence.online,
+            staleAsOf: cached.updatedAt,
+          };
+          return { person, activities: data.activities ?? [] };
+        } catch {
+          return null;
+        }
+      }),
+    );
+    sources = fetched.filter((s): s is FeedSource => s !== null);
+  } catch {
+    return 0;
+  }
+
+  const items = buildFeed(sources, today, { limit: 100 });
+  if (items.length === 0) return 0;
+
+  const marker = getSetting(db, "social_seen_marker");
+  if (!marker) return items.length;
+  const idx = items.findIndex((it) => `${it.person.handle}|${it.ref}` === marker);
+  return idx === -1 ? items.length : idx;
 }

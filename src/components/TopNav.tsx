@@ -50,11 +50,29 @@ export default function TopNav({
   const pathname = usePathname() ?? "/";
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [newSocial, setNewSocial] = useState(0);
 
   // Close the menus whenever the route changes.
   useEffect(() => {
     setMenuOpen(false);
     setMoreOpen(false);
+  }, [pathname]);
+
+  // New-friend-activity badge: one cheap check per navigation (the endpoint
+  // reads only the directory cache and answers {count: 0} when social is off).
+  useEffect(() => {
+    if (pathname.startsWith("/social")) {
+      setNewSocial(0); // viewing the feed marks it seen
+      return;
+    }
+    let live = true;
+    fetch("/api/social/new")
+      .then((r) => r.json())
+      .then((j) => live && setNewSocial(Number(j.count) || 0))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
   }, [pathname]);
 
   const moreActive = MORE.some((m) => isActive(pathname, m.href));
@@ -95,9 +113,16 @@ export default function TopNav({
               key={tab.href}
               href={tab.href}
               aria-current={isActive(pathname, tab.href) ? "page" : undefined}
-              className={tabClass(isActive(pathname, tab.href))}
+              className={`relative ${tabClass(isActive(pathname, tab.href))}`}
             >
               {tab.label}
+              {tab.href === "/social" && newSocial > 0 && (
+                <span
+                  className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-accent"
+                  title={`${newSocial} new from friends`}
+                  aria-label={`${newSocial} new friend activities`}
+                />
+              )}
             </Link>
           ))}
           <div className="relative">
