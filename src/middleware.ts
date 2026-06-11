@@ -27,6 +27,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Liveness probe: public by design (no data, no DB).
+  if (pathname === "/api/health") {
+    return NextResponse.next();
+  }
+
   // Read-only/demo: serve reads publicly, block every write, hide Settings.
   if (isReadOnly()) {
     if (req.method !== "GET" && req.method !== "HEAD") {
