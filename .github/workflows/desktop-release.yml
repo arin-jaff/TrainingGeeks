@@ -1,0 +1,64 @@
+name: Desktop release (macOS)
+
+# Builds the Tauri desktop app and attaches the dmg to a GitHub pre-release.
+# Triggered only by desktop-v* tags so ordinary pushes never pay the macOS
+# runner cost. Early access: Apple Silicon, ad-hoc signed (first launch is
+# right-click -> Open).
+
+on:
+  push:
+    tags: ["desktop-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build the web app (standalone)
+        run: |
+          npm ci
+          npm run build
+
+      - name: Stage the server payload for bundling
+        run: |
+          mkdir -p desktop/server/scripts desktop/server/.next
+          cp scripts/desktop-server.mjs desktop/server/scripts/
+          cp -R .next/standalone desktop/server/.next/standalone
+          # The bundle is read-only at runtime, so static assets must already
+          # sit where the standalone server serves them from.
+          cp -R .next/static desktop/server/.next/standalone/.next/static
+          cp -R public desktop/server/.next/standalone/public
+
+      - name: Bundle the Node sidecar (matches the build's Node major)
+        run: |
+          NODE_V=$(node --version)
+          curl -fsSL "https://nodejs.org/dist/${NODE_V}/node-${NODE_V}-darwin-arm64.tar.gz" -o /tmp/node.tgz
+          mkdir -p desktop/src-tauri/binaries /tmp/nodepkg
+          tar -xzf /tmp/node.tgz -C /tmp/nodepkg --strip-components=1
+          cp /tmp/nodepkg/bin/node desktop/src-tauri/binaries/node-aarch64-apple-darwin
+          chmod +x desktop/src-tauri/binaries/node-aarch64-apple-darwin
+
+      - name: Build the app bundle
+        working-directory: desktop
+        run: npx --yes @tauri-apps/cli@^2 build --target aarch64-apple-darwin
+
+      - name: Publish pre-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DMG=$(ls desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg | head -1)
+          gh release create "${GITHUB_REF_NAME}" "$DMG" \
+            --prerelease \
+            --title "TrainingGeeks Desktop ${GITHUB_REF_NAME#desktop-} (early access, macOS)" \
+            --notes "Early-access macOS build (Apple Silicon), unsigned: on first launch, right-click the app and choose Open. Your data lives in ~/Library/Application Support/TrainingGeeks. Wraps app commit $(git rev-parse --short HEAD)."

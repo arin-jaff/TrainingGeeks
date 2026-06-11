@@ -21,6 +21,15 @@ data in a single file you control, and never asks for your credit card.
 mockup: the founder's actual, live training history, served read-only from a
 Raspberry Pi at home and auto-syncing from intervals.icu and Garmin.
 
+## Download (early access)
+
+**[TrainingGeeks for macOS](https://github.com/arin-jaff/TrainingGeeks/releases)**
+— the self-hosted app as a double-clickable Mac app (Apple Silicon). Your data
+lives in `~/Library/Application Support/TrainingGeeks`; nothing leaves your
+machine. Early-access builds are unsigned: on first launch, right-click the
+app and choose **Open**. Self-hosting the web app (below) remains the primary
+path; see [DESKTOP-ROADMAP.md](DESKTOP-ROADMAP.md) for where this is going.
+
 ## Contents
 
 - [Why](#why)
