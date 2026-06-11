@@ -102,6 +102,12 @@ process.on("SIGTERM", stop);
 process.on("SIGINT", stop);
 child.on("exit", (code) => process.exit(code ?? 1));
 
+// Orphan watchdog: if the shell dies without signaling us (force-quit,
+// SIGKILL), our parent becomes launchd/init (ppid 1) — shut down then too.
+setInterval(() => {
+  if (process.ppid === 1) stop();
+}, 2000).unref();
+
 if (await waitForHealth(port)) {
   console.log(`READY ${port}`);
 } else {
