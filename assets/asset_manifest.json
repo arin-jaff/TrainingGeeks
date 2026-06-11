@@ -105,7 +105,7 @@
       "type": "logo",
       "origin": "third-party",
       "source_url": "https://github.com/logos",
-      "license": "GitHub logo — used nominatively to link to the project repo.",
+      "license": "GitHub logo \u2014 used nominatively to link to the project repo.",
       "prompt": null,
       "added": "2026-06-07",
       "notes": "GitHub mark on status-screen links."
@@ -135,10 +135,20 @@
       "type": "logo",
       "origin": "third-party",
       "source_url": "https://intervals.icu",
-      "license": "intervals.icu logo — used nominatively to credit/link the sync source.",
+      "license": "intervals.icu logo \u2014 used nominatively to credit/link the sync source.",
       "prompt": "White background keyed to transparent via PIL.",
       "added": "2026-06-07",
       "notes": "intervals.icu branding in settings sync sections. Also intervals-mark.png."
+    },
+    {
+      "file": "src/components/icons.tsx",
+      "type": "icon-set",
+      "origin": "third-party",
+      "source_url": "https://github.com/primer/octicons",
+      "license": "MIT (Copyright (c) GitHub Inc.)",
+      "prompt": null,
+      "added": "2026-06-10",
+      "notes": "Octicons 16px paths inlined as React components (gear, bell, thumbsup + filled variant, comment, three-bars, x, mark-github), v19.28.1. Colored via currentColor to match the app theme."
     }
   ]
 }
