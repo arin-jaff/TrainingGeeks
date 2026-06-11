@@ -5,7 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
 import { GITHUB_URL } from "@/lib/constants";
-import { BellIcon, GearIcon, GitHubIcon, ThreeBarsIcon, XIcon } from "@/components/icons";
+import {
+  BellIcon,
+  ChevronDownIcon,
+  GearIcon,
+  GitHubIcon,
+  ThreeBarsIcon,
+  XIcon,
+} from "@/components/icons";
 
 const TABS = [
   { href: "/", label: "Home" },
@@ -14,6 +21,16 @@ const TABS = [
   { href: "/atp", label: "ATP" },
   // Social is an opt-in, sectioned-off experience — never affects personal use.
   { href: "/social", label: "Social" },
+];
+
+// The deeper analysis pages, reachable from a "More" dropdown so they're
+// discoverable without crowding the main tab row.
+const MORE = [
+  { href: "/peaks", label: "Peak Performances" },
+  { href: "/progression", label: "Progression" },
+  { href: "/strength", label: "Strength Records" },
+  { href: "/metrics", label: "Metrics" },
+  { href: "/import", label: "Import" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -32,11 +49,15 @@ export default function TopNav({
 }) {
   const pathname = usePathname() ?? "/";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
-  // Close the mobile menu whenever the route changes.
+  // Close the menus whenever the route changes.
   useEffect(() => {
     setMenuOpen(false);
+    setMoreOpen(false);
   }, [pathname]);
+
+  const moreActive = MORE.some((m) => isActive(pathname, m.href));
 
   const tabClass = (active: boolean) =>
     [
@@ -79,6 +100,39 @@ export default function TopNav({
               {tab.label}
             </Link>
           ))}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-expanded={moreOpen}
+              className={`flex items-center gap-1 ${tabClass(moreActive)}`}
+            >
+              More
+              <ChevronDownIcon size={12} />
+            </button>
+            {moreOpen && (
+              <>
+                {/* Click-away backdrop */}
+                <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
+                <div className="absolute left-0 top-full z-50 mt-1 w-48 rounded border border-line bg-surface-card py-1 shadow-lg">
+                  {MORE.map((m) => (
+                    <Link
+                      key={m.href}
+                      href={m.href}
+                      className={[
+                        "block px-3 py-1.5 text-[13px]",
+                        isActive(pathname, m.href)
+                          ? "font-medium text-accent"
+                          : "text-ink hover:bg-surface",
+                      ].join(" ")}
+                    >
+                      {m.label}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </nav>
 
         {/* Right cluster */}
@@ -140,7 +194,7 @@ export default function TopNav({
       {/* Mobile dropdown menu (small screens) */}
       {menuOpen && (
         <nav className="border-t border-white/10 px-2 py-2 md:hidden">
-          {TABS.map((tab) => (
+          {[...TABS, ...MORE].map((tab) => (
             <Link
               key={tab.href}
               href={tab.href}
