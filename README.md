@@ -17,7 +17,7 @@ data in a single file you control, and never asks for your credit card.
 
 ## Live demo
 
-**[traininggeeks.arinjaff.com](https://traininggeeks.arinjaff.com)** — not a
+**[demo.traininggeeks.net](https://demo.traininggeeks.net)** — not a
 mockup: the founder's actual, live training history, served read-only from a
 Raspberry Pi at home and auto-syncing from intervals.icu and Garmin.
 
