@@ -10,6 +10,7 @@ import type { CalItem } from "@/lib/queries/calendar";
 import type { Units } from "@/lib/db/types";
 import { todayLocal } from "@/lib/util/dates";
 import { formatDistance, formatDuration, formatPace } from "@/lib/util/format";
+import GettingStarted from "@/components/home/GettingStarted";
 import SportsBar from "@/components/home/SportsBar";
 import PerformanceMetrics from "@/components/home/PerformanceMetrics";
 import EventsPanel from "@/components/home/EventsPanel";
@@ -164,6 +165,8 @@ export default async function HomePage() {
   const strengthMaxes = getExerciseMaxes(db);
   const wellness = latestMetrics(db);
   const readOnly = isReadOnly();
+  const hasActivities =
+    (db.prepare("SELECT COUNT(*) AS n FROM activity").get() as { n: number }).n > 0;
 
   return (
     <div>
@@ -178,6 +181,9 @@ export default async function HomePage() {
           {athlete?.name ?? "Athlete"}
         </h1>
       </div>
+
+      {/* First run: a concrete path into the app until data exists. */}
+      {!hasActivities && !readOnly && <GettingStarted />}
 
       {/* Your Sports — hover a sport for last activity + week/all-time stats. */}
       <SportsBar sports={sports} units={units} today={today} />
