@@ -7,6 +7,7 @@ import {
   fetchCachedScope,
   fetchScope,
   fetchSocialSummary,
+  heartbeat,
   listFriends,
   type FriendView,
   type SocialCounts,
@@ -103,7 +104,11 @@ export async function assembleFeed(db: DB): Promise<SocialFeed> {
 
   let error: string | null = null;
   try {
-    const { friends } = await listFriends(getSigner(db), dirUrl);
+    // Opening the feed keeps presence fresh both ways (cheap; failure ignored).
+    const [, { friends }] = await Promise.all([
+      heartbeat(getSigner(db), dirUrl).catch(() => null),
+      listFriends(getSigner(db), dirUrl),
+    ]);
     const sharing = friends.filter((f) => f.sharesWithMe.includes("activities"));
     for (const f of friends) {
       if (sharing.some((s) => s.publicKey === f.publicKey)) continue;

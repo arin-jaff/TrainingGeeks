@@ -15,6 +15,8 @@ const MEDAL_SRC = ["/medal-gold.png", "/medal-silver.png", "/medal-bronze.png"];
  * Friends-only training leaderboard, totalled from the same shared activities
  * the feed shows. Ranked by training time — the fairest cross-sport yardstick.
  */
+type RankBy = "time" | "distance" | "stress";
+
 export default function Leaderboard({
   items,
   people,
@@ -27,8 +29,15 @@ export default function Leaderboard({
   units: Units;
 }) {
   const [period, setPeriod] = useState<"week" | "4wk">("week");
+  const [rankBy, setRankBy] = useState<RankBy>("time");
   const start = period === "week" ? weekStart(today) : addDays(today, -27);
-  const rows = leaderboard(items, people, start, today);
+  const rows = [...leaderboard(items, people, start, today)].sort((a, b) =>
+    rankBy === "distance"
+      ? b.distanceM - a.distanceM
+      : rankBy === "stress"
+        ? b.stress - a.stress
+        : b.durationS - a.durationS,
+  );
 
   return (
     <section className="rounded border border-line bg-surface-card">
@@ -52,6 +61,22 @@ export default function Leaderboard({
             </button>
           ))}
         </div>
+      </div>
+      <div className="flex items-center gap-1 border-b border-line px-3 py-1.5">
+        <span className="mr-1 text-[10px] uppercase tracking-wide text-ink-muted">Rank by</span>
+        {(["time", "distance", "stress"] as const).map((r) => (
+          <button
+            key={r}
+            onClick={() => setRankBy(r)}
+            title={r === "stress" ? "Training stress: TSS + S³ combined" : undefined}
+            className={[
+              "rounded px-1.5 py-0.5 text-[11px] font-medium capitalize",
+              rankBy === r ? "bg-surface text-ink" : "text-ink-muted hover:text-ink",
+            ].join(" ")}
+          >
+            {r}
+          </button>
+        ))}
       </div>
       <ul className="divide-y divide-line">
         {rows.map((r, i) => (
@@ -78,7 +103,10 @@ export default function Leaderboard({
                 {r.durationS > 0 ? formatDuration(r.durationS) : "—"}
               </div>
               {r.stress > 0 && (
-                <div className="text-[10px] tabular-nums text-ink-muted">
+                <div
+                  className="text-[10px] tabular-nums text-ink-muted"
+                  title="Training stress: TSS + S³ combined"
+                >
                   {Math.round(r.stress)} stress
                 </div>
               )}

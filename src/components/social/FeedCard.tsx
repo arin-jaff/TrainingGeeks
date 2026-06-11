@@ -243,6 +243,7 @@ export default function FeedCard({
           handle={p.handle}
           activityRef={item.ref}
           readOnly={readOnly}
+          isOwner={p.isSelf}
           onCount={setCommentCount}
         />
       )}
@@ -254,11 +255,14 @@ function CommentThread({
   handle,
   activityRef,
   readOnly,
+  isOwner,
   onCount,
 }: {
   handle: string;
   activityRef: string;
   readOnly: boolean;
+  /** Viewing own activity: may moderate (delete) any comment on it. */
+  isOwner: boolean;
   onCount: (n: number) => void;
 }) {
   const [thread, setThread] = useState<ActivitySocial | null>(null);
@@ -319,7 +323,7 @@ function CommentThread({
             </span>
             <p className="whitespace-pre-line break-words text-sm text-ink">{c.body}</p>
           </div>
-          {c.mine && !readOnly && (
+          {(c.mine || isOwner) && !readOnly && (
             <button
               onClick={() => del(c.id)}
               className="shrink-0 text-[10px] text-ink-muted hover:text-fatigue"
