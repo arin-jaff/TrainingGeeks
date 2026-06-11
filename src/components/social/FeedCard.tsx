@@ -69,6 +69,46 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+/**
+ * Strava-style photo strip: one image runs full width, more become a grid.
+ * Own images come straight from this instance (downscaled via ?w=); friends'
+ * are proxied through /api/social/image (this server signs the peer fetch).
+ * Images that fail (friend offline) hide themselves rather than break a card.
+ */
+function ImageStrip({ item }: { item: SocialFeedItem }) {
+  const ids = (item.imageIds ?? []).slice(0, 3);
+  if (ids.length === 0) return null;
+  const src = (id: number) =>
+    item.person.isSelf
+      ? `/api/activity-file/${id}?w=900`
+      : `/api/social/image?handle=${encodeURIComponent(item.person.handle)}&id=${id}`;
+  return (
+    <div
+      className={[
+        "grid gap-0.5 border-t border-line",
+        ids.length === 1 ? "grid-cols-1" : ids.length === 2 ? "grid-cols-2" : "grid-cols-3",
+      ].join(" ")}
+    >
+      {ids.map((id) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={id}
+          src={src(id)}
+          alt=""
+          loading="lazy"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+          className={[
+            "w-full object-cover",
+            ids.length === 1 ? "max-h-96" : "aspect-square",
+          ].join(" ")}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function FeedCard({
   item,
   today,
@@ -162,6 +202,8 @@ export default function FeedCard({
           </div>
         </div>
       </div>
+
+      <ImageStrip item={item} />
 
       <div className="flex items-center gap-2 border-t border-line px-3 py-1.5">
         {p.isSelf || readOnly ? (

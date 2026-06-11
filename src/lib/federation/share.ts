@@ -5,6 +5,7 @@ import {
   listDailyLoad,
   listPaceEfforts,
   listPlannedBetween,
+  mapActivityImageIds,
 } from "../db/repo.js";
 import { addDays, todayLocal } from "../util/dates.js";
 import { SCOPES, type Scope } from "./client.js";
@@ -39,6 +40,9 @@ function calendar(db: DB, start: string, today: string) {
 }
 
 function activities(db: DB, start: string, today: string) {
+  // Image ATTACHMENT IDS only — the bytes stay on this instance and are
+  // served downscaled via the scope-checked peer image endpoint.
+  const images = mapActivityImageIds(db);
   return listActivitiesBetween(db, start, today).map((a) => ({
     id: a.id,
     date: a.local_date,
@@ -53,6 +57,7 @@ function activities(db: DB, start: string, today: string) {
     tss: a.tss,
     s3: a.s3,
     intensityFactor: a.intensity_factor,
+    imageIds: (images.get(a.id) ?? []).slice(0, 4),
   }));
 }
 

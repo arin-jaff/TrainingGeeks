@@ -21,6 +21,8 @@ export interface SharedActivity {
   tss: number | null;
   s3: number | null;
   intensityFactor: number | null;
+  /** Image attachment ids (owner-local; optional — older cached payloads lack it). */
+  imageIds?: number[];
 }
 
 export interface FeedPerson {

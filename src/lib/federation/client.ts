@@ -127,6 +127,29 @@ export function fetchScope(
   );
 }
 
+/** Fetch one downscaled activity image from a friend's instance (binary). */
+export async function fetchPeerImage(
+  signer: Signer,
+  friendBaseUrl: string,
+  imageId: number,
+): Promise<{ data: ArrayBuffer; mime: string }> {
+  const path = `/api/federation/v1/image/${imageId}`;
+  const ts = Date.now();
+  const res = await fetch(`${friendBaseUrl.replace(/\/+$/, "")}${path}`, {
+    headers: {
+      "X-TG-Key": signer.publicKey,
+      "X-TG-Timestamp": String(ts),
+      "X-TG-Signature": signer.sign(canonicalString("GET", path, ts, "")),
+    },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new DirectoryError(`Image fetch failed (${res.status})`);
+  return {
+    data: await res.arrayBuffer(),
+    mime: res.headers.get("Content-Type") ?? "image/webp",
+  };
+}
+
 /** Push a cached copy of one shared scope to the directory (offline fallback). */
 export function putCache(
   signer: Signer,

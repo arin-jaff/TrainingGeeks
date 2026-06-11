@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
 import { deleteActivityFile, getActivityFile } from "@/lib/db/repo";
 import { removeFile } from "@/lib/files/storage";
+import { downscaleImage } from "@/lib/files/thumb";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,13 +27,24 @@ export async function GET(
     return new NextResponse("File missing on disk", { status: 410 });
   }
 
-  const download = new URL(req.url).searchParams.has("download");
+  const search = new URL(req.url).searchParams;
+  const download = search.has("download");
+
+  // ?w=<px>: serve a downscaled rendition (feed/thumbnail use). Images only.
+  const w = Number(search.get("w"));
+  let mime = f.mime;
+  if (!download && f.is_image === 1 && Number.isFinite(w) && w > 0) {
+    const scaled = await downscaleImage(bytes, f.mime, Math.min(w, 2000));
+    bytes = scaled.data;
+    mime = scaled.mime;
+  }
+
   const disposition = download ? "attachment" : "inline";
   return new NextResponse(new Uint8Array(bytes), {
     headers: {
-      "Content-Type": f.mime,
+      "Content-Type": mime,
       "Content-Disposition": `${disposition}; filename="${encodeURIComponent(f.filename)}"`,
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "private, max-age=86400",
     },
   });
 }
