@@ -26,9 +26,19 @@ Raspberry Pi at home and auto-syncing from intervals.icu and Garmin.
 **[TrainingGeeks for macOS](https://github.com/arin-jaff/TrainingGeeks/releases)**
 — the self-hosted app as a double-clickable Mac app (Apple Silicon). Your data
 lives in `~/Library/Application Support/TrainingGeeks`; nothing leaves your
-machine. Early-access builds are unsigned: on first launch, right-click the
-app and choose **Open**. Self-hosting the web app (below) remains the primary
-path; see [DESKTOP-ROADMAP.md](docs/DESKTOP-ROADMAP.md) for where this is going.
+machine.
+
+Early-access builds aren't notarized by Apple yet, so the first launch takes
+one extra step. Drag the app to Applications, open it once (macOS will block
+it), then go to **System Settings → Privacy & Security**, scroll down, and
+click **Open Anyway**. Terminal alternative:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/TrainingGeeks.app
+```
+
+Self-hosting the web app (below) remains the primary path; see
+[DESKTOP-ROADMAP.md](docs/DESKTOP-ROADMAP.md) for where this is going.
 
 ## Contents
 
