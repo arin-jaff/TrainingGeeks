@@ -7,7 +7,7 @@ import { GITHUB_URL } from "@/lib/constants";
 import { getDb } from "@/lib/db/client";
 import { getAthlete } from "@/lib/db/repo";
 import SportImage from "@/components/SportImage";
-import { ChevronDownIcon } from "@/components/icons";
+import { ChevronDownIcon, DownloadIcon } from "@/components/icons";
 import { MODALITY_LABEL } from "@/lib/util/format";
 import type { Modality } from "@/lib/db/types";
 
@@ -149,6 +149,26 @@ export default async function LoginPage({
                 <GitHubMark className="h-4 w-4" /> Free &amp; open source — view the code
               </a>
             </div>
+
+            {/* Small screens: the desktop hero (and its download pill) is
+                hidden, so the button lives here on the first view instead. */}
+            <div className="mt-7 flex flex-col items-center gap-2.5 lg:hidden">
+              <a
+                href="/api/download/macos"
+                className="inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-base font-semibold text-nav shadow-xl transition-transform hover:scale-[1.03] active:scale-100"
+              >
+                Download for macOS
+                <DownloadIcon size={17} />
+              </a>
+              <a
+                href={`${GITHUB_URL}/releases`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white"
+              >
+                <GitHubMark className="h-3.5 w-3.5" /> Release notes &amp; older versions
+              </a>
+            </div>
           </div>
         </div>
 
@@ -168,6 +188,23 @@ export default async function LoginPage({
             <p className="mt-3 text-lg text-white/70">
               Open source. Self-hosted. No subscription.
             </p>
+            <div className="mt-6 flex flex-col items-end gap-2.5">
+              <a
+                href="/api/download/macos"
+                className="inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-base font-semibold text-nav shadow-xl transition-transform hover:scale-[1.03] active:scale-100"
+              >
+                Download for macOS
+                <DownloadIcon size={17} />
+              </a>
+              <a
+                href={`${GITHUB_URL}/releases`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white"
+              >
+                <GitHubMark className="h-3.5 w-3.5" /> Release notes &amp; older versions
+              </a>
+            </div>
           </div>
 
           {/* Bottom-left: tagline */}
@@ -180,11 +217,12 @@ export default async function LoginPage({
           </div>
         </div>
 
-        {/* Scroll cue: offset right so it never overlaps the tagline */}
+        {/* Scroll cue: desktop only (it collides with the stacked column on
+            phones), offset right so it never overlaps the tagline */}
         <a
           href="#pitch"
           aria-label="Scroll down to learn more"
-          className="absolute bottom-5 right-6 z-20 flex animate-bounce flex-col items-center gap-1.5 text-white/70 hover:text-white sm:right-10"
+          className="absolute bottom-5 right-6 z-20 hidden animate-bounce flex-col items-center gap-1.5 text-white/70 hover:text-white lg:flex lg:right-10"
         >
           <span className="text-[11px] font-medium uppercase tracking-widest">
             There&apos;s more

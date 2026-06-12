@@ -27,8 +27,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Liveness probe: public by design (no data, no DB).
-  if (pathname === "/api/health") {
+  // Liveness probe and the desktop-download redirect: public by design
+  // (no data, no DB) — the landing page links them for anonymous visitors.
+  if (pathname === "/api/health" || pathname === "/api/download/macos") {
     return NextResponse.next();
   }
 
