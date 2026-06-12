@@ -145,3 +145,18 @@ Developer account exists) → M4 later.
 The fastest credible path to "first early-access version on the repo" is
 **M0 → M1 → M3-unsigned**: roughly a week of focused work, nothing blocked on
 Apple.
+
+## Field notes from the first early-access build (June 2026)
+
+- The bundle must be **explicitly ad-hoc signed** (`signingIdentity: "-"`);
+  without it only the executable is linker-signed, the resource seal is
+  missing, and Gatekeeper reports the app as damaged with no Open Anyway
+  path.
+- **Hardened runtime breaks the bundled Node** (V8 cannot reserve JIT
+  memory) unless paired with `com.apple.security.cs.allow-jit` +
+  `allow-unsigned-executable-memory` entitlements. Early-access ad-hoc
+  builds ship with `hardenedRuntime: false`; the notarized Developer ID
+  lane must turn it back on together with those entitlements.
+- First-launch UX on current macOS: System Settings > Privacy & Security >
+  Open Anyway (right-click Open no longer bypasses Gatekeeper), or
+  `xattr -dr com.apple.quarantine`.
