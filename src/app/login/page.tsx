@@ -17,8 +17,8 @@ export const dynamic = "force-dynamic";
 const SPORTS: Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
 
 const FEATURES: { title: string; body: string }[] = [
-  { title: "A calendar that plans and remembers", body: "Drag workouts around, log what you actually did, and watch completed days turn green while the ones you skipped go an accusatory red." },
-  { title: "Three key metrics", body: "Fitness, Fatigue, and Form — CTL, ATL and TSB — charted per sport, no asterisk telling you to upgrade." },
+  { title: "A calendar that plans and remembers", body: "Drag workouts around, log what you actually did, and watch completed days turn green." },
+  { title: "Three key metrics", body: "Fitness, Fatigue, and Form — CTL, ATL and TSB — charted per sport to give you the full picture." },
   { title: "Dashboards you control", body: "Add and remove charts with a click. PMC, time-in-zone, peak curves, weekly everything. Build the view you want." },
   { title: "Peak performances which earn hardware", body: "Mean-maximal power, pace, and heart-rate curves, and gold/silver/bronze on your best efforts." },
   { title: "Zones, thresholds, and plans", body: "HR / power / pace zones from real methods, plus structured training plans you can drop onto the calendar." },
@@ -66,7 +66,7 @@ export default async function LoginPage({
 
         {/* Left: sign-in form */}
         <div className="relative z-10 flex w-full flex-col items-center justify-center px-4 lg:w-[460px] lg:flex-none">
-          <div className="w-full max-w-sm">
+          <div className="anim-fade-up w-full max-w-sm">
             <div className="mb-6 text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo-wordmark.png" alt="TrainingGeeks" className="mx-auto h-48 w-auto" />
@@ -121,28 +121,32 @@ export default async function LoginPage({
             )}
 
             {/* Supported disciplines */}
-            <div className="mt-7">
-              <p className="text-center text-[11px] uppercase tracking-wide text-white/40">Track every discipline</p>
-              <div className="mt-2.5 flex justify-center gap-2">
+            <div className="mt-8">
+              <p className="text-center text-xs uppercase tracking-widest text-white/45">Track every discipline</p>
+              <div className="mt-3 flex justify-center gap-2.5">
                 {SPORTS.map((m) => (
-                  <div key={m} title={MODALITY_LABEL[m]} className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 shadow-sm">
-                    <SportImage modality={m} size={22} />
+                  <div
+                    key={m}
+                    title={MODALITY_LABEL[m]}
+                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/95 shadow-md transition-transform hover:-translate-y-0.5"
+                  >
+                    <SportImage modality={m} size={30} />
                   </div>
                 ))}
               </div>
             </div>
 
             {/* intervals.icu + GitHub */}
-            <div className="mt-6 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-2 text-[11px] text-white/50">
+            <div className="mt-7 flex flex-col items-center gap-3.5">
+              <div className="flex items-center gap-2.5 text-sm text-white/60">
                 <span>Syncs with</span>
-                <a href="https://intervals.icu" target="_blank" rel="noreferrer" className="inline-flex items-center rounded bg-white px-2 py-1 shadow-sm hover:opacity-90">
+                <a href="https://intervals.icu" target="_blank" rel="noreferrer" className="inline-flex items-center rounded-lg bg-white px-3 py-1.5 shadow-md hover:opacity-90">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/intervals-wordmark.png" alt="intervals.icu" className="h-3.5 w-auto" />
+                  <img src="/intervals-wordmark.png" alt="intervals.icu" className="h-5 w-auto" />
                 </a>
               </div>
-              <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-white/60 hover:text-white">
-                <GitHubMark className="h-3.5 w-3.5" /> Free &amp; open source — view the code
+              <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-white/65 hover:text-white">
+                <GitHubMark className="h-4 w-4" /> Free &amp; open source — view the code
               </a>
             </div>
           </div>
@@ -155,7 +159,7 @@ export default async function LoginPage({
           <div className="absolute inset-0 bg-gradient-to-br from-nav/80 via-nav/30 to-nav/60" />
 
           {/* Top-right: logo + headline overlay */}
-          <div className="absolute right-8 top-8 max-w-lg rounded-2xl border border-white/10 bg-nav/45 p-8 text-right shadow-lg backdrop-blur-sm">
+          <div className="anim-fade-up anim-delay-1 absolute right-8 top-8 max-w-lg rounded-2xl border border-white/10 bg-nav/45 p-8 text-right shadow-lg backdrop-blur-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-wordmark.png" alt="" className="mb-5 h-auto w-full" />
             <p className="text-4xl font-bold leading-tight text-white">
@@ -167,7 +171,7 @@ export default async function LoginPage({
           </div>
 
           {/* Bottom-left: tagline */}
-          <div className="absolute bottom-12 left-10 max-w-2xl">
+          <div className="anim-fade-up anim-delay-2 absolute bottom-12 left-10 max-w-2xl">
             <p className="text-6xl font-semibold leading-tight text-white drop-shadow">Own Your Training.</p>
             <p className="mt-4 text-xl leading-relaxed text-white/75 drop-shadow">
               Every workout, metric, and trend. One platform that you can make your own. <br /> Scroll down if
@@ -176,11 +180,11 @@ export default async function LoginPage({
           </div>
         </div>
 
-        {/* Scroll cue: a bouncing nudge toward the rest of the page */}
+        {/* Scroll cue: offset right so it never overlaps the tagline */}
         <a
           href="#pitch"
           aria-label="Scroll down to learn more"
-          className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 animate-bounce flex-col items-center gap-1.5 text-white/70 hover:text-white"
+          className="absolute bottom-5 right-6 z-20 flex animate-bounce flex-col items-center gap-1.5 text-white/70 hover:text-white sm:right-10"
         >
           <span className="text-[11px] font-medium uppercase tracking-widest">
             There&apos;s more
@@ -201,12 +205,21 @@ export default async function LoginPage({
             We&apos;re tired of the proprietary.<span className="text-accent"> We&apos;re here to set PRs.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/75">
-            You train hard for your precious data. Now you can track all of it, exactly how YOU want, for free.
-            This is the platform you&apos;ve been looking for. You know the one — shaped vaguely like a mountain range, that puts <em>your</em> VO₂max
-            behind a &quot;Premium&quot; button and charges you monthly to scroll your own calendar.
-            TrainingGeeks is that. <span className="font-semibold text-white">Minus the invoice. Plus the entire source code, so you can host it yourself and make it your own.</span>
+            You train hard for your precious data. Now you can track all of it, exactly how YOU want.
+            No more putting <em>your</em> VO₂max behind a &quot;Premium&quot; button. No more monthly charges.
+            TrainingGeeks is built <em>by</em> the community, for the community.{" "}
+            <span className="font-semibold text-white">
+              See the entire source code for yourself, make any changes you want, or{" "}
+              <a href={`${GITHUB_URL}/releases`} target="_blank" rel="noreferrer" className="text-accent underline-offset-2 hover:underline">
+                download our version here
+              </a>
+              . Make your training truly your own.
+            </span>
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a href={`${GITHUB_URL}/releases`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 hover:bg-accent-hover">
+              Download for macOS
+            </a>
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-white px-5 py-2.5 text-sm font-semibold text-nav hover:opacity-90">
               <GitHubMark /> Star it on GitHub
             </a>
@@ -233,7 +246,10 @@ export default async function LoginPage({
           </div>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-lg border border-line bg-surface-card p-5">
+              <div
+                key={f.title}
+                className="rounded-lg border border-line bg-surface-card p-5 transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
+              >
                 <h3 className="text-sm font-semibold text-ink">{f.title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">{f.body}</p>
               </div>
@@ -259,7 +275,7 @@ export default async function LoginPage({
         <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-2xl font-bold text-ink sm:text-3xl">See it in action</h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-ink-muted">
-            Real screens from the app — your calendar, your dashboards, your analysis. No mockups.
+            Real screenshots from the application!
           </p>
           <div className="mt-10 space-y-6">
             {[
@@ -268,7 +284,10 @@ export default async function LoginPage({
               { src: "/shots/activity.png", cap: "Activity analysis — every metric, planned vs. completed." },
               { src: "/shots/activity-analyze.png", cap: "Analyze — route map, elevation, HR, power, and pace on one timeline." },
             ].map((s) => (
-              <figure key={s.src} className="overflow-hidden rounded-xl border border-line bg-surface-card shadow-sm">
+              <figure
+                key={s.src}
+                className="overflow-hidden rounded-xl border border-line bg-surface-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={s.src} alt={s.cap} className="w-full" />
                 <figcaption className="border-t border-line px-4 py-2.5 text-center text-xs text-ink-muted">
@@ -285,16 +304,20 @@ export default async function LoginPage({
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">Open source. Self-hosted. Yours Forever.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/70">
-            Your activities live in a database on <em>your</em> machine — not our cloud, because we
-            don&apos;t have one (and never will ask for your card). Don&apos;t like a chart? Change
-            it. Missing a feature? Build it — or{" "}
+            Your activities live in a database on <em>your</em> machine — not in our data center
+            (because we don&apos;t have one). We&apos;ll never ask for your card — no subscription
+            has ever made an athlete faster. Don&apos;t like a chart? Change it. Missing a
+            feature? Build it — or{" "}
             <a href={`${GITHUB_URL}/issues`} target="_blank" rel="noreferrer" className="text-accent hover:underline">open an issue</a>{" "}
-            and guilt us into it. No subscription has ever made an athlete faster.
+            and guilt us into it.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover">
               <GitHubMark /> Get the code
             </a>
+            <Link href={demoUrl} className="rounded bg-white px-5 py-2.5 text-sm font-semibold text-nav hover:opacity-90">
+              View the live demo
+            </Link>
             <Link href="/privacy" className="rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white hover:border-white/50">
               Read the privacy policy
             </Link>
@@ -305,7 +328,7 @@ export default async function LoginPage({
       {/* ===== Footer ===== */}
       <footer className="border-t border-white/10 px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 text-xs text-white/50 sm:flex-row">
-          <span>TrainingGeeks — open-source, self-hosted training software. Your data, your machine.</span>
+          <span>TrainingGeeks · Open source · Self-hosted · Yours Forever</span>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-white">Privacy</Link>
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-medium text-white/70 hover:text-white">

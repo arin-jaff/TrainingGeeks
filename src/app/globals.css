@@ -34,3 +34,16 @@ body {
     animation: none;
   }
 }
+
+/* Landing hero entrance: staggered fade-up on first paint. */
+@keyframes tg-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-fade-up { animation: tg-fade-up 0.7s ease-out both; }
+.anim-delay-1 { animation-delay: 0.15s; }
+.anim-delay-2 { animation-delay: 0.3s; }
+.anim-delay-3 { animation-delay: 0.45s; }
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up { animation: none; }
+}

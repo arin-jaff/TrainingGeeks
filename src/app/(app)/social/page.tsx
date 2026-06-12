@@ -28,8 +28,7 @@ export default async function SocialPage({
       <div className="mb-4">
         <h1 className="text-lg font-semibold text-ink">Social</h1>
         <p className="mt-0.5 text-sm text-ink-muted">
-          Train with friends on their own self-hosted instances — share what you
-          choose, give kudos, talk shop. Your data stays on your machine.
+          Check out your friends&apos; training!
         </p>
       </div>
       <SocialHub feed={feed} units={units} readOnly={isReadOnly()} days={window} />

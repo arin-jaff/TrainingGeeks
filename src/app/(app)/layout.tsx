@@ -22,7 +22,7 @@ export default function AppLayout({
       <main className="mx-auto w-full max-w-[1400px] px-4 py-4">{children}</main>
       <footer className="mx-auto mt-6 w-full max-w-[1400px] border-t border-line px-4 py-5 text-xs text-ink-muted">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span>TrainingGeeks — open-source, self-hosted training software. Your data, your machine.</span>
+          <span>TrainingGeeks · Open source · Self-hosted · Yours Forever</span>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-ink">Privacy</Link>
             <a
