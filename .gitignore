@@ -27,7 +27,7 @@ data/
 
 # Working files kept local (references are copyrighted screenshots + personal FITs)
 references/
-docs/
+docs/federation-evidence/
 # NOTE: .claude/ IS tracked — conventions/skills travel with the repo.
 
 # Generated raw assets staging (manifest is tracked; raw imports are local)

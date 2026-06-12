@@ -1,6 +1,6 @@
 # TrainingGeeks — Agent Conventions
 
-Read `PLAN.md` before doing any work. `references/tp-ui/` is the visual source of truth;
+Read `docs/PLAN.md` before doing any work. `references/tp-ui/` is the visual source of truth;
 `references/.fit-files/` holds real run/bike/swim sample FITs (gzipped) for parser/metrics
 tests. `references/` is git-ignored — these stay local.
 
@@ -8,7 +8,7 @@ tests. `references/` is git-ignored — these stay local.
 
 1. **Modular commits.** One focused commit (or tight set) per step/feature we add — never a
    single mega-commit. Keep each commit independently reviewable and, where possible, demoable.
-   Map work to the milestones in `PLAN.md` §12.
+   Map work to the milestones in `docs/PLAN.md` §12.
 
 2. **Author is arin-jaff only — never credit Claude.** Do **not** add
    `Co-Authored-By: Claude`, "Generated with Claude Code", or any AI attribution to commit

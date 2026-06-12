@@ -28,7 +28,7 @@ Raspberry Pi at home and auto-syncing from intervals.icu and Garmin.
 lives in `~/Library/Application Support/TrainingGeeks`; nothing leaves your
 machine. Early-access builds are unsigned: on first launch, right-click the
 app and choose **Open**. Self-hosting the web app (below) remains the primary
-path; see [DESKTOP-ROADMAP.md](DESKTOP-ROADMAP.md) for where this is going.
+path; see [DESKTOP-ROADMAP.md](docs/DESKTOP-ROADMAP.md) for where this is going.
 
 ## Contents
 
@@ -168,11 +168,11 @@ a handle in the Social tab. The coordination server lives in its own repo:
 
 ## Documentation
 
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** — full setup and deployment, including a
+- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** — full setup and deployment, including a
   public read-only demo on a Raspberry Pi and the federation heartbeat.
-- **[METHODOLOGY.md](METHODOLOGY.md)** — how every number is calculated: TSS,
+- **[METHODOLOGY.md](docs/METHODOLOGY.md)** — how every number is calculated: TSS,
   NP, CTL/ATL/TSB, the S3 Strength Score, estimated 1RM, zones, plans.
-- **[UX-ROADMAP.md](UX-ROADMAP.md)** — the current audit and prioritized
+- **[UX-ROADMAP.md](docs/UX-ROADMAP.md)** — the current audit and prioritized
   improvement roadmap.
 - **[SECURITY.md](SECURITY.md)** — reporting vulnerabilities.
 
@@ -193,7 +193,7 @@ TrainingGeeks collects nothing and phones nowhere. See the in-app
 Issues and pull requests are very welcome. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, the test workflow, and the
 commit conventions. Metrics follow standard endurance-training definitions
-(documented in [METHODOLOGY.md](METHODOLOGY.md)).
+(documented in [METHODOLOGY.md](docs/METHODOLOGY.md)).
 
 Bring PRs (Pull Requests) so we can keep hitting PRs (Personal Records).
 

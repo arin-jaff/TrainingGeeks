@@ -17,7 +17,7 @@
 - [ ] `npx tsc --noEmit` passes
 - [ ] `npm test` passes
 - [ ] Added/updated tests for changes in `src/lib/{fit,metrics,db,connectors}`
-- [ ] Documented any new metric/formula in `METHODOLOGY.md`
+- [ ] Documented any new metric/formula in `docs/METHODOLOGY.md`
 - [ ] No emojis in code or UI; matches existing style
 - [ ] Commits are focused and independently reviewable
 

@@ -52,7 +52,7 @@ test next to it (`*.test.ts`).
 - **No emojis in code or UI.** Clean, sharp, data-dense layouts. Light main
   surface, dark navy nav, blue accents.
 - **Metrics** follow standard endurance-training definitions; document any new
-  formula in [METHODOLOGY.md](METHODOLOGY.md).
+  formula in [METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## Pull request flow
 

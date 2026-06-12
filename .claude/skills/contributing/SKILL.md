@@ -9,7 +9,7 @@ Apply this every time you commit, push, or open a PR.
 
 ## 1. Modular commits — one step at a time
 
-- Each commit (or tight set) covers **one step/feature** from `PLAN.md` §12. Never bundle
+- Each commit (or tight set) covers **one step/feature** from `docs/PLAN.md` §12. Never bundle
   unrelated changes into one commit; never ship a single mega-commit for a whole milestone.
 - Each commit should leave the repo in a working, reviewable state.
 - Commit message: imperative subject line scoped to the step
