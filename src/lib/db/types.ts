@@ -132,6 +132,22 @@ export interface StrengthSetRow {
   created_at: string;
 }
 
+export interface LapRow {
+  id: number;
+  activity_id: number;
+  lap_index: number;
+  start_time: string | null;
+  duration_s: number | null;
+  distance_m: number | null;
+  avg_hr: number | null;
+  max_hr: number | null;
+  avg_power: number | null;
+  max_power: number | null;
+  np: number | null;
+  avg_speed_mps: number | null;
+  avg_cadence: number | null;
+}
+
 export interface DailyLoadRow {
   id: number;
   date: string; // YYYY-MM-DD

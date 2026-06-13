@@ -56,12 +56,12 @@ export default async function ActivityPage({
 }) {
   const { id } = await params;
   const db = getDb();
-  const detail = getActivityDetail(db, Number(id));
+  const units: Units = getAthlete(db)?.units ?? "imperial";
+  const detail = getActivityDetail(db, Number(id), units);
   if (!detail) notFound();
 
   const a = detail.activity;
   const modality = a.modality as Modality;
-  const units: Units = getAthlete(db)?.units ?? "imperial";
   const tz = getAthlete(db)?.timezone ?? "America/New_York";
   const equipment = listEquipment(db);
   const images = listActivityFiles(db, a.id)

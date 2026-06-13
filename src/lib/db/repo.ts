@@ -9,6 +9,7 @@ import type {
   EventRow,
   FitnessCurve,
   GoalRow,
+  LapRow,
   Modality,
   PlannedWorkoutRow,
   ThresholdMetric,
@@ -432,6 +433,15 @@ export function getActivityStream(
     activityId,
   );
   return row ? JSON.parse(row.channels) : undefined;
+}
+
+/** Device-recorded laps for an activity, in order. */
+export function listLaps(db: DB, activityId: number): LapRow[] {
+  return all<LapRow>(
+    db,
+    "SELECT * FROM lap WHERE activity_id = ? ORDER BY lap_index",
+    activityId,
+  );
 }
 
 export interface ActivityTrackRow {

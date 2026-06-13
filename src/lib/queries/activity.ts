@@ -2,9 +2,13 @@ import type { DB } from "../db/client.js";
 import {
   getActivity,
   getActivityStream,
+  getEffectiveThreshold,
   listActivityPeaks,
+  listLaps,
 } from "../db/repo.js";
-import type { ActivityRow } from "../db/types.js";
+import type { ActivityRow, Units } from "../db/types.js";
+import { isCardio, modalityToCurve } from "../db/types.js";
+import { computeSplits } from "../metrics/splits.js";
 
 export interface DurationPeakView {
   window: number;
@@ -13,6 +17,15 @@ export interface DurationPeakView {
 export interface DistancePeakView {
   window: number;
   speed: number;
+}
+
+/** A lap or auto-split row, normalized for the splits table. */
+export interface SplitRow {
+  distanceM: number | null;
+  durationS: number | null;
+  avgSpeedMps: number | null;
+  avgHr: number | null;
+  avgPower: number | null;
 }
 
 export interface ActivityDetail {
@@ -33,11 +46,17 @@ export interface ActivityDetail {
   maxHr: number | null;
   minSpeed: number | null; // slowest moving speed (m/s)
   maxSpeed: number | null; // fastest speed (m/s)
+  laps: SplitRow[]; // device-recorded laps
+  autoSplits: SplitRow[]; // even mi/km/100m splits from the stream
+  splitUnitLabel: string; // "1 mi" | "1 km" | "100 m"
+  /** Max-HR anchor for zone coloring (configured threshold or activity max). */
+  hrZoneAnchor: number | null;
 }
 
 export function getActivityDetail(
   db: DB,
   id: number,
+  units: Units = "imperial",
 ): ActivityDetail | null {
   const activity = getActivity(db, id);
   if (!activity) return null;
@@ -82,6 +101,42 @@ export function getActivityDetail(
     }
   }
 
+  // Splits only make sense for cardio with distance.
+  const cardio = isCardio(activity.modality);
+  const modality = activity.modality;
+
+  const lapRows = cardio ? listLaps(db, id) : [];
+  const laps: SplitRow[] = lapRows.map((l) => ({
+    distanceM: l.distance_m,
+    durationS: l.duration_s,
+    avgSpeedMps:
+      l.avg_speed_mps ??
+      (l.distance_m && l.duration_s ? l.distance_m / l.duration_s : null),
+    avgHr: l.avg_hr,
+    avgPower: l.avg_power,
+  }));
+
+  const splitUnitMeters = modality === "swim" ? 100 : units === "imperial" ? 1609.34 : 1000;
+  const splitUnitLabel = modality === "swim" ? "100 m" : units === "imperial" ? "1 mi" : "1 km";
+  const autoSplits: SplitRow[] =
+    cardio && raw
+      ? computeSplits(
+          {
+            time: raw.time ?? [],
+            distance: raw.distance ?? [],
+            hr: raw.hr ?? [],
+            power: raw.power ?? [],
+            speed: raw.speed ?? [],
+          },
+          splitUnitMeters,
+        )
+      : [];
+
+  const hrZoneAnchor =
+    getEffectiveThreshold(db, modalityToCurve(modality), "max_hr", activity.local_date) ??
+    activity.max_hr ??
+    maxHr;
+
   return {
     activity,
     stream,
@@ -92,5 +147,9 @@ export function getActivityDetail(
     maxHr,
     minSpeed,
     maxSpeed,
+    laps,
+    autoSplits,
+    splitUnitLabel,
+    hrZoneAnchor,
   };
 }
