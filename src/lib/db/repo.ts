@@ -9,6 +9,7 @@ import type {
   EventRow,
   FitnessCurve,
   GoalRow,
+  Modality,
   PlannedWorkoutRow,
   ThresholdMetric,
   ThresholdRow,
@@ -431,6 +432,26 @@ export function getActivityStream(
     activityId,
   );
   return row ? JSON.parse(row.channels) : undefined;
+}
+
+export interface ActivityTrackRow {
+  id: number;
+  modality: Modality;
+  local_date: string;
+  name: string | null;
+  channels: string; // JSON columnar channels (lat/lng/...)
+}
+
+/** Every activity that has a stored stream, with its raw channel JSON — the
+ * source for the route heatmap. Caller extracts/downsamples lat/lng. */
+export function listActivityTracks(db: DB): ActivityTrackRow[] {
+  return all<ActivityTrackRow>(
+    db,
+    `SELECT a.id, a.modality, a.local_date, a.name, s.channels
+       FROM activity a
+       JOIN activity_stream s ON s.activity_id = a.id
+      ORDER BY a.local_date`,
+  );
 }
 
 // ---- Daily load (fitness curves) --------------------------------------
