@@ -1,0 +1,208 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/activity/[id]",
+      "regex": "^/activity/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/activity/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/activity-file/[id]",
+      "regex": "^/api/activity\\-file/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/activity\\-file/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/federation/v1/image/[id]",
+      "regex": "^/api/federation/v1/image/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/federation/v1/image/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/federation/v1/[scope]",
+      "regex": "^/api/federation/v1/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPscope": "nxtPscope"
+      },
+      "namedRegex": "^/api/federation/v1/(?<nxtPscope>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/workout-library/[id]",
+      "regex": "^/workout\\-library/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/workout\\-library/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/apple-icon.png",
+      "regex": "^/apple\\-icon\\.png(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/apple\\-icon\\.png(?:/)?$"
+    },
+    {
+      "page": "/atp",
+      "regex": "^/atp(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atp(?:/)?$"
+    },
+    {
+      "page": "/calendar",
+      "regex": "^/calendar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/calendar(?:/)?$"
+    },
+    {
+      "page": "/calendar.ics",
+      "regex": "^/calendar\\.ics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/calendar\\.ics(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/icon.png",
+      "regex": "^/icon\\.png(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/icon\\.png(?:/)?$"
+    },
+    {
+      "page": "/import",
+      "regex": "^/import(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/import(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/metrics",
+      "regex": "^/metrics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/metrics(?:/)?$"
+    },
+    {
+      "page": "/peaks",
+      "regex": "^/peaks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/peaks(?:/)?$"
+    },
+    {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
+      "page": "/progression",
+      "regex": "^/progression(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/progression(?:/)?$"
+    },
+    {
+      "page": "/routes",
+      "regex": "^/routes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/routes(?:/)?$"
+    },
+    {
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings(?:/)?$"
+    },
+    {
+      "page": "/social",
+      "regex": "^/social(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/social(?:/)?$"
+    },
+    {
+      "page": "/strength",
+      "regex": "^/strength(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/strength(?:/)?$"
+    },
+    {
+      "page": "/workout-comparison",
+      "regex": "^/workout\\-comparison(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/workout\\-comparison(?:/)?$"
+    },
+    {
+      "page": "/workout-library",
+      "regex": "^/workout\\-library(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/workout\\-library(?:/)?$"
+    },
+    {
+      "page": "/workout-library/new",
+      "regex": "^/workout\\-library/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/workout\\-library/new(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

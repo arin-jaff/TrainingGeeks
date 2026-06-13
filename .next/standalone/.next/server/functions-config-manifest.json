@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/activity-file/[id]": {},
+    "/api/activity-file": {},
+    "/api/download/macos": {},
+    "/api/export": {},
+    "/api/federation/heartbeat": {},
+    "/api/federation/v1/[scope]": {},
+    "/api/federation/v1/image/[id]": {},
+    "/api/health": {},
+    "/api/import": {},
+    "/api/social/image": {},
+    "/api/social/new": {},
+    "/api/sync": {},
+    "/api/workout/fit": {},
+    "/calendar.ics": {}
+  }
+}
