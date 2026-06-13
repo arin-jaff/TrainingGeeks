@@ -17,6 +17,7 @@ import {
 import type { ActivityRow } from "@/lib/db/types";
 import { recomputeFitness } from "@/lib/fitness/recompute";
 import { buildWorkoutWrites, type WorkoutInput } from "@/lib/workout/save";
+import type { WorkoutStep } from "@/lib/workout/template";
 
 function refresh() {
   revalidatePath("/calendar");
@@ -122,6 +123,8 @@ export interface WorkoutEditData {
     rpe: number | null;
   } | null;
   hasStreams: boolean; // synced activity with a route/streams → offer Analyze link
+  /** Structured-workout steps when this planned item carries a built structure. */
+  structure: WorkoutStep[] | null;
 }
 
 /** Load an existing calendar item into the modal's editable shape. */
@@ -151,6 +154,14 @@ export async function getWorkoutForEdit(
     const p = getPlanned(db, id);
     if (!p) return null;
     const act = p.completed_activity_id ? getActivity(db, p.completed_activity_id) : undefined;
+    let structure: WorkoutStep[] | null = null;
+    if (p.structure) {
+      try {
+        structure = JSON.parse(p.structure) as WorkoutStep[];
+      } catch {
+        structure = null;
+      }
+    }
     return {
       date: p.date,
       modality: p.modality,
@@ -166,6 +177,7 @@ export async function getWorkoutForEdit(
       },
       completed: act ? activityToCompleted(act) : null,
       hasStreams: !!act?.route_polyline,
+      structure,
     };
   }
 
@@ -182,5 +194,6 @@ export async function getWorkoutForEdit(
     planned: null,
     completed: activityToCompleted(a),
     hasStreams: !!a.route_polyline,
+    structure: null,
   };
 }

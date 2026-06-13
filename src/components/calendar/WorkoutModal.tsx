@@ -8,6 +8,7 @@ import type { Modality, Units } from "@/lib/db/types";
 import { isCardio } from "@/lib/db/types";
 import { MODALITY_LABEL } from "@/lib/util/format";
 import { computeS3 } from "@/lib/metrics/strength";
+import { summarizeWorkout } from "@/lib/workout/summary";
 import SportIcon from "@/components/SportIcon";
 import FilesModal from "@/components/activity/FilesModal";
 import {
@@ -299,6 +300,28 @@ export default function WorkoutModal({
             placeholder="Untitled Workout"
             className="mb-4 w-full rounded border border-line px-3 py-2 text-sm font-medium text-ink outline-none focus:border-accent"
           />
+
+          {initial?.structure && initial.structure.length > 0 && (
+            <div className="mb-4 rounded border border-accent/30 bg-accent/5 px-3 py-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
+                  Structured workout
+                </span>
+                {initial.plannedId && (
+                  <a
+                    href={`/api/workout/fit?planned=${initial.plannedId}`}
+                    className="text-xs font-medium text-accent hover:underline"
+                    title="Download a Garmin .FIT file"
+                  >
+                    Export .FIT
+                  </a>
+                )}
+              </div>
+              <p className="mt-1 text-sm text-ink">
+                {summarizeWorkout(initial.structure, units, modality)}
+              </p>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_240px]">
             {/* Metrics grid */}

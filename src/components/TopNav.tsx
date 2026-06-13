@@ -26,6 +26,7 @@ const TABS = [
 // The deeper analysis pages, reachable from a "More" dropdown so they're
 // discoverable without crowding the main tab row.
 const MORE = [
+  { href: "/workout-library", label: "Workout Library" },
   { href: "/peaks", label: "Peak Performances" },
   { href: "/progression", label: "Progression" },
   { href: "/strength", label: "Strength Records" },

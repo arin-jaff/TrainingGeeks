@@ -30,7 +30,7 @@ import SportImage from "@/components/SportImage";
 import { useReadOnly } from "@/components/ReadOnly";
 import { rescheduleItem } from "@/app/(app)/calendar/actions";
 import { getWorkoutForEdit, type WorkoutEditData } from "@/app/actions/workout";
-import AddMenuModal from "./AddMenuModal";
+import AddMenuModal, { type ScheduleableTemplate } from "./AddMenuModal";
 import WorkoutModal from "./WorkoutModal";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -424,6 +424,7 @@ export default function CalendarGrid({
   injuredDates,
   openInjuries,
   equipment,
+  templates,
   month,
   today,
   units,
@@ -434,6 +435,7 @@ export default function CalendarGrid({
   injuredDates: string[];
   openInjuries: InjuryRow[];
   equipment: EquipmentRow[];
+  templates: ScheduleableTemplate[];
   month: string;
   today: string;
   units: Units;
@@ -517,6 +519,7 @@ export default function CalendarGrid({
           today={today}
           equipment={equipment}
           openInjuries={openInjuries}
+          templates={templates}
           onClose={() => setAddDate(null)}
         />
       )}

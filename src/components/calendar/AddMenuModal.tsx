@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { EquipmentRow, InjuryRow } from "@/lib/db/repo";
 import type { Modality, Units } from "@/lib/db/types";
@@ -9,9 +10,17 @@ import { WELLNESS_TYPES } from "@/lib/metrics/wellness";
 import SportIcon from "@/components/SportIcon";
 import { addMetric } from "@/app/actions/metrics";
 import { addInjury, resolveInjury } from "@/app/actions/injury";
+import { scheduleTemplate } from "@/app/actions/workoutTemplate";
 import WorkoutModal from "./WorkoutModal";
 
 const WORKOUTS: Modality[] = ["run", "bike", "swim", "row", "lift", "core"];
+
+export interface ScheduleableTemplate {
+  id: number;
+  name: string;
+  modality: Modality;
+  summary: string;
+}
 
 function titleFor(date: string): string {
   return new Date(`${date}T00:00:00Z`).toLocaleString("en-US", {
@@ -29,6 +38,7 @@ export default function AddMenuModal({
   today,
   equipment,
   openInjuries,
+  templates,
   onClose,
 }: {
   date: string;
@@ -36,14 +46,23 @@ export default function AddMenuModal({
   today: string;
   equipment: EquipmentRow[];
   openInjuries: InjuryRow[];
+  templates: ScheduleableTemplate[];
   onClose: () => void;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
-  const [view, setView] = useState<"menu" | "metrics" | "injury" | Modality>("menu");
+  const [view, setView] = useState<"menu" | "metrics" | "injury" | "library" | Modality>("menu");
+
+  function scheduleFromLibrary(id: number) {
+    start(async () => {
+      await scheduleTemplate(id, date);
+      router.refresh();
+      onClose();
+    });
+  }
 
   // A workout type was chosen → hand off to the full quick-add form.
-  if (view !== "menu" && view !== "metrics" && view !== "injury") {
+  if (view !== "menu" && view !== "metrics" && view !== "injury" && view !== "library") {
     return (
       <WorkoutModal
         date={date}
@@ -87,6 +106,14 @@ export default function AddMenuModal({
               ))}
             </div>
 
+            <button
+              onClick={() => setView("library")}
+              className="mt-2 flex w-full items-center gap-2 rounded border border-line bg-surface-card px-3 py-2.5 text-sm text-ink hover:border-accent/50 hover:bg-surface"
+            >
+              <LibraryGlyph />
+              Structured workout from library
+            </button>
+
             <p className="mb-2 mt-6 text-sm text-ink">Add Other</p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               <button onClick={() => setView("metrics")} className={btn}>
@@ -96,6 +123,44 @@ export default function AddMenuModal({
                 <InjuryGlyph /> Injury
               </button>
             </div>
+          </div>
+        )}
+
+        {view === "library" && (
+          <div className="px-6 pb-6">
+            <div className="flex items-center justify-between">
+              <BackLink onClick={() => setView("menu")} />
+              <Link href="/workout-library/new" className="text-xs font-medium text-accent">
+                Build new →
+              </Link>
+            </div>
+            {templates.length === 0 ? (
+              <p className="mt-4 text-sm text-ink-muted">
+                No saved workouts yet.{" "}
+                <Link href="/workout-library/new" className="font-medium text-accent">
+                  Build one →
+                </Link>
+              </p>
+            ) : (
+              <ul className="mt-3 divide-y divide-line overflow-hidden rounded border border-line">
+                {templates.map((t) => (
+                  <li key={t.id} className="flex items-center gap-2 bg-surface-card px-3 py-2">
+                    <SportIcon modality={t.modality} size={16} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-ink">{t.name}</span>
+                      <span className="block truncate text-xs text-ink-muted">{t.summary}</span>
+                    </span>
+                    <button
+                      onClick={() => scheduleFromLibrary(t.id)}
+                      disabled={pending}
+                      className="rounded bg-accent px-3 py-1 text-xs font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+                    >
+                      Add
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 
@@ -222,6 +287,15 @@ function InjuryGlyph() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e63788" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" />
+    </svg>
+  );
+}
+
+function LibraryGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f6fed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5h11v15H4zM15 5h5v15h-5" />
+      <path d="M7 9h5M7 13h5" />
     </svg>
   );
 }

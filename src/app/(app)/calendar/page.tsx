@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db/client";
-import { getAthlete, listEquipment, listInjuries } from "@/lib/db/repo";
+import { getAthlete, listEquipment, listInjuries, listWorkoutTemplates } from "@/lib/db/repo";
 import { getCalendarData } from "@/lib/queries/calendar";
+import { summarizeWorkout } from "@/lib/workout/summary";
+import type { WorkoutStep } from "@/lib/workout/template";
+import type { ScheduleableTemplate } from "@/components/calendar/AddMenuModal";
 import { addMonths, monthMatrix, todayLocal } from "@/lib/util/dates";
 import type { Units } from "@/lib/db/types";
 import { isReadOnly } from "@/lib/auth/config";
@@ -66,6 +69,15 @@ export default async function CalendarPage({
   );
   const equipment = listEquipment(db);
   const openInjuries = listInjuries(db).filter((i) => i.end_date == null);
+  const templates: ScheduleableTemplate[] = listWorkoutTemplates(db).map((t) => {
+    let summary = "";
+    try {
+      summary = summarizeWorkout(JSON.parse(t.steps) as WorkoutStep[], units, t.modality);
+    } catch {
+      summary = "";
+    }
+    return { id: t.id, name: t.name, modality: t.modality, summary };
+  });
 
   return (
     <div className="flex gap-3">
@@ -134,6 +146,7 @@ export default async function CalendarPage({
             injuredDates={injuredDates}
             openInjuries={openInjuries}
             equipment={equipment}
+            templates={templates}
             month={month}
             today={today}
             units={units}
