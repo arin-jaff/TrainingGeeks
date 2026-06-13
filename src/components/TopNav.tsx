@@ -27,6 +27,7 @@ const TABS = [
 // discoverable without crowding the main tab row.
 const MORE = [
   { href: "/workout-library", label: "Workout Library" },
+  { href: "/routes", label: "Routes Heatmap" },
   { href: "/peaks", label: "Peak Performances" },
   { href: "/progression", label: "Progression" },
   { href: "/strength", label: "Strength Records" },
