@@ -15,6 +15,13 @@ import {
   listDailyLoad,
   upsertConnector,
   getConnector,
+  insertWorkoutTemplate,
+  updateWorkoutTemplate,
+  getWorkoutTemplate,
+  listWorkoutTemplates,
+  deleteWorkoutTemplate,
+  insertPlanned,
+  getPlanned,
 } from "./repo.js";
 
 test("migrations run and create all tables", () => {
@@ -33,6 +40,7 @@ test("migrations run and create all tables", () => {
     "lap",
     "session",
     "planned_workout",
+    "workout_template",
     "daily_load",
     "peak",
     "dashboard_layout",
@@ -133,6 +141,56 @@ test("daily_load upsert + range query", () => {
   assert.equal(rows.length, 1);
   assert.equal(rows[0].stress, 120);
   assert.equal(rows[0].tsb, -24);
+});
+
+test("workout_template CRUD round-trips and lists newest first", () => {
+  const db = openDb(":memory:");
+  const steps = JSON.stringify([{ kind: "step", id: "a", intensity: "active", durationKind: "time", durationValue: 600, target: { kind: "none" } }]);
+  const id = insertWorkoutTemplate(db, {
+    name: "Tempo",
+    modality: "run",
+    description: "desc",
+    steps,
+    est_duration_s: 600,
+    est_distance_m: 3000,
+    est_tss: 40,
+  });
+  assert.ok(id > 0);
+  let t = getWorkoutTemplate(db, id);
+  assert.equal(t?.name, "Tempo");
+  assert.equal(t?.est_tss, 40);
+  assert.equal(JSON.parse(t!.steps).length, 1);
+
+  updateWorkoutTemplate(db, id, { name: "Tempo v2", modality: "bike", steps, est_duration_s: 700 });
+  t = getWorkoutTemplate(db, id);
+  assert.equal(t?.name, "Tempo v2");
+  assert.equal(t?.modality, "bike");
+  assert.equal(t?.est_duration_s, 700);
+
+  insertWorkoutTemplate(db, { name: "Second", modality: "run", steps });
+  const list = listWorkoutTemplates(db);
+  assert.equal(list.length, 2);
+
+  deleteWorkoutTemplate(db, id);
+  assert.equal(getWorkoutTemplate(db, id), undefined);
+  assert.equal(listWorkoutTemplates(db).length, 1);
+});
+
+test("planned_workout stores structure + template_id for scheduled workouts", () => {
+  const db = openDb(":memory:");
+  const structure = JSON.stringify([{ kind: "step", id: "a", intensity: "warmup", durationKind: "time", durationValue: 600, target: { kind: "none" } }]);
+  const pid = insertPlanned(db, {
+    modality: "run",
+    date: "2026-06-20",
+    name: "Scheduled Intervals",
+    source: "manual",
+    planned_duration_s: 2400,
+    structure,
+    template_id: 7,
+  });
+  const p = getPlanned(db, pid);
+  assert.equal(p?.template_id, 7);
+  assert.equal(JSON.parse(p!.structure!)[0].intensity, "warmup");
 });
 
 test("connector upsert preserves api_key when omitted", () => {

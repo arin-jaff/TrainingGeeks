@@ -153,6 +153,23 @@ export interface PlannedWorkoutRow {
   planned_tss: number | null;
   completed_activity_id: number | null;
   source: ActivitySource;
+  /** JSON WorkoutStep[] when this planned item is a structured workout. */
+  structure: string | null;
+  /** Source workout_template id, if scheduled from the library. */
+  template_id: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkoutTemplateRow {
+  id: number;
+  name: string;
+  modality: Modality;
+  description: string | null;
+  steps: string; // JSON: WorkoutStep[]
+  est_duration_s: number | null;
+  est_distance_m: number | null;
+  est_tss: number | null;
   created_at: string;
   updated_at: string;
 }

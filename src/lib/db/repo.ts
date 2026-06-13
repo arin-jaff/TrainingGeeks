@@ -12,6 +12,7 @@ import type {
   PlannedWorkoutRow,
   ThresholdMetric,
   ThresholdRow,
+  WorkoutTemplateRow,
   ZoneRow,
 } from "./types.js";
 
@@ -503,14 +504,16 @@ export interface NewPlanned {
   planned_distance_m?: number | null;
   planned_tss?: number | null;
   source: string;
+  structure?: string | null;
+  template_id?: number | null;
 }
 
 export function insertPlanned(db: DB, p: NewPlanned): number {
   const info = db
     .prepare(
       `INSERT INTO planned_workout
-         (modality, date, name, description, planned_duration_s, planned_distance_m, planned_tss, source)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         (modality, date, name, description, planned_duration_s, planned_distance_m, planned_tss, source, structure, template_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       p.modality,
@@ -521,6 +524,8 @@ export function insertPlanned(db: DB, p: NewPlanned): number {
       p.planned_distance_m ?? null,
       p.planned_tss ?? null,
       p.source,
+      p.structure ?? null,
+      p.template_id ?? null,
     );
   return Number(info.lastInsertRowid);
 }
@@ -560,6 +565,8 @@ export function updatePlanned(
       | "planned_duration_s"
       | "planned_distance_m"
       | "planned_tss"
+      | "structure"
+      | "template_id"
     >
   >,
 ): void {
@@ -619,6 +626,78 @@ export function setActivityDate(db: DB, id: number, localDate: string): void {
   db.prepare(
     `UPDATE activity SET local_date = ?, updated_at = datetime('now') WHERE id = ?`,
   ).run(localDate, id);
+}
+
+// ---- Workout templates (structured workouts) ---------------------------
+
+export interface NewWorkoutTemplate {
+  name: string;
+  modality: string;
+  description?: string | null;
+  steps: string; // JSON WorkoutStep[]
+  est_duration_s?: number | null;
+  est_distance_m?: number | null;
+  est_tss?: number | null;
+}
+
+export function insertWorkoutTemplate(db: DB, t: NewWorkoutTemplate): number {
+  const info = db
+    .prepare(
+      `INSERT INTO workout_template
+         (name, modality, description, steps, est_duration_s, est_distance_m, est_tss)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .run(
+      t.name,
+      t.modality,
+      t.description ?? null,
+      t.steps,
+      t.est_duration_s ?? null,
+      t.est_distance_m ?? null,
+      t.est_tss ?? null,
+    );
+  return Number(info.lastInsertRowid);
+}
+
+export function updateWorkoutTemplate(
+  db: DB,
+  id: number,
+  t: NewWorkoutTemplate,
+): void {
+  db.prepare(
+    `UPDATE workout_template
+        SET name = ?, modality = ?, description = ?, steps = ?,
+            est_duration_s = ?, est_distance_m = ?, est_tss = ?,
+            updated_at = datetime('now')
+      WHERE id = ?`,
+  ).run(
+    t.name,
+    t.modality,
+    t.description ?? null,
+    t.steps,
+    t.est_duration_s ?? null,
+    t.est_distance_m ?? null,
+    t.est_tss ?? null,
+    id,
+  );
+}
+
+export function getWorkoutTemplate(
+  db: DB,
+  id: number,
+): WorkoutTemplateRow | undefined {
+  return one<WorkoutTemplateRow>(db, "SELECT * FROM workout_template WHERE id = ?", id);
+}
+
+export function listWorkoutTemplates(db: DB): WorkoutTemplateRow[] {
+  return all<WorkoutTemplateRow>(
+    db,
+    "SELECT * FROM workout_template ORDER BY updated_at DESC, id DESC",
+  );
+}
+
+export function deleteWorkoutTemplate(db: DB, id: number): void {
+  db.prepare("DELETE FROM workout_template WHERE id = ?").run(id);
 }
 
 // ---- Peaks -------------------------------------------------------------

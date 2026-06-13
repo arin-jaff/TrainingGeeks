@@ -306,4 +306,30 @@ CREATE INDEX idx_strength_set_activity ON strength_set (activity_id, set_index);
 CREATE INDEX idx_strength_set_exercise ON strength_set (exercise_key);
 `,
   },
+  {
+    id: 8,
+    name: "workout_template",
+    // Reusable structured workouts built in the Workout Library. `steps` is the
+    // JSON WorkoutStep[] document (see src/lib/workout/template.ts); est_* cache
+    // the computed duration/distance/TSS for list display. Scheduling a template
+    // copies its structure onto a planned_workout (structure/template_id) so the
+    // calendar instance is frozen and exportable independently of later edits.
+    sql: /* sql */ `
+CREATE TABLE workout_template (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  modality TEXT NOT NULL,
+  description TEXT,
+  steps TEXT NOT NULL,            -- JSON: WorkoutStep[]
+  est_duration_s REAL,
+  est_distance_m REAL,
+  est_tss REAL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+ALTER TABLE planned_workout ADD COLUMN structure TEXT;       -- JSON WorkoutStep[]
+ALTER TABLE planned_workout ADD COLUMN template_id INTEGER;  -- source template, nullable
+`,
+  },
 ];
