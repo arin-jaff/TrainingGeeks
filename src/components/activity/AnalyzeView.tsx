@@ -12,6 +12,7 @@ import {
   round,
 } from "@/lib/util/format";
 import type { StreamSeries } from "./StreamChart";
+import Splits from "./Splits";
 
 const StreamChart = dynamic(() => import("./StreamChart"), { ssr: false });
 const RouteMap = dynamic(() => import("./RouteMap"), { ssr: false });
@@ -280,6 +281,16 @@ export default function AnalyzeView({
             <div className="rounded border border-line bg-surface-card p-3">
               <StreamChart time={s.time} series={series} />
             </div>
+          )}
+          {!isStrength && (detail.laps.length > 1 || detail.autoSplits.length > 0) && (
+            <Splits
+              laps={detail.laps}
+              autoSplits={detail.autoSplits}
+              splitUnitLabel={detail.splitUnitLabel}
+              modality={modality}
+              units={units}
+              hrZoneAnchor={detail.hrZoneAnchor}
+            />
           )}
         </div>
       )}
