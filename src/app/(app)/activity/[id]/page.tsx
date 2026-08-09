@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import {
   getAthlete,
+  getShareLinkForActivity,
   listActivityFiles,
   listAllStrengthSets,
   listDailyLoad,
@@ -20,6 +21,7 @@ import AnalyzeView from "@/components/activity/AnalyzeView";
 import SportImage from "@/components/SportImage";
 import EditActivityButton from "@/components/activity/EditActivityButton";
 import FilesButton from "@/components/activity/FilesButton";
+import ShareButton from "@/components/activity/ShareButton";
 import StrengthSets from "@/components/activity/StrengthSets";
 
 export const dynamic = "force-dynamic";
@@ -170,6 +172,10 @@ export default async function ActivityPage({
               </div>
             )}
             <FilesButton activityId={a.id} />
+            <ShareButton
+              activityId={a.id}
+              initialToken={getShareLinkForActivity(db, a.id)?.token ?? null}
+            />
             <EditActivityButton
               activityId={a.id}
               units={units}

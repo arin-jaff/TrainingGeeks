@@ -12,6 +12,7 @@ import type {
   LapRow,
   Modality,
   PlannedWorkoutRow,
+  ShareLinkRow,
   ThresholdMetric,
   ThresholdRow,
   WorkoutTemplateRow,
@@ -1148,4 +1149,38 @@ export function setGoalDone(db: DB, id: number, done: boolean): void {
 
 export function deleteGoal(db: DB, id: number): void {
   db.prepare("DELETE FROM goal WHERE id = ?").run(id);
+}
+
+// ---- Public share links ------------------------------------------------
+// The token is minted in src/lib/queries/share.ts (CSPRNG); this layer only
+// stores and resolves it. Lookups are parameterized — a token is attacker-
+// supplied input.
+
+export function insertShareLink(db: DB, activityId: number, token: string): void {
+  db.prepare("INSERT INTO share_link (token, activity_id) VALUES (?, ?)").run(
+    token,
+    activityId,
+  );
+}
+
+/** Resolve a public token. Unknown or revoked tokens return undefined. */
+export function getShareLink(db: DB, token: string): ShareLinkRow | undefined {
+  return one<ShareLinkRow>(db, "SELECT * FROM share_link WHERE token = ?", token);
+}
+
+/** The live link for an activity, if the owner has shared it. */
+export function getShareLinkForActivity(
+  db: DB,
+  activityId: number,
+): ShareLinkRow | undefined {
+  return one<ShareLinkRow>(
+    db,
+    "SELECT * FROM share_link WHERE activity_id = ?",
+    activityId,
+  );
+}
+
+/** Revoke: the row is the only thing keeping the public URL alive. */
+export function deleteShareLink(db: DB, activityId: number): void {
+  db.prepare("DELETE FROM share_link WHERE activity_id = ?").run(activityId);
 }
