@@ -71,6 +71,34 @@ const MIN_SPAN_S = 60;
 /** Below this share of the shorter activity the pair isn't worth surfacing. */
 const MIN_OVERLAP = 0.5;
 
+/**
+ * Hand-entered workouts carry no recorded clock: src/lib/workout/save.ts
+ * stamps every one of them at 12:00 UTC on its date. Two of those on the same
+ * day therefore overlap perfectly without being remotely the same session — a
+ * morning run and an evening lift both land at noon. Clock overlap only means
+ * something when both sides came out of a device file, which is exactly what
+ * `fit_hash` records (every import sets it; nothing typed into the app does).
+ */
+export function hasRecordedClock(row: Pick<DupeScanRow, "fit_hash">): boolean {
+  return row.fit_hash != null;
+}
+
+/** Within 20% counts as agreement — a watch and a phone rarely differ more. */
+function within(x: number | null, y: number | null): boolean {
+  if (x == null || y == null || x <= 0 || y <= 0) return false;
+  return Math.abs(x - y) / Math.max(x, y) <= 0.2;
+}
+
+/**
+ * Corroboration for pairs where at least one side has no recorded clock: the
+ * same sport, and headline numbers that actually agree. Without this every
+ * pair of workouts logged by hand on one day looks like a duplicate.
+ */
+function numbersAgree(a: DupeScanRow, b: DupeScanRow): boolean {
+  if (a.modality !== b.modality) return false;
+  return within(a.duration_s, b.duration_s) || within(a.distance_m, b.distance_m);
+}
+
 export interface DupeSide {
   id: number;
   name: string | null;
@@ -105,6 +133,8 @@ export interface DupePair {
   recommendKeep: number;
   /** overlap as a share of the shorter activity, 0–1 */
   overlap: number;
+  /** both sides carry a device-recorded clock, so the overlap means something */
+  timed: boolean;
   /** seconds between the two start times */
   startDeltaS: number;
   confidence: "high" | "medium" | "low";
@@ -210,7 +240,15 @@ function differingFields(a: DupeScanRow, b: DupeScanRow): DupeFieldRow[] {
   return out;
 }
 
-function confidenceOf(overlap: number, a: DupeScanRow, b: DupeScanRow): DupePair["confidence"] {
+function confidenceOf(
+  overlap: number,
+  timed: boolean,
+  a: DupeScanRow,
+  b: DupeScanRow,
+): DupePair["confidence"] {
+  // A placeholder clock cannot corroborate anything, however neatly the two
+  // noon timestamps line up.
+  if (!timed) return "low";
   let c: DupePair["confidence"] =
     overlap >= 0.9 ? "high" : overlap >= 0.7 ? "medium" : "low";
   // Two very different distances over the same clock is more likely a nested
@@ -240,6 +278,11 @@ export function findDuplicatePairs(
       if (spans[j].start >= spans[i].end) break;
       const overlap = overlapRatio(spans[i], spans[j]);
       if (overlap < MIN_OVERLAP) continue;
+      const timed = hasRecordedClock(rows[i]) && hasRecordedClock(rows[j]);
+      // ponytail: an untimed hand-entered workout is only compared against
+      // what its noon placeholder happens to overlap. Group by local_date if
+      // catching hand-logged-then-synced pairs at other times of day matters.
+      if (!timed && !numbersAgree(rows[i], rows[j])) continue;
       const key = pairKey(rows[i].id, rows[j].id);
       if (dismissed.has(key)) continue;
       const a = side(rows[i]);
@@ -250,8 +293,9 @@ export function findDuplicatePairs(
         b,
         recommendKeep: b.score > a.score ? b.id : a.id,
         overlap,
+        timed,
         startDeltaS: Math.abs(spans[j].start - spans[i].start),
-        confidence: confidenceOf(overlap, rows[i], rows[j]),
+        confidence: confidenceOf(overlap, timed, rows[i], rows[j]),
         fields: differingFields(rows[i], rows[j]),
       });
     }

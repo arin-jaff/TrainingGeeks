@@ -99,11 +99,12 @@ test("overlapRatio measures against the shorter activity", () => {
 test("findDuplicatePairs flags a watch/phone pair and recommends the richer row", () => {
   const rows = [
     // phone: same session, slightly short, no HR and no stream
-    row({ id: 1, start_time: "2026-06-01T12:00:00.000Z", distance_m: 16093 }),
+    row({ id: 1, start_time: "2026-06-01T12:00:00.000Z", fit_hash: "phone", distance_m: 16093 }),
     // watch: starts 30s later, full data
     row({
       id: 2,
       start_time: "2026-06-01T12:00:30.000Z",
+      fit_hash: "watch",
       distance_m: 16575,
       avg_hr: 152,
       max_hr: 178,
@@ -134,8 +135,8 @@ test("findDuplicatePairs ignores back-to-back and dismissed activities", () => {
   assert.deepEqual(findDuplicatePairs(backToBack), []);
 
   const overlapping = [
-    row({ id: 3, start_time: "2026-06-01T12:00:00.000Z" }),
-    row({ id: 4, start_time: "2026-06-01T12:05:00.000Z" }),
+    row({ id: 3, start_time: "2026-06-01T12:00:00.000Z", fit_hash: "a" }),
+    row({ id: 4, start_time: "2026-06-01T12:05:00.000Z", fit_hash: "b" }),
   ];
   assert.equal(findDuplicatePairs(overlapping).length, 1);
   assert.deepEqual(
@@ -143,6 +144,60 @@ test("findDuplicatePairs ignores back-to-back and dismissed activities", () => {
     [],
     "dismissal is order-independent",
   );
+});
+
+test("hand-entered workouts are not paired on their placeholder clock alone", () => {
+  // Everything added by hand is stamped noon UTC, so a morning run and an
+  // evening lift both land on the same instant without being one session.
+  const run = row({
+    id: 1,
+    start_time: "2026-06-01T12:00:00.000Z",
+    modality: "run",
+    duration_s: 2700,
+    elapsed_s: 2700,
+    distance_m: 8000,
+  });
+  const lift = row({
+    id: 2,
+    start_time: "2026-06-01T12:00:00.000Z",
+    modality: "lift",
+    duration_s: 3600,
+    elapsed_s: 3600,
+    distance_m: null,
+  });
+  assert.deepEqual(findDuplicatePairs([run, lift]), [], "different sports are not a pair");
+
+  const secondRun = row({
+    id: 3,
+    start_time: "2026-06-01T12:00:00.000Z",
+    modality: "run",
+    duration_s: 5400,
+    elapsed_s: 5400,
+    distance_m: 16000,
+  });
+  assert.deepEqual(
+    findDuplicatePairs([run, secondRun]),
+    [],
+    "a double-run day is two different sessions, not a duplicate",
+  );
+
+  // The same run logged by hand and then synced: numbers agree, so it counts —
+  // but the placeholder clock can never make it a high-confidence match.
+  const synced = row({
+    id: 4,
+    start_time: "2026-06-01T12:00:00.000Z",
+    modality: "run",
+    duration_s: 2750,
+    elapsed_s: 2750,
+    distance_m: 8050,
+    has_stream: 1,
+    sample_count: 2750,
+  });
+  const pairs = findDuplicatePairs([run, synced]);
+  assert.equal(pairs.length, 1);
+  assert.equal(pairs[0].timed, false);
+  assert.equal(pairs[0].confidence, "low");
+  assert.equal(pairs[0].recommendKeep, 4);
 });
 
 test("completeness ranks attached data above lone summary columns", () => {
@@ -206,6 +261,7 @@ test("getDuplicatePairs reads a real database end to end", () => {
     modality: "run",
     start_time: "2026-06-01T12:00:00.000Z",
     local_date: "2026-06-01",
+    fit_hash: "phone-file",
     duration_s: 3600,
     elapsed_s: 3600,
     distance_m: 16000,
@@ -214,6 +270,7 @@ test("getDuplicatePairs reads a real database end to end", () => {
     modality: "run",
     start_time: "2026-06-01T12:00:30.000Z",
     local_date: "2026-06-01",
+    fit_hash: "watch-file",
     duration_s: 3550,
     elapsed_s: 3600,
     distance_m: 16093,

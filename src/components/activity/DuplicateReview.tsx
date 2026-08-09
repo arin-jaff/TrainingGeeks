@@ -205,7 +205,9 @@ function PairCard({ pair, units, tz }: { pair: DupePair; units: Units; tz: strin
           {pair.confidence} match
         </span>
         <span className="text-xs text-ink-muted">
-          {Math.round(pair.overlap * 100)}% time overlap · starts {gap(pair.startDeltaS)} apart
+          {pair.timed
+            ? `${Math.round(pair.overlap * 100)}% time overlap · starts ${gap(pair.startDeltaS)} apart`
+            : "Same day and sport with matching numbers — one of these was entered by hand, so neither start time is recorded"}
         </span>
       </header>
 
