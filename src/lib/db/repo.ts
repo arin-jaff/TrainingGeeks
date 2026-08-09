@@ -279,6 +279,7 @@ export function updateActivityMetrics(
 
 export function deleteActivity(db: DB, id: number): void {
   db.prepare("DELETE FROM activity WHERE id = ?").run(id);
+  purgeDismissedPairs(db, id);
 }
 
 // ---- Duplicate detection & merge ---------------------------------------
@@ -308,8 +309,28 @@ export function listActivitiesForDupeScan(db: DB): DupeScanRow[] {
   );
 }
 
-/** Child tables moved wholesale when the keeper has none of that kind. */
-const MERGE_CHILD_TABLES = ["activity_stream", "lap", "peak", "strength_set"] as const;
+/** Setting holding the dismissed duplicate pairs (see queries/duplicates.ts). */
+export const DISMISSED_SETTING = "duplicates_dismissed";
+
+/**
+ * Forget any dismissed duplicate pair naming this activity. Ids are plain
+ * rowids and SQLite hands them out again, so a dismissal left behind by a
+ * delete would eventually hide a genuinely new pair.
+ */
+export function purgeDismissedPairs(db: DB, activityId: number): void {
+  const raw = getSetting(db, DISMISSED_SETTING);
+  if (!raw) return;
+  try {
+    const keys: unknown = JSON.parse(raw);
+    if (!Array.isArray(keys)) return;
+    const kept = keys
+      .map(String)
+      .filter((k) => !k.split("-").includes(String(activityId)));
+    if (kept.length !== keys.length) setSetting(db, DISMISSED_SETTING, JSON.stringify(kept));
+  } catch {
+    // Unparseable setting: readDismissed treats it as empty anyway.
+  }
+}
 
 /**
  * Fold `dropId` into `keepId`: copy the named columns across, adopt any child
@@ -332,23 +353,55 @@ export function mergeActivityInto(
 
   const allowed = new Set<string>(ACTIVITY_COLUMNS);
   const cols = [...new Set(fields)].filter((f) => allowed.has(f));
+  // Taking a field from the duplicate only ever means filling something in, so
+  // an empty value is dropped rather than written. Without this, a stale tick
+  // could blank out the survivor's own notes in the same transaction that
+  // deletes the only other copy of them.
   const patch: Record<string, unknown> = {};
-  for (const c of cols) patch[c] = (drop as unknown as Record<string, unknown>)[c];
+  for (const c of cols) {
+    const v = (drop as unknown as Record<string, unknown>)[c];
+    if (v === null || v === undefined) continue;
+    if (typeof v === "string" && v.trim() === "") continue;
+    patch[c] = v;
+  }
 
   db.exec("BEGIN");
   try {
-    if (cols.length > 0) updateActivityMetrics(db, keepId, patch as Partial<ActivityRow>);
-    for (const table of MERGE_CHILD_TABLES) {
-      const { n } = db
-        .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE activity_id = ?`)
-        .get(keepId) as { n: number };
-      if (n === 0) {
-        db.prepare(`UPDATE ${table} SET activity_id = ? WHERE activity_id = ?`).run(
-          keepId,
-          dropId,
-        );
-      }
+    if (Object.keys(patch).length > 0) {
+      updateActivityMetrics(db, keepId, patch as Partial<ActivityRow>);
     }
+
+    const count = (table: string, id: number) =>
+      (
+        db.prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE activity_id = ?`).get(id) as {
+          n: number;
+        }
+      ).n;
+    const adopt = (table: string) =>
+      db.prepare(`UPDATE ${table} SET activity_id = ? WHERE activity_id = ?`).run(keepId, dropId);
+
+    // Peaks describe a particular recording, so they travel with the stream or
+    // not at all — the keeper's stream must never end up beside the
+    // duplicate's peak curve.
+    if (count("activity_stream", keepId) === 0) {
+      adopt("activity_stream");
+      db.prepare("DELETE FROM peak WHERE activity_id = ?").run(keepId);
+      adopt("peak");
+    }
+
+    // Laps are recorded, not derived. Every FIT carries at least one
+    // whole-session lap, so a count of 1 means "no lap structure" — the same
+    // thing the review card and the splits table mean by it. Take whichever
+    // side actually has laps; otherwise the duplicate's real set would be
+    // destroyed by the cascade below.
+    const dropLaps = count("lap", dropId);
+    if (dropLaps > 1 && dropLaps > count("lap", keepId)) {
+      db.prepare("DELETE FROM lap WHERE activity_id = ?").run(keepId);
+      adopt("lap");
+    }
+
+    if (count("strength_set", keepId) === 0) adopt("strength_set");
+
     // Photos and files always follow the survivor; a planned workout that was
     // marked complete by the duplicate stays marked complete.
     db.prepare("UPDATE activity_file SET activity_id = ? WHERE activity_id = ?").run(
@@ -359,6 +412,7 @@ export function mergeActivityInto(
       "UPDATE planned_workout SET completed_activity_id = ? WHERE completed_activity_id = ?",
     ).run(keepId, dropId);
     db.prepare("DELETE FROM activity WHERE id = ?").run(dropId);
+    purgeDismissedPairs(db, dropId);
     db.exec("COMMIT");
   } catch (err) {
     db.exec("ROLLBACK");

@@ -40,12 +40,6 @@ export async function mergeDuplicate(
     return { ok: false, error: "Activity not found" };
   }
 
-  // Dismissals naming the deleted row can never match again.
-  const kept = [...readDismissed(db)].filter(
-    (k) => !k.split("-").includes(String(dropId)),
-  );
-  setSetting(db, DISMISSED_KEY, JSON.stringify(kept));
-
   recomputeFitness(db);
   for (const p of ["/duplicates", "/", "/calendar", "/dashboard"]) revalidatePath(p);
   return { ok: true };

@@ -4,6 +4,8 @@ import { openDb } from "../db/client.js";
 import {
   insertActivity,
   insertActivityFile,
+  deleteActivity,
+  listLaps,
   mergeActivityInto,
   setActivityStream,
   setSetting,
@@ -19,6 +21,7 @@ import {
   getDuplicatePairs,
   overlapRatio,
   pairKey,
+  readDismissed,
   spanOf,
 } from "./duplicates.js";
 
@@ -296,6 +299,74 @@ test("getDuplicatePairs reads a real database end to end", () => {
 
   dismiss(db, pairKey(phone, watch));
   assert.deepEqual(getDuplicatePairs(db), [], "a dismissed pair stays hidden");
+});
+
+test("mergeActivityInto never copies an empty value over one the survivor has", () => {
+  const db = openDb(":memory:");
+  const keep = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:00.000Z",
+    local_date: "2026-06-01",
+    notes: "PR attempt, felt amazing",
+    avg_hr: 150,
+  });
+  const drop = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:00.000Z",
+    local_date: "2026-06-01",
+    notes: null,
+    avg_hr: null,
+  });
+  // A field the user ticked before flipping which side to keep must not blank
+  // the survivor out — the duplicate has nothing to give.
+  mergeActivityInto(db, keep, drop, ["notes", "avg_hr"]);
+  const merged = getActivity(db, keep);
+  assert.equal(merged?.notes, "PR attempt, felt amazing");
+  assert.equal(merged?.avg_hr, 150);
+});
+
+test("mergeActivityInto takes the richer lap set instead of losing it", () => {
+  const db = openDb(":memory:");
+  // Phone import: a stream, and the single whole-session lap every FIT carries.
+  const phone = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:00.000Z",
+    local_date: "2026-06-01",
+    fit_hash: "phone",
+  });
+  const watch = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:10.000Z",
+    local_date: "2026-06-01",
+    fit_hash: "watch",
+  });
+  setActivityStream(db, phone, { time: [0, 1], hr: [140, 141] });
+  const lap = db.prepare(
+    "INSERT INTO lap (activity_id, lap_index, distance_m) VALUES (?, ?, ?)",
+  );
+  lap.run(phone, 0, 16000);
+  for (let i = 0; i < 12; i++) lap.run(watch, i, 1333);
+
+  mergeActivityInto(db, phone, watch, []);
+  assert.equal(
+    listLaps(db, phone).length,
+    12,
+    "the duplicate's 12 real laps survive; the placeholder lap does not win",
+  );
+});
+
+test("deleting an activity forgets the dismissals naming it", () => {
+  const db = openDb(":memory:");
+  const a = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:00.000Z",
+    local_date: "2026-06-01",
+  });
+  setSetting(db, DISMISSED_KEY, JSON.stringify([pairKey(a, 999)]));
+  deleteActivity(db, a);
+  // Ids are rowids and SQLite hands them out again — a leftover dismissal
+  // would silently hide a future pair.
+  assert.deepEqual([...readDismissed(db)], []);
 });
 
 test("mergeActivityInto keeps the survivor's own stream", () => {

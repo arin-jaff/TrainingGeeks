@@ -69,34 +69,45 @@ export interface BackupArchive {
  * `VACUUM INTO` writes a consistent, already-checkpointed snapshot instead.
  */
 export function createBackup(): BackupArchive {
-  const stage = mkdtempSync(join(tmpdir(), "tg-backup-"));
-  const payload = join(stage, "payload");
-  mkdirSync(payload);
-
-  getDb().prepare(`VACUUM INTO ?`).run(join(payload, DB_ENTRY));
-  writeFileSync(
-    join(payload, MANIFEST_ENTRY),
-    JSON.stringify(
-      { format: BACKUP_FORMAT, version: BACKUP_VERSION, createdAt: new Date().toISOString() },
-      null,
-      2,
-    ),
-  );
-
-  // Symlink the data directories in and let tar dereference them (-h), so a
-  // multi-GB library isn't copied twice.
-  const uploads = uploadsRoot();
-  if (existsSync(uploads)) symlinkSync(uploads, join(payload, UPLOADS_ENTRY), "dir");
-  const raw = rawFitRoot();
-  if (existsSync(raw)) {
-    mkdirSync(join(payload, "fit"));
-    symlinkSync(raw, join(payload, FIT_ENTRY), "dir");
+  if (restoredPendingRestart) {
+    throw new Error(
+      "Restart TrainingGeeks before backing up again — this process is still reading the database it had before the restore.",
+    );
   }
+  const stage = mkdtempSync(join(tmpdir(), "tg-backup-"));
+  try {
+    const payload = join(stage, "payload");
+    mkdirSync(payload);
 
-  const filename = `traininggeeks-backup-${new Date().toISOString().slice(0, 10)}.tar.gz`;
-  const path = join(stage, filename);
-  execFileSync("tar", ["-czhf", path, "-C", payload, "."]);
-  return { path, stage, filename, bytes: statSync(path).size };
+    getDb().prepare(`VACUUM INTO ?`).run(join(payload, DB_ENTRY));
+    writeFileSync(
+      join(payload, MANIFEST_ENTRY),
+      JSON.stringify(
+        { format: BACKUP_FORMAT, version: BACKUP_VERSION, createdAt: new Date().toISOString() },
+        null,
+        2,
+      ),
+    );
+
+    // Symlink the data directories in and let tar dereference them (-h), so a
+    // multi-GB library isn't copied twice.
+    const uploads = uploadsRoot();
+    if (existsSync(uploads)) symlinkSync(uploads, join(payload, UPLOADS_ENTRY), "dir");
+    const raw = rawFitRoot();
+    if (existsSync(raw)) {
+      mkdirSync(join(payload, "fit"));
+      symlinkSync(raw, join(payload, FIT_ENTRY), "dir");
+    }
+
+    const filename = `traininggeeks-backup-${new Date().toISOString().slice(0, 10)}.tar.gz`;
+    const path = join(stage, filename);
+    execFileSync("tar", ["-czhf", path, "-C", payload, "."]);
+    return { path, stage, filename, bytes: statSync(path).size };
+  } catch (err) {
+    // The stage holds a full copy of the database — never leave it in /tmp.
+    cleanup(stage);
+    throw err;
+  }
 }
 
 export interface RestoreResult {
@@ -107,7 +118,17 @@ export interface RestoreResult {
   /** When the archive was taken. */
   createdAt?: string;
   files?: number;
+  /** Set when the database was restored but its files could not all be copied. */
+  filesError?: string;
 }
+
+/**
+ * True once a restore has swapped the database out from under the open handle.
+ * The process still reads the pre-restore file through its original inode, so
+ * a backup taken now would pair the OLD database with the NEW photos. Refuse
+ * until the restart the UI asks for.
+ */
+let restoredPendingRestart = false;
 
 /** Open a candidate database read-only and prove it is a sound TrainingGeeks one. */
 function inspect(path: string): string | null {
@@ -240,10 +261,21 @@ export function restoreBackup(archivePath: string): RestoreResult {
       return { ok: false, error: `Could not swap the database in: ${(err as Error).message}` };
     }
 
-    const files =
-      merge(join(stage, UPLOADS_ENTRY), uploadsRoot()) + merge(join(stage, FIT_ENTRY), rawFitRoot());
+    // Past this point the database HAS been replaced. A failure copying photos
+    // must never be reported as "nothing was changed" — the user would go
+    // looking for data that is now sitting in the .bak- files.
+    restoredPendingRestart = true;
+    let files = 0;
+    let filesError: string | undefined;
+    try {
+      files =
+        merge(join(stage, UPLOADS_ENTRY), uploadsRoot()) +
+        merge(join(stage, FIT_ENTRY), rawFitRoot());
+    } catch (err) {
+      filesError = (err as Error).message;
+    }
 
-    return { ok: true, movedTo: aside, createdAt: manifest.createdAt, files };
+    return { ok: true, movedTo: aside, createdAt: manifest.createdAt, files, filesError };
   } finally {
     cleanup(stage);
   }

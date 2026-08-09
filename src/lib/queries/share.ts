@@ -119,7 +119,10 @@ export function getSharedActivity(db: DB, token: string): SharedActivity | null 
     laps: detail.laps,
     autoSplits: detail.autoSplits,
     splitUnitLabel: detail.splitUnitLabel,
-    hrZoneAnchor: detail.hrZoneAnchor,
+    // Anchor the zone colouring on this activity's own peak, never on
+    // detail.hrZoneAnchor — that resolves to the athlete's configured max-HR
+    // threshold, and a Settings value must not cross into a public page.
+    hrZoneAnchor: a.max_hr ?? detail.maxHr,
   };
 }
 

@@ -138,6 +138,12 @@ export default function BackupRestore() {
             {result.files ?? 0} file{result.files === 1 ? "" : "s"} restored. The previous
             database was saved as <code>{result.movedTo}</code>.
           </p>
+          {result.filesError && (
+            <p className="mt-1 font-medium text-fatigue">
+              The database was restored, but its photos and FIT files could not all be
+              copied: {result.filesError}
+            </p>
+          )}
           <p className="mt-1 font-medium text-ink">
             Restart TrainingGeeks now — the running process still holds the old database.
           </p>

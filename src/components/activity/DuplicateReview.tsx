@@ -181,9 +181,15 @@ function PairCard({ pair, units, tz }: { pair: DupePair; units: Units; tz: strin
   // Default: pull anything the survivor is missing. Flipping which side you
   // keep re-derives the defaults, so the checkboxes always mean "take this
   // value from the duplicate".
+  //
+  // The empty-duplicate guard lives HERE rather than only on the rendered row:
+  // a tick the user set before flipping the keeper survives in `overrides`, and
+  // if the flip leaves the duplicate's side empty, a payload built from a
+  // laxer predicate would copy NULL over the survivor's own value — silently,
+  // while the row shows an unchecked, disabled box.
   const isChecked = (f: DupeFieldRow) =>
-    overrides[f.key] ??
-    (isEmpty(valueFor(f, keep.id)) && !isEmpty(valueFor(f, drop.id)));
+    !isEmpty(valueFor(f, drop.id)) &&
+    (overrides[f.key] ?? isEmpty(valueFor(f, keep.id)));
 
   const run = (fn: () => Promise<{ ok: boolean; error?: string }>) =>
     startTransition(async () => {
@@ -246,7 +252,7 @@ function PairCard({ pair, units, tz }: { pair: DupePair; units: Units; tz: strin
                 const keepValue = valueFor(f, keep.id);
                 const dropValue = valueFor(f, drop.id);
                 const takeable = !isEmpty(dropValue);
-                const checked = takeable && isChecked(f);
+                const checked = isChecked(f);
                 return (
                   <tr key={f.key} className="border-t border-line">
                     <td className="py-1 text-ink">{f.label}</td>

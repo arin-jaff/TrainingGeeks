@@ -1,5 +1,10 @@
 import type { DB } from "../db/client.js";
-import { getSetting, listActivitiesForDupeScan, type DupeScanRow } from "../db/repo.js";
+import {
+  DISMISSED_SETTING,
+  getSetting,
+  listActivitiesForDupeScan,
+  type DupeScanRow,
+} from "../db/repo.js";
 import type { Modality } from "../db/types.js";
 
 /**
@@ -142,7 +147,8 @@ export interface DupePair {
   fields: DupeFieldRow[];
 }
 
-export const DISMISSED_KEY = "duplicates_dismissed";
+/** Owned by the DB layer, which purges entries whenever an activity is deleted. */
+export const DISMISSED_KEY = DISMISSED_SETTING;
 
 /** Order-independent identity for a pair, so dismissals survive a re-scan. */
 export function pairKey(a: number, b: number): string {
