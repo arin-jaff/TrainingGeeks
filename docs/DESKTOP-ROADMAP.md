@@ -111,8 +111,16 @@ page in under ~3 s with data in Application Support.*
         an app-specific password for `notarytool`).
      3. Re-enable the hardened runtime that f2c7ca4 turned off for the ad-hoc
         build, and drop the explicit ad-hoc signature from bb11d5b.
-     4. Sign the bundled Node sidecar **first**, then the .app; `notarytool
-        submit --wait`, then `stapler staple`.
+     4. Sign inside-out: the three native Mach-O files the standalone server
+        carries (`@img/sharp-darwin-arm64/**.node` and
+        `@img/sharp-libvips-darwin-arm64/**.dylib` — confirmed present in the
+        staged payload), then the Node sidecar, then the .app. Signing the
+        native modules with the same identity keeps library validation on;
+        the alternative, `com.apple.security.cs.disable-library-validation`
+        on the sidecar, weakens the app to save one `find -exec`. The sidecar
+        does need `com.apple.security.cs.allow-jit` — V8 will not start under
+        the hardened runtime without it. Then `notarytool submit --wait` and
+        `stapler staple`.
      5. Flip `desktop-release.yml` from the unsigned early-access lane to the
         notarized one, and update the README wording (no more quarantine
         bypass instructions).
