@@ -285,17 +285,21 @@ export function deleteActivity(db: DB, id: number): void {
 /** An activity plus the attached-data counts the duplicate scan scores on. */
 export interface DupeScanRow extends ActivityRow {
   has_stream: number;
+  sample_count: number;
   lap_count: number;
   file_count: number;
 }
 
 /** Every activity in start order, tagged with what data hangs off it. The
- * stream JSON is deliberately not read — only its existence matters here. */
+ * stream JSON is deliberately never read — its row count and sample count say
+ * enough about which recording is the richer one. */
 export function listActivitiesForDupeScan(db: DB): DupeScanRow[] {
   return all<DupeScanRow>(
     db,
     `SELECT a.*,
             EXISTS (SELECT 1 FROM activity_stream s WHERE s.activity_id = a.id) AS has_stream,
+            COALESCE((SELECT s.sample_count FROM activity_stream s WHERE s.activity_id = a.id), 0)
+              AS sample_count,
             (SELECT COUNT(*) FROM lap l WHERE l.activity_id = a.id) AS lap_count,
             (SELECT COUNT(*) FROM activity_file f WHERE f.activity_id = a.id) AS file_count
        FROM activity a

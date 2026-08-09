@@ -96,8 +96,11 @@ function SideCard({
   tz: string;
 }) {
   const badges: string[] = [];
-  if (side.hasGps) badges.push("GPS");
-  if (side.hasStream) badges.push("Streams");
+  if (side.hasStream) {
+    badges.push(
+      side.samples > 0 ? `${side.samples.toLocaleString()} samples` : "Streams",
+    );
+  }
   if (side.laps > 1) badges.push(`${side.laps} laps`);
   if (side.photos > 0) badges.push(`${side.photos} photo${side.photos > 1 ? "s" : ""}`);
 

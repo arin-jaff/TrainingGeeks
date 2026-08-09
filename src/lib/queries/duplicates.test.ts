@@ -6,6 +6,7 @@ import {
   insertActivityFile,
   mergeActivityInto,
   setActivityStream,
+  setSetting,
   getActivity,
   listActivityFiles,
   getActivityStream,
@@ -13,11 +14,18 @@ import {
 } from "../db/repo.js";
 import {
   completeness,
+  DISMISSED_KEY,
   findDuplicatePairs,
+  getDuplicatePairs,
   overlapRatio,
   pairKey,
   spanOf,
 } from "./duplicates.js";
+
+/** Mirrors what the dismiss server action writes. */
+function dismiss(db: ReturnType<typeof openDb>, key: string): void {
+  setSetting(db, DISMISSED_KEY, JSON.stringify([key]));
+}
 
 function row(over: Partial<DupeScanRow> & { id: number; start_time: string }): DupeScanRow {
   return {
@@ -58,6 +66,7 @@ function row(over: Partial<DupeScanRow> & { id: number; start_time: string }): D
     created_at: "",
     updated_at: "",
     has_stream: 0,
+    sample_count: 0,
     lap_count: 0,
     file_count: 0,
     ...over,
@@ -99,7 +108,7 @@ test("findDuplicatePairs flags a watch/phone pair and recommends the richer row"
       avg_hr: 152,
       max_hr: 178,
       has_stream: 1,
-      route_polyline: "abc",
+      sample_count: 3600,
       lap_count: 8,
     }),
   ];
@@ -142,6 +151,7 @@ test("completeness ranks attached data above lone summary columns", () => {
     id: 2,
     start_time: "2026-06-01T12:00:00.000Z",
     has_stream: 1,
+    sample_count: 3600,
     lap_count: 5,
   });
   assert.ok(completeness(rich) > completeness(bare));
@@ -188,6 +198,47 @@ test("mergeActivityInto fills gaps, adopts orphaned data, and deletes the duplic
   assert.equal(getActivity(db, drop), undefined, "the duplicate is gone");
   assert.equal(listActivityFiles(db, keep).length, 1, "photos follow the survivor");
   assert.ok(getActivityStream(db, keep), "the only stream is adopted");
+});
+
+test("getDuplicatePairs reads a real database end to end", () => {
+  const db = openDb(":memory:");
+  const phone = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:00.000Z",
+    local_date: "2026-06-01",
+    duration_s: 3600,
+    elapsed_s: 3600,
+    distance_m: 16000,
+  });
+  const watch = insertActivity(db, {
+    modality: "run",
+    start_time: "2026-06-01T12:00:30.000Z",
+    local_date: "2026-06-01",
+    duration_s: 3550,
+    elapsed_s: 3600,
+    distance_m: 16093,
+    avg_hr: 152,
+  });
+  setActivityStream(db, watch, { time: [0, 1, 2], hr: [150, 151, 152] });
+  insertActivity(db, {
+    modality: "bike",
+    start_time: "2026-06-02T12:00:00.000Z",
+    local_date: "2026-06-02",
+    duration_s: 3600,
+    elapsed_s: 3600,
+  });
+
+  const pairs = getDuplicatePairs(db);
+  assert.equal(pairs.length, 1, "the unrelated next-day ride is not paired");
+  assert.equal(pairs[0].recommendKeep, watch);
+  assert.equal(pairs[0].key, pairKey(phone, watch));
+  assert.ok(
+    pairs[0].fields.some((f) => f.key === "avg_hr"),
+    "the field only the watch has is offered",
+  );
+
+  dismiss(db, pairKey(phone, watch));
+  assert.deepEqual(getDuplicatePairs(db), [], "a dismissed pair stays hidden");
 });
 
 test("mergeActivityInto keeps the survivor's own stream", () => {

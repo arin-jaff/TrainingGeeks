@@ -60,7 +60,9 @@ export const DUPE_FIELDS: readonly DupeFieldDef[] = [
 
 /** Attached data outweighs any single summary column. */
 const STREAM_WEIGHT = 14;
-const GPS_WEIGHT = 6;
+/** A denser recording is the better one to keep — 1s samples beat 10s ones. */
+const DENSER_STREAM_WEIGHT = 6;
+const DENSER_STREAM_SAMPLES = 600;
 const LAP_WEIGHT = 3;
 const PHOTO_WEIGHT = 3;
 
@@ -79,7 +81,8 @@ export interface DupeSide {
   durationS: number | null;
   distanceM: number | null;
   hasStream: boolean;
-  hasGps: boolean;
+  /** recorded stream samples — the density of the recording */
+  samples: number;
   laps: number;
   photos: number;
   /** weighted completeness — higher means the richer recording */
@@ -165,7 +168,7 @@ export function completeness(row: DupeScanRow): number {
     if (hasValue((row as unknown as Record<string, unknown>)[f.key])) score += f.weight;
   }
   if (row.has_stream) score += STREAM_WEIGHT;
-  if (row.route_polyline) score += GPS_WEIGHT;
+  if (row.sample_count >= DENSER_STREAM_SAMPLES) score += DENSER_STREAM_WEIGHT;
   if (row.lap_count > 1) score += LAP_WEIGHT;
   if (row.file_count > 0) score += PHOTO_WEIGHT;
   return score;
@@ -182,7 +185,7 @@ function side(row: DupeScanRow): DupeSide {
     durationS: row.duration_s,
     distanceM: row.distance_m,
     hasStream: !!row.has_stream,
-    hasGps: !!row.route_polyline,
+    samples: row.sample_count,
     laps: row.lap_count,
     photos: row.file_count,
     score: completeness(row),
