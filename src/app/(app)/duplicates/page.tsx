@@ -20,7 +20,7 @@ export default async function DuplicatesPage() {
         <p className="mt-1 text-sm text-ink-muted">
           {pairs.length === 0
             ? "Nothing to review."
-            : `${pairs.length} pair${pairs.length > 1 ? "s" : ""} of activities cover the same stretch of time. Pick the recording to keep, take any fields the other one has, and delete the duplicate.`}
+            : `${pairs.length} ${pairs.length === 1 ? "pair covers" : "pairs cover"} the same stretch of time. Pick the recording to keep, take any fields the other one has, and delete the duplicate.`}
         </p>
       </div>
       <DuplicateReview pairs={pairs} units={units} tz={tz} />
