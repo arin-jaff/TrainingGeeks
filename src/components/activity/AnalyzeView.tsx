@@ -189,6 +189,14 @@ export default function AnalyzeView({
 
   return (
     <div>
+      {/* Where you went is the first thing you want to see — the map sits
+          above the tabs so it is on screen the moment the activity opens. */}
+      {detail.hasGps && s && (
+        <div className="mb-4">
+          <RouteMap lat={s.lat} lng={s.lng} />
+        </div>
+      )}
+
       <div className="mb-4 flex gap-2">
         {(["summary", "analyze"] as const).map((t) => (
           <button
@@ -276,7 +284,6 @@ export default function AnalyzeView({
         </div>
       ) : (
         <div className="space-y-4">
-          {detail.hasGps && s && <RouteMap lat={s.lat} lng={s.lng} />}
           {series.length > 0 && s && (
             <div className="rounded border border-line bg-surface-card p-3">
               <StreamChart time={s.time} series={series} />
