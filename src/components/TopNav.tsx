@@ -33,6 +33,7 @@ const MORE = [
   { href: "/strength", label: "Strength Records" },
   { href: "/metrics", label: "Metrics" },
   { href: "/import", label: "Import" },
+  { href: "/duplicates", label: "Duplicates" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

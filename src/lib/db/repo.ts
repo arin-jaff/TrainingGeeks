@@ -280,6 +280,88 @@ export function deleteActivity(db: DB, id: number): void {
   db.prepare("DELETE FROM activity WHERE id = ?").run(id);
 }
 
+// ---- Duplicate detection & merge ---------------------------------------
+
+/** An activity plus the attached-data counts the duplicate scan scores on. */
+export interface DupeScanRow extends ActivityRow {
+  has_stream: number;
+  lap_count: number;
+  file_count: number;
+}
+
+/** Every activity in start order, tagged with what data hangs off it. The
+ * stream JSON is deliberately not read — only its existence matters here. */
+export function listActivitiesForDupeScan(db: DB): DupeScanRow[] {
+  return all<DupeScanRow>(
+    db,
+    `SELECT a.*,
+            EXISTS (SELECT 1 FROM activity_stream s WHERE s.activity_id = a.id) AS has_stream,
+            (SELECT COUNT(*) FROM lap l WHERE l.activity_id = a.id) AS lap_count,
+            (SELECT COUNT(*) FROM activity_file f WHERE f.activity_id = a.id) AS file_count
+       FROM activity a
+      ORDER BY a.start_time, a.id`,
+  );
+}
+
+/** Child tables moved wholesale when the keeper has none of that kind. */
+const MERGE_CHILD_TABLES = ["activity_stream", "lap", "peak", "strength_set"] as const;
+
+/**
+ * Fold `dropId` into `keepId`: copy the named columns across, adopt any child
+ * data (stream, laps, peaks, sets) the keeper is missing, carry attachments
+ * and the planned-workout link, then delete the duplicate. Column names are
+ * whitelisted against the activity schema before they reach SQL.
+ *
+ * Returns false when the merge is not applicable (same row, missing row).
+ */
+export function mergeActivityInto(
+  db: DB,
+  keepId: number,
+  dropId: number,
+  fields: string[] = [],
+): boolean {
+  if (keepId === dropId) return false;
+  const keep = getActivity(db, keepId);
+  const drop = getActivity(db, dropId);
+  if (!keep || !drop) return false;
+
+  const allowed = new Set<string>(ACTIVITY_COLUMNS);
+  const cols = [...new Set(fields)].filter((f) => allowed.has(f));
+  const patch: Record<string, unknown> = {};
+  for (const c of cols) patch[c] = (drop as unknown as Record<string, unknown>)[c];
+
+  db.exec("BEGIN");
+  try {
+    if (cols.length > 0) updateActivityMetrics(db, keepId, patch as Partial<ActivityRow>);
+    for (const table of MERGE_CHILD_TABLES) {
+      const { n } = db
+        .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE activity_id = ?`)
+        .get(keepId) as { n: number };
+      if (n === 0) {
+        db.prepare(`UPDATE ${table} SET activity_id = ? WHERE activity_id = ?`).run(
+          keepId,
+          dropId,
+        );
+      }
+    }
+    // Photos and files always follow the survivor; a planned workout that was
+    // marked complete by the duplicate stays marked complete.
+    db.prepare("UPDATE activity_file SET activity_id = ? WHERE activity_id = ?").run(
+      keepId,
+      dropId,
+    );
+    db.prepare(
+      "UPDATE planned_workout SET completed_activity_id = ? WHERE completed_activity_id = ?",
+    ).run(keepId, dropId);
+    db.prepare("DELETE FROM activity WHERE id = ?").run(dropId);
+    db.exec("COMMIT");
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
+  return true;
+}
+
 // ---- Activity files (attachments) --------------------------------------
 
 export function insertActivityFile(
