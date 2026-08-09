@@ -100,10 +100,22 @@ page in under ~3 s with data in Application Support.*
    - *Early access (now)*: ad-hoc signed. README documents the one-time
      bypass (right-click → Open, or `xattr -dr com.apple.quarantine`).
      Honest label: "unsigned early-access build".
-   - *Beta (next)*: Apple Developer ID ($99/yr) + hardened runtime +
-     notarization in CI (the bundled Node binary needs the
-     `com.apple.security.cs.allow-jit`-free entitlement set; sidecars must be
-     signed individually — this is the known risk item).
+   - *Beta (next — **unblocked**, App Store Connect access granted Aug 2026)*:
+     Apple Developer ID ($99/yr) + hardened runtime + notarization in CI (the
+     bundled Node binary needs the `com.apple.security.cs.allow-jit`-free
+     entitlement set; sidecars must be signed individually — this is the known
+     risk item). Concrete steps now that the account exists:
+     1. Create a **Developer ID Application** certificate; export the .p12.
+     2. Add repo secrets: the base64 .p12 + its password, the signing identity
+        name, the team id, and an **App Store Connect API key** (preferred over
+        an app-specific password for `notarytool`).
+     3. Re-enable the hardened runtime that f2c7ca4 turned off for the ad-hoc
+        build, and drop the explicit ad-hoc signature from bb11d5b.
+     4. Sign the bundled Node sidecar **first**, then the .app; `notarytool
+        submit --wait`, then `stapler staple`.
+     5. Flip `desktop-release.yml` from the unsigned early-access lane to the
+        notarized one, and update the README wording (no more quarantine
+        bypass instructions).
 3. **Auto-update**: Tauri updater pointed at GitHub Releases (signed update
    manifests; keep the private key in repo secrets). Early-access builds may
    skip this and just notify "a newer version exists" via the GitHub API.

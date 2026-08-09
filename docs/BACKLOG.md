@@ -6,25 +6,36 @@ keeps its original roadmap sketch and a rough effort estimate (S/M/L).
 
 ---
 
+## Shipped
+
+- **Structured workout builder + watch export** — visual interval builder, scheduled to the
+  calendar, exported as `.FIT` workout files. Filled the `/workout-library` stub.
+- **Training heatmap page** — every GPS track on one dark MapLibre canvas, sport/year filters.
+  Replaced the `/routes` stub.
+- **Laps & splits table** — device laps from `lapMesgs` plus auto 1 mi/1 km splits from the
+  stream, zone-colored on the activity page.
+- **Duplicate protection** — activities whose recording windows overlap are flagged at
+  `/duplicates` with a Home cue; pick the recording to keep, take individual fields from the
+  other, merge and delete. Catches the watch-plus-phone double record that content hashing
+  cannot see.
+- **Map-first activity page** — the route renders above the tabs, no click-through to Analyze.
+- **Public activity share links** — opt-in `/share/<token>` (128 CSPRNG bits), strict allow-list
+  of rendered fields, noindex, revoke by row delete. Middleware exempts exactly one segment.
+- **One-click backup & restore** — Settings downloads a `.tar.gz` of a `VACUUM INTO` snapshot
+  plus uploads and raw FITs; restore validates the listing (paths *and* member types), the
+  manifest and `PRAGMA integrity_check` before swapping, and moves the old database aside.
+
 ## Active roadmap (in build order)
 
-1. **Structured workout builder + watch export** — _in progress_. Visual interval builder
-   (warmup, 4×800 @ 5K pace, cooldown), schedule to the calendar, and export as `.FIT` workout
-   files that load onto a Garmin. Fills the `/workout-library` stub.
-2. **Training heatmap page** — every GPS track on one dark MapLibre canvas with additive
-   blending; sport/year filters. Replaces the `/routes` stub.
-3. **Laps & splits table** — parse `lapMesgs` in `normalize.ts`; auto 1 mi/1 km splits from
-   streams for lapless activities; zone-colored pace/HR bars per lap on the activity page.
-4. **Readiness briefing on Home** — combine HRV, resting HR, sleep, and TSB into a morning
+1. **Readiness briefing on Home** — combine HRV, resting HR, sleep, and TSB into a morning
    verdict dial ("green light for intensity") next to today's planned workout.
-5. **Race-day form projector** — reuse the PMC 60-day projection keyed to event dates; each
+2. **Race-day form projector** — reuse the PMC 60-day projection keyed to event dates; each
    event card shows projected Fitness/Form on race day with a sparkline.
-6. **Year in Review** — annual wrap (totals, PRs, biggest week, longest streak, hardest day) at
+3. **Year in Review** — annual wrap (totals, PRs, biggest week, longest streak, hardest day) at
    `/wrapped/[year]` with a canvas → PNG share export.
-7. **Public activity share links** — per-activity opt-in tokenized read-only page
-   `/share/<token>` with an OG card; revoke UI.
-8. **One-click backup & restore** — Settings button to download a zip of the SQLite file +
-   uploads; restore by upload with an integrity check; "reveal data folder" on desktop.
+4. **Apple Developer signing** — App Store Connect access is granted; replace the ad-hoc
+   signature with a real Developer ID identity, re-enable the hardened runtime, notarize and
+   staple in CI. See `DESKTOP-ROADMAP.md` §M3.
 
 ---
 
