@@ -18,7 +18,7 @@ test("planned copy keeps the plan (incl. structure) on the new date, unlinked", 
     structure: "[]",
     template_id: 3,
   } as PlannedWorkoutRow;
-  const out = plannedCopyOf({ kind: "planned", row }, "2026-06-08");
+  const out = plannedCopyOf(row, "2026-06-08");
   assert.equal(out.date, "2026-06-08");
   assert.equal(out.name, "Tempo");
   assert.equal(out.planned_tss, 70);
@@ -39,7 +39,7 @@ test("activity copy becomes a plan from its actual numbers", () => {
     tss: 120,
     s3: null,
   } as ActivityRow;
-  const out = plannedCopyOf({ kind: "activity", row }, "2026-06-09");
+  const out = plannedCopyOf(row, "2026-06-09");
   assert.deepEqual(out, {
     modality: "bike",
     date: "2026-06-09",
@@ -54,7 +54,7 @@ test("activity copy becomes a plan from its actual numbers", () => {
 
 test("strength activity copy uses S³ as planned load and no distance", () => {
   const row = { modality: "lift", duration_s: 3600, distance_m: 0, tss: null, s3: 60 } as ActivityRow;
-  const out = plannedCopyOf({ kind: "activity", row }, "2026-06-09");
+  const out = plannedCopyOf(row, "2026-06-09");
   assert.equal(out.planned_tss, 60);
   assert.equal(out.planned_distance_m, null);
 });

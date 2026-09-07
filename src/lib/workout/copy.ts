@@ -1,4 +1,4 @@
-import type { ActivityRow, PlannedWorkoutRow } from "../db/types.js";
+import { isCardio, type ActivityRow, type PlannedWorkoutRow } from "../db/types.js";
 import type { NewPlanned } from "../db/repo.js";
 
 /**
@@ -7,35 +7,30 @@ import type { NewPlanned } from "../db/repo.js";
  * duration/distance/load) — the actual numbers stay with the original day, so
  * the copy can be completed with what was really done on the new day.
  */
-export function plannedCopyOf(
-  item: { kind: "planned"; row: PlannedWorkoutRow } | { kind: "activity"; row: ActivityRow },
-  date: string,
-): NewPlanned {
-  if (item.kind === "planned") {
-    const p = item.row;
+export function plannedCopyOf(row: ActivityRow | PlannedWorkoutRow, date: string): NewPlanned {
+  if ("planned_tss" in row) {
     return {
-      modality: p.modality,
+      modality: row.modality,
       date,
-      name: p.name,
-      description: p.description,
-      planned_duration_s: p.planned_duration_s,
-      planned_distance_m: p.planned_distance_m,
-      planned_tss: p.planned_tss,
-      structure: p.structure,
-      template_id: p.template_id,
+      name: row.name,
+      description: row.description,
+      planned_duration_s: row.planned_duration_s,
+      planned_distance_m: row.planned_distance_m,
+      planned_tss: row.planned_tss,
+      structure: row.structure,
+      template_id: row.template_id,
       source: "manual",
     };
   }
-  const a = item.row;
-  const strength = a.modality === "lift" || a.modality === "core";
+  const strength = !isCardio(row.modality);
   return {
-    modality: a.modality,
+    modality: row.modality,
     date,
-    name: a.name,
-    description: a.notes,
-    planned_duration_s: a.duration_s,
-    planned_distance_m: strength ? null : a.distance_m,
-    planned_tss: strength ? a.s3 : a.tss,
+    name: row.name,
+    description: row.notes,
+    planned_duration_s: row.duration_s,
+    planned_distance_m: strength ? null : row.distance_m,
+    planned_tss: strength ? row.s3 : row.tss,
     source: "manual",
   };
 }

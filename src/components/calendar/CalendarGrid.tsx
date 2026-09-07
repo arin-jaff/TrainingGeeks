@@ -48,20 +48,8 @@ const CARD_SHADOW = "0 2px 4px rgba(26,32,46,0.3)";
 
 type CardStatus = "complete" | "pastdue" | "planned";
 
-/** The calendar item currently "copied"; survives month navigation via sessionStorage. */
-export interface Clip {
-  kind: "activity" | "planned";
-  id: number;
-  name: string;
-}
-const CLIP_KEY = "calendar.clip";
-function readClip(): Clip | null {
-  try {
-    return JSON.parse(sessionStorage.getItem(CLIP_KEY) ?? "null") as Clip | null;
-  } catch {
-    return null;
-  }
-}
+/** The calendar item currently "copied". Client state survives month paging (same route). */
+type Clip = Pick<CalItem, "kind" | "id" | "name">;
 
 function statusOf(item: CalItem, date: string, today: string): CardStatus {
   if (item.kind === "activity") return "complete";
@@ -91,7 +79,7 @@ function WorkoutCard({
 }) {
   const readOnly = useReadOnly();
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menu, setMenu] = useState<{ top: number; left: number } | null>(null);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -139,7 +127,10 @@ function WorkoutCard({
         go();
       }}
       onMouseEnter={openPreview}
-      onMouseLeave={closePreview}
+      onMouseLeave={() => {
+        closePreview();
+        setMenu(null);
+      }}
       style={{ boxShadow: CARD_SHADOW, backgroundColor: bodyBg }}
       className={[
         readOnly
@@ -166,28 +157,29 @@ function WorkoutCard({
               <button
                 type="button"
                 aria-label="Workout menu"
-                aria-expanded={menuOpen}
+                aria-expanded={!!menu}
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.stopPropagation();
                   closePreview();
-                  setMenuOpen((o) => !o);
+                  const r = e.currentTarget.getBoundingClientRect();
+                  setMenu(menu ? null : { top: r.bottom + 2, left: r.right - 112 });
                 }}
                 className="-mr-1 rounded px-1 text-ink-muted/50 hover:bg-surface hover:text-ink"
               >
                 ⋮
               </button>
-              {menuOpen && (
+              {menu && (
                 <div
-                  className="absolute right-0 top-full z-30 mt-0.5 w-28 rounded border border-line bg-surface-card py-1 text-[12px] shadow-lg"
+                  style={menu}
+                  className="fixed z-30 w-28 rounded border border-line bg-surface-card py-1 text-[12px] shadow-lg"
                   onPointerDown={(e) => e.stopPropagation()}
-                  onMouseLeave={() => setMenuOpen(false)}
                 >
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setMenuOpen(false);
+                      setMenu(null);
                       onCopy(item);
                     }}
                     className="block w-full px-3 py-1 text-left text-ink hover:bg-surface"
@@ -295,6 +287,7 @@ function DayCell({
   injured,
   units,
   clip,
+  pending,
   onAdd,
   onEdit,
   onCopy,
@@ -308,6 +301,7 @@ function DayCell({
   injured: boolean;
   units: Units;
   clip: Clip | null;
+  pending: boolean;
   onAdd: (date: string) => void;
   onEdit: (kind: "activity" | "planned", id: number) => void;
   onCopy: (item: CalItem) => void;
@@ -375,16 +369,17 @@ function DayCell({
         ))}
       </div>
       {/* With something copied, every day offers Paste; otherwise hover "+" to add (hidden in read-only). */}
-      {!readOnly && clip ? (
+      {!readOnly && (clip ? (
         <button
           type="button"
+          disabled={pending}
           onClick={() => onPaste(date)}
           aria-label={`Paste ${clip.name} on ${date}`}
-          className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-accent/60 text-[11px] font-medium text-accent hover:bg-accent/10"
+          className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-accent/60 text-[11px] font-medium text-accent hover:bg-accent/10 disabled:opacity-50"
         >
           Paste
         </button>
-      ) : !readOnly && (
+      ) : (
         <button
           type="button"
           onClick={() => onAdd(date)}
@@ -393,7 +388,7 @@ function DayCell({
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
         </button>
-      )}
+      ))}
     </div>
   );
 }
@@ -514,31 +509,24 @@ export default function CalendarGrid({
 }) {
   const router = useRouter();
   const injured = new Set(injuredDates);
-  const [, startTransition] = useTransition();
+  const [pending, startTransition] = useTransition();
   const [addDate, setAddDate] = useState<string | null>(null);
   const [editData, setEditData] = useState<WorkoutEditData | null>(null);
-  const [clip, setClipState] = useState<Clip | null>(null);
-  useEffect(() => setClipState(readClip()), []);
+  const [clip, setClip] = useState<Clip | null>(null);
   useEffect(() => {
     if (!clip) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setClip(null);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [clip]);
-  function setClip(c: Clip | null) {
-    setClipState(c);
-    try {
-      if (c) sessionStorage.setItem(CLIP_KEY, JSON.stringify(c));
-      else sessionStorage.removeItem(CLIP_KEY);
-    } catch {}
-  }
   function copy(item: CalItem) {
     setClip({ kind: item.kind, id: item.id, name: item.name || SPORT_NAME[item.modality] });
   }
   function paste(date: string) {
     if (!clip) return;
     startTransition(async () => {
-      await copyItem(clip.kind, clip.id, date);
+      // Source deleted since it was copied: drop the stale clipboard.
+      if (!(await copyItem(clip.kind, clip.id, date))) setClip(null);
       router.refresh();
     });
   }
@@ -616,6 +604,7 @@ export default function CalendarGrid({
                 injured={injured.has(date)}
                 units={units}
                 clip={clip}
+                pending={pending}
                 onAdd={setAddDate}
                 onEdit={openEdit}
                 onCopy={copy}

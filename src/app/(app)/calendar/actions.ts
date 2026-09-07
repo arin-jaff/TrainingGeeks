@@ -9,9 +9,9 @@ import {
   setActivityDate,
   setPlannedDate,
 } from "@/lib/db/repo";
-import type { ActivityRow, PlannedWorkoutRow } from "@/lib/db/types";
 import { plannedCopyOf } from "@/lib/workout/copy";
 import { recomputeFitness } from "@/lib/fitness/recompute";
+import { isReadOnly } from "@/lib/auth/config";
 
 /** Move an activity or planned workout to a new calendar date. */
 export async function rescheduleItem(
@@ -29,23 +29,17 @@ export async function rescheduleItem(
   revalidatePath("/calendar");
 }
 
-/** Paste a copied calendar item onto `date` as a new planned workout. */
+/** Paste a copied calendar item onto `date` as a new planned workout. False if the source is gone. */
 export async function copyItem(
   kind: "activity" | "planned",
   id: number,
   date: string,
-): Promise<number | null> {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+): Promise<boolean> {
+  if (isReadOnly() || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
   const db = getDb();
   const row = kind === "activity" ? getActivity(db, id) : getPlanned(db, id);
-  if (!row) return null;
-  const planned = plannedCopyOf(
-    kind === "activity"
-      ? { kind, row: row as ActivityRow }
-      : { kind, row: row as PlannedWorkoutRow },
-    date,
-  );
-  const newId = insertPlanned(db, planned);
+  if (!row) return false;
+  insertPlanned(db, plannedCopyOf(row, date));
   revalidatePath("/calendar");
-  return newId;
+  return true;
 }
