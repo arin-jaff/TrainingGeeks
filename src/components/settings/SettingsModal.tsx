@@ -23,6 +23,7 @@ import SyncButton from "./SyncButton";
 import HistorySync from "./HistorySync";
 import PrefsForm from "./PrefsForm";
 import ExportData from "./ExportData";
+import BackupRestore from "./BackupRestore";
 import EquipmentManager from "./EquipmentManager";
 import type { EquipmentRow } from "@/lib/db/repo";
 
@@ -50,6 +51,7 @@ const ACCOUNT_NAV: [Section, string][] = [
   ["apps", "Apps & Devices"],
   ["notifications", "Notifications"],
   ["export", "Export Data"],
+  ["backup", "Backup & Restore"],
 ];
 const LOWER_NAV: [Section, string][] = [
   ["zones", "Zones"],
@@ -412,6 +414,8 @@ export default function SettingsModal({
             )}
 
             {section === "export" && <ExportData />}
+
+            {section === "backup" && <BackupRestore />}
 
             {section === "nutrition" && (
               <div className="max-w-md">

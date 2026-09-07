@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { isReadOnly } from "@/lib/auth/config";
 import { getAthlete, latestMetrics } from "@/lib/db/repo";
 import { getHomeData, type PeakBest } from "@/lib/queries/home";
+import { countDuplicatePairs } from "@/lib/queries/duplicates";
 import { getSportSummaries } from "@/lib/queries/sports";
 import { getExerciseMaxes } from "@/lib/queries/strength";
 import { WELLNESS_BY_ID } from "@/lib/metrics/wellness";
@@ -167,6 +168,9 @@ export default async function HomePage() {
   const readOnly = isReadOnly();
   const hasActivities =
     (db.prepare("SELECT COUNT(*) AS n FROM activity").get() as { n: number }).n > 0;
+  // ponytail: full pair scan per Home render — fine at personal scale (one
+  // indexed pass, no stream JSON read); cache it if the log ever gets huge.
+  const dupeCount = readOnly ? 0 : countDuplicatePairs(db);
 
   return (
     <div>
@@ -184,6 +188,22 @@ export default async function HomePage() {
 
       {/* First run: a concrete path into the app until data exists. */}
       {!hasActivities && !readOnly && <GettingStarted />}
+
+      {/* Double-recorded sessions (watch + phone) waiting to be resolved. */}
+      {dupeCount > 0 && (
+        <Link
+          href="/duplicates"
+          className="mb-4 flex items-center justify-between gap-3 rounded border border-form/50 bg-form/10 px-4 py-2.5 hover:border-form"
+        >
+          <span className="text-sm text-ink">
+            <span className="font-semibold">
+              {dupeCount} possible duplicate {dupeCount === 1 ? "pair" : "pairs"}
+            </span>{" "}
+            — two activities cover the same stretch of time.
+          </span>
+          <span className="shrink-0 text-xs font-medium text-accent">Review →</span>
+        </Link>
+      )}
 
       {/* Your Sports — hover a sport for last activity + week/all-time stats. */}
       <SportsBar sports={sports} units={units} today={today} />

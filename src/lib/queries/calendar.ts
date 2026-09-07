@@ -121,7 +121,7 @@ export function getCalendarData(
       distanceM: p.planned_distance_m,
       avgSpeedMps: null,
       stressValue: p.planned_tss == null ? null : Math.round(p.planned_tss),
-      stressLabel: "TSS",
+      stressLabel: p.modality === "lift" || p.modality === "core" ? "S³" : "TSS",
       plannedTss: p.planned_tss,
       elevationM: 0,
       workKj: 0,

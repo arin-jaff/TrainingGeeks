@@ -78,5 +78,8 @@ export async function middleware(req: NextRequest) {
 export const config = {
   // Protect everything except the login/privacy pages, Next internals, and static
   // files. Public tokens are segment-anchored so e.g. /login-data isn't excluded.
-  matcher: ["/((?!login(?:$|/)|privacy(?:$|/)|calendar\\.ics(?:$|/)|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)"],
+  // `share/<token>` is the opt-in public activity page and nothing else: the
+  // pattern matches exactly one segment under /share, so /share itself and any
+  // deeper path still go through auth.
+  matcher: ["/((?!login(?:$|/)|privacy(?:$|/)|share/[^/]+$|calendar\\.ics(?:$|/)|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)"],
 };

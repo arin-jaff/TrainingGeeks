@@ -12,6 +12,7 @@ import type {
   LapRow,
   Modality,
   PlannedWorkoutRow,
+  ShareLinkRow,
   ThresholdMetric,
   ThresholdRow,
   WorkoutTemplateRow,
@@ -278,6 +279,146 @@ export function updateActivityMetrics(
 
 export function deleteActivity(db: DB, id: number): void {
   db.prepare("DELETE FROM activity WHERE id = ?").run(id);
+  purgeDismissedPairs(db, id);
+}
+
+// ---- Duplicate detection & merge ---------------------------------------
+
+/** An activity plus the attached-data counts the duplicate scan scores on. */
+export interface DupeScanRow extends ActivityRow {
+  has_stream: number;
+  sample_count: number;
+  lap_count: number;
+  file_count: number;
+}
+
+/** Every activity in start order, tagged with what data hangs off it. The
+ * stream JSON is deliberately never read — its row count and sample count say
+ * enough about which recording is the richer one. */
+export function listActivitiesForDupeScan(db: DB): DupeScanRow[] {
+  return all<DupeScanRow>(
+    db,
+    `SELECT a.*,
+            EXISTS (SELECT 1 FROM activity_stream s WHERE s.activity_id = a.id) AS has_stream,
+            COALESCE((SELECT s.sample_count FROM activity_stream s WHERE s.activity_id = a.id), 0)
+              AS sample_count,
+            (SELECT COUNT(*) FROM lap l WHERE l.activity_id = a.id) AS lap_count,
+            (SELECT COUNT(*) FROM activity_file f WHERE f.activity_id = a.id) AS file_count
+       FROM activity a
+      ORDER BY a.start_time, a.id`,
+  );
+}
+
+/** Setting holding the dismissed duplicate pairs (see queries/duplicates.ts). */
+export const DISMISSED_SETTING = "duplicates_dismissed";
+
+/**
+ * Forget any dismissed duplicate pair naming this activity. Ids are plain
+ * rowids and SQLite hands them out again, so a dismissal left behind by a
+ * delete would eventually hide a genuinely new pair.
+ */
+export function purgeDismissedPairs(db: DB, activityId: number): void {
+  const raw = getSetting(db, DISMISSED_SETTING);
+  if (!raw) return;
+  try {
+    const keys: unknown = JSON.parse(raw);
+    if (!Array.isArray(keys)) return;
+    const kept = keys
+      .map(String)
+      .filter((k) => !k.split("-").includes(String(activityId)));
+    if (kept.length !== keys.length) setSetting(db, DISMISSED_SETTING, JSON.stringify(kept));
+  } catch {
+    // Unparseable setting: readDismissed treats it as empty anyway.
+  }
+}
+
+/**
+ * Fold `dropId` into `keepId`: copy the named columns across, adopt any child
+ * data (stream, laps, peaks, sets) the keeper is missing, carry attachments
+ * and the planned-workout link, then delete the duplicate. Column names are
+ * whitelisted against the activity schema before they reach SQL.
+ *
+ * Returns false when the merge is not applicable (same row, missing row).
+ */
+export function mergeActivityInto(
+  db: DB,
+  keepId: number,
+  dropId: number,
+  fields: string[] = [],
+): boolean {
+  if (keepId === dropId) return false;
+  const keep = getActivity(db, keepId);
+  const drop = getActivity(db, dropId);
+  if (!keep || !drop) return false;
+
+  const allowed = new Set<string>(ACTIVITY_COLUMNS);
+  const cols = [...new Set(fields)].filter((f) => allowed.has(f));
+  // Taking a field from the duplicate only ever means filling something in, so
+  // an empty value is dropped rather than written. Without this, a stale tick
+  // could blank out the survivor's own notes in the same transaction that
+  // deletes the only other copy of them.
+  const patch: Record<string, unknown> = {};
+  for (const c of cols) {
+    const v = (drop as unknown as Record<string, unknown>)[c];
+    if (v === null || v === undefined) continue;
+    if (typeof v === "string" && v.trim() === "") continue;
+    patch[c] = v;
+  }
+
+  db.exec("BEGIN");
+  try {
+    if (Object.keys(patch).length > 0) {
+      updateActivityMetrics(db, keepId, patch as Partial<ActivityRow>);
+    }
+
+    const count = (table: string, id: number) =>
+      (
+        db.prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE activity_id = ?`).get(id) as {
+          n: number;
+        }
+      ).n;
+    const adopt = (table: string) =>
+      db.prepare(`UPDATE ${table} SET activity_id = ? WHERE activity_id = ?`).run(keepId, dropId);
+
+    // Peaks describe a particular recording, so they travel with the stream or
+    // not at all — the keeper's stream must never end up beside the
+    // duplicate's peak curve.
+    if (count("activity_stream", keepId) === 0) {
+      adopt("activity_stream");
+      db.prepare("DELETE FROM peak WHERE activity_id = ?").run(keepId);
+      adopt("peak");
+    }
+
+    // Laps are recorded, not derived. Every FIT carries at least one
+    // whole-session lap, so a count of 1 means "no lap structure" — the same
+    // thing the review card and the splits table mean by it. Take whichever
+    // side actually has laps; otherwise the duplicate's real set would be
+    // destroyed by the cascade below.
+    const dropLaps = count("lap", dropId);
+    if (dropLaps > 1 && dropLaps > count("lap", keepId)) {
+      db.prepare("DELETE FROM lap WHERE activity_id = ?").run(keepId);
+      adopt("lap");
+    }
+
+    if (count("strength_set", keepId) === 0) adopt("strength_set");
+
+    // Photos and files always follow the survivor; a planned workout that was
+    // marked complete by the duplicate stays marked complete.
+    db.prepare("UPDATE activity_file SET activity_id = ? WHERE activity_id = ?").run(
+      keepId,
+      dropId,
+    );
+    db.prepare(
+      "UPDATE planned_workout SET completed_activity_id = ? WHERE completed_activity_id = ?",
+    ).run(keepId, dropId);
+    db.prepare("DELETE FROM activity WHERE id = ?").run(dropId);
+    purgeDismissedPairs(db, dropId);
+    db.exec("COMMIT");
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
+  return true;
 }
 
 // ---- Activity files (attachments) --------------------------------------
@@ -1062,4 +1203,38 @@ export function setGoalDone(db: DB, id: number, done: boolean): void {
 
 export function deleteGoal(db: DB, id: number): void {
   db.prepare("DELETE FROM goal WHERE id = ?").run(id);
+}
+
+// ---- Public share links ------------------------------------------------
+// The token is minted in src/lib/queries/share.ts (CSPRNG); this layer only
+// stores and resolves it. Lookups are parameterized — a token is attacker-
+// supplied input.
+
+export function insertShareLink(db: DB, activityId: number, token: string): void {
+  db.prepare("INSERT INTO share_link (token, activity_id) VALUES (?, ?)").run(
+    token,
+    activityId,
+  );
+}
+
+/** Resolve a public token. Unknown or revoked tokens return undefined. */
+export function getShareLink(db: DB, token: string): ShareLinkRow | undefined {
+  return one<ShareLinkRow>(db, "SELECT * FROM share_link WHERE token = ?", token);
+}
+
+/** The live link for an activity, if the owner has shared it. */
+export function getShareLinkForActivity(
+  db: DB,
+  activityId: number,
+): ShareLinkRow | undefined {
+  return one<ShareLinkRow>(
+    db,
+    "SELECT * FROM share_link WHERE activity_id = ?",
+    activityId,
+  );
+}
+
+/** Revoke: the row is the only thing keeping the public URL alive. */
+export function deleteShareLink(db: DB, activityId: number): void {
+  db.prepare("DELETE FROM share_link WHERE activity_id = ?").run(activityId);
 }

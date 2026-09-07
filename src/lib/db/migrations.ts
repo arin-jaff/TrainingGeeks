@@ -332,4 +332,20 @@ ALTER TABLE planned_workout ADD COLUMN structure TEXT;       -- JSON WorkoutStep
 ALTER TABLE planned_workout ADD COLUMN template_id INTEGER;  -- source template, nullable
 `,
   },
+  {
+    id: 9,
+    name: "share_link",
+    // Opt-in public share links. The token IS the credential for
+    // /share/<token>, so it is a random 128-bit CSPRNG string, never derived
+    // from the activity id. One live link per activity (unique index);
+    // revoking is a DELETE, which 404s the old URL immediately.
+    sql: /* sql */ `
+CREATE TABLE share_link (
+  token TEXT PRIMARY KEY,
+  activity_id INTEGER NOT NULL REFERENCES activity (id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE UNIQUE INDEX idx_share_link_activity ON share_link (activity_id);
+`,
+  },
 ];

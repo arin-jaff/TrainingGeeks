@@ -213,3 +213,10 @@ export interface GoalRow {
   done: number;
   created_at: string;
 }
+
+/** One opt-in public share link: `token` is the only credential for it. */
+export interface ShareLinkRow {
+  token: string;
+  activity_id: number;
+  created_at: string;
+}

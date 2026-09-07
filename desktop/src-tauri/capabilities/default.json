@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "Default capability for the main window (no custom IPC).",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "autostart:default"]
 }

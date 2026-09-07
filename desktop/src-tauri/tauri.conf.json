@@ -14,7 +14,10 @@
         "width": 1280,
         "height": 800,
         "minWidth": 900,
-        "minHeight": 600
+        "minHeight": 600,
+        "titleBarStyle": "Transparent",
+        "backgroundColor": "#161e2e",
+        "theme": "Dark"
       }
     ],
     "security": {
@@ -37,6 +40,14 @@
     "resources": {
       "../server": "server"
     },
+    "fileAssociations": [
+      {
+        "ext": ["fit"],
+        "name": "FIT Activity",
+        "description": "Garmin FIT activity file",
+        "role": "Viewer"
+      }
+    ],
     "macOS": {
       "minimumSystemVersion": "12.0",
       "signingIdentity": "-",
