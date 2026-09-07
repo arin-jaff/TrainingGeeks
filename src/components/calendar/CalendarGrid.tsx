@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   DndContext,
@@ -28,7 +28,7 @@ import {
 } from "@/lib/util/colors";
 import SportImage from "@/components/SportImage";
 import { useReadOnly } from "@/components/ReadOnly";
-import { rescheduleItem } from "@/app/(app)/calendar/actions";
+import { copyItem, rescheduleItem } from "@/app/(app)/calendar/actions";
 import { getWorkoutForEdit, type WorkoutEditData } from "@/app/actions/workout";
 import AddMenuModal, { type ScheduleableTemplate } from "./AddMenuModal";
 import WorkoutModal from "./WorkoutModal";
@@ -48,6 +48,21 @@ const CARD_SHADOW = "0 2px 4px rgba(26,32,46,0.3)";
 
 type CardStatus = "complete" | "pastdue" | "planned";
 
+/** The calendar item currently "copied"; survives month navigation via sessionStorage. */
+export interface Clip {
+  kind: "activity" | "planned";
+  id: number;
+  name: string;
+}
+const CLIP_KEY = "calendar.clip";
+function readClip(): Clip | null {
+  try {
+    return JSON.parse(sessionStorage.getItem(CLIP_KEY) ?? "null") as Clip | null;
+  } catch {
+    return null;
+  }
+}
+
 function statusOf(item: CalItem, date: string, today: string): CardStatus {
   if (item.kind === "activity") return "complete";
   return date < today ? "pastdue" : "planned";
@@ -65,15 +80,18 @@ function WorkoutCard({
   today,
   units,
   onEdit,
+  onCopy,
 }: {
   item: CalItem;
   date: string;
   today: string;
   units: Units;
   onEdit: (kind: "activity" | "planned", id: number) => void;
+  onCopy: (item: CalItem) => void;
 }) {
   const readOnly = useReadOnly();
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${item.kind}:${item.id}`,
     data: { kind: item.kind, id: item.id },
@@ -139,9 +157,47 @@ function WorkoutCard({
           <span className="truncate text-[12px] font-semibold text-ink">
             {item.name || SPORT_NAME[item.modality]}
           </span>
-          <span className="ml-auto text-ink-muted/50" aria-hidden>
-            ⋮
-          </span>
+          {readOnly ? (
+            <span className="ml-auto text-ink-muted/50" aria-hidden>
+              ⋮
+            </span>
+          ) : (
+            <span className="relative ml-auto">
+              <button
+                type="button"
+                aria-label="Workout menu"
+                aria-expanded={menuOpen}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closePreview();
+                  setMenuOpen((o) => !o);
+                }}
+                className="-mr-1 rounded px-1 text-ink-muted/50 hover:bg-surface hover:text-ink"
+              >
+                ⋮
+              </button>
+              {menuOpen && (
+                <div
+                  className="absolute right-0 top-full z-30 mt-0.5 w-28 rounded border border-line bg-surface-card py-1 text-[12px] shadow-lg"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onMouseLeave={() => setMenuOpen(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpen(false);
+                      onCopy(item);
+                    }}
+                    className="block w-full px-3 py-1 text-left text-ink hover:bg-surface"
+                  >
+                    Copy
+                  </button>
+                </div>
+              )}
+            </span>
+          )}
         </div>
         <div className="mt-1 flex items-start gap-1.5">
           <div className="min-w-0 flex-1 space-y-0.5 text-[12px] leading-tight">
@@ -238,8 +294,11 @@ function DayCell({
   today,
   injured,
   units,
+  clip,
   onAdd,
   onEdit,
+  onCopy,
+  onPaste,
 }: {
   date: string;
   items: CalItem[];
@@ -248,8 +307,11 @@ function DayCell({
   today: string;
   injured: boolean;
   units: Units;
+  clip: Clip | null;
   onAdd: (date: string) => void;
   onEdit: (kind: "activity" | "planned", id: number) => void;
+  onCopy: (item: CalItem) => void;
+  onPaste: (date: string) => void;
 }) {
   const readOnly = useReadOnly();
   const { setNodeRef, isOver } = useDroppable({ id: date });
@@ -308,11 +370,21 @@ function DayCell({
             today={today}
             units={units}
             onEdit={onEdit}
+            onCopy={onCopy}
           />
         ))}
       </div>
-      {/* Hover "+" to add a workout/metric/injury on this date (hidden in read-only). */}
-      {!readOnly && (
+      {/* With something copied, every day offers Paste; otherwise hover "+" to add (hidden in read-only). */}
+      {!readOnly && clip ? (
+        <button
+          type="button"
+          onClick={() => onPaste(date)}
+          aria-label={`Paste ${clip.name} on ${date}`}
+          className="mx-1.5 mb-1.5 mt-auto flex h-7 items-center justify-center rounded border border-dashed border-accent/60 text-[11px] font-medium text-accent hover:bg-accent/10"
+        >
+          Paste
+        </button>
+      ) : !readOnly && (
         <button
           type="button"
           onClick={() => onAdd(date)}
@@ -445,6 +517,31 @@ export default function CalendarGrid({
   const [, startTransition] = useTransition();
   const [addDate, setAddDate] = useState<string | null>(null);
   const [editData, setEditData] = useState<WorkoutEditData | null>(null);
+  const [clip, setClipState] = useState<Clip | null>(null);
+  useEffect(() => setClipState(readClip()), []);
+  useEffect(() => {
+    if (!clip) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setClip(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [clip]);
+  function setClip(c: Clip | null) {
+    setClipState(c);
+    try {
+      if (c) sessionStorage.setItem(CLIP_KEY, JSON.stringify(c));
+      else sessionStorage.removeItem(CLIP_KEY);
+    } catch {}
+  }
+  function copy(item: CalItem) {
+    setClip({ kind: item.kind, id: item.id, name: item.name || SPORT_NAME[item.modality] });
+  }
+  function paste(date: string) {
+    if (!clip) return;
+    startTransition(async () => {
+      await copyItem(clip.kind, clip.id, date);
+      router.refresh();
+    });
+  }
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
   );
@@ -475,6 +572,21 @@ export default function CalendarGrid({
 
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+      {clip && (
+        <div className="mb-2 flex items-center gap-3 rounded border border-accent/40 bg-accent/5 px-3 py-1.5 text-[12px] text-ink">
+          <span>
+            Copied <span className="font-semibold">{clip.name}</span>. Click Paste on any day to
+            add it there as a planned workout.
+          </span>
+          <button
+            type="button"
+            onClick={() => setClip(null)}
+            className="ml-auto font-medium text-accent hover:underline"
+          >
+            Done
+          </button>
+        </div>
+      )}
       <div className="overflow-hidden rounded border border-line">
         <div
           className={`${cols} border-b border-line bg-surface text-[11px] font-semibold uppercase tracking-wide text-ink-muted`}
@@ -503,8 +615,11 @@ export default function CalendarGrid({
                 today={today}
                 injured={injured.has(date)}
                 units={units}
+                clip={clip}
                 onAdd={setAddDate}
                 onEdit={openEdit}
+                onCopy={copy}
+                onPaste={paste}
               />
             ))}
             <SummaryCell s={weekSummaries[week[0]]} units={units} />
